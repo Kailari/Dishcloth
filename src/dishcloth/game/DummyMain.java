@@ -21,6 +21,8 @@ public class DummyMain {
         System.out.println("\"main( String[] args )\" called...");
         System.out.println("Adding a bit 'bar' to 'foo'...");
 
+
+
         foobar();
 
         System.out.print("Continuing endlessly with boring initialization sequence...\n");
