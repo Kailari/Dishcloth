@@ -15,70 +15,72 @@ import dishcloth.engine.rendering.Renderer;
 
 public interface IGame {
 
+    void run();
+
     /**
      * Do all your initialization here.
      */
-    void Initialize();
+    void initialize();
 
     /**
      * Internal initialization. Calls Initialize()
      */
-    void DoInitialize();
+    void doInitialize();
 
     /**
      * Load all content in this method.
      */
-    void LoadContent();
+    void loadContent();
 
     /**
      * Internal content loading method. Calls LoadContent()
      */
-    void DoLoadContent();
+    void doLoadContent();
 
     /**
      * Do your update logic here.
      *
      * @param delta     time passed since last update call.
      */
-    void Update(float delta);
+    void update(float delta);
 
     /**
      * Internal Update method. Handles delta calculation, calls Update()
      *
      * @param delta     time passed since last update call.
      */
-    void DoUpdate(float delta);
+    void doUpdate(float delta);
 
     /**
      * FPS-synchronized locked time-step update call. Do all your locked-time-step-requiring update logic here.
      *
      * @param fixedDelta    time passed since last (fixed) update call.
      */
-    void FixedUpdate(float fixedDelta);
+    void fixedUpdate(float fixedDelta);
 
     /**
      * Internal fixed update call. Handles fps-synchronization and fixedDelta-calculation. Calls FixedUpdate()
      * @param fixedDelta
      */
-    void DoFixedUpdate(float fixedDelta);
+    void doFixedUpdate(float fixedDelta);
 
     /**
      * Do all your rendering here.
      */
-    void Render(Renderer renderer);
+    void render(Renderer renderer);
 
     /**
      * Internal render call. Calls Render()
      */
-    void DoRender();
+    void doRender();
 
     /**
      * Unload content here
      */
-    void UnloadContent();
+    void unloadContent();
 
     /**
      * Internal UnloadContent call. Calls UnloadContent()
      */
-    void DoUnloadContent();
+    void doUnloadContent();
 }
