@@ -4,13 +4,9 @@ package dishcloth.game;
 
 public class Program {
 
-	public static int main(String[] args) {
+	public static void main(String[] args) {
 
 		// Just don't care about this, okay? :D
-		int errorcode = DummyMain.run();
-
-
-
-		return errorcode;
+		DummyMain.run();
 	}
 }
