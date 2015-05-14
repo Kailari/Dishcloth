@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="lib" path="C:/Users/ASDSausage/Documents/Eclipse Projects/workspace/Dishcloth/libs/lwjgl/jar/lwjgl.jar"/>
+	<classpathentry kind="lib" path="libs/lwjgl/jar/lwjgl.jar"/>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="output" path="bin"/>
