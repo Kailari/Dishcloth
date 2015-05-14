@@ -10,5 +10,6 @@ public class Program {
 		System.out.println("huehuehue");
 
 		System.out.println("Kissat on koiria");
+
 	}
 }
