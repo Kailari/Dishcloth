@@ -6,10 +6,5 @@ public class Program {
 
 		// Just don't care about this, okay? :D
 		DummyMain.run();
-		System.out.println("trrföhgfd");
-		System.out.println("huehuehue");
-
-		System.out.println("Kissat on koiria");
-
 	}
 }
