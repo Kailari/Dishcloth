@@ -29,7 +29,7 @@ public class DishMath {
 
 		double x = Math.log10( n ) / Math.log10( 2 ); // log(2)n=log(10)n/log(10)2
 
-		if (x < 0) return false; // if x is less than zero, then n is less than one. Only return true if x > 0
+		if (x < 0) return false; // if x is less than zero, then n is less than one. Only return true if x >= 0
 
 		if (x % 1 == 0) return true; // check if x is an integer
 		return false;
