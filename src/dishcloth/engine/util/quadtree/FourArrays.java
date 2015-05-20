@@ -6,11 +6,11 @@ package dishcloth.engine.util.quadtree;
  * <p>
  * Created by Lassi on 20.5.2015.
  */
-public class FourArrays {
+public class FourArrays<T> {
 
-	private Object[] a0, a1, a2, a3;
+	private T[] a0, a1, a2, a3;
 
-	public FourArrays(Object[] a0, Object[] a1, Object[] a2, Object[] a3) {
+	public FourArrays(T[] a0, T[] a1, T[] a2, T[] a3) {
 		set( a0, 0 );
 		set( a1, 1 );
 		set( a2, 2 );
@@ -27,7 +27,7 @@ public class FourArrays {
 	 * @param index 0-3
 	 * @throws IllegalArgumentException if x is not 0-3
 	 */
-	public void set(Object[] array, int index) {
+	public void set(T[] array, int index) {
 		if (index == 0) {
 			a0 = array;
 		} else if (index == 1) {
@@ -49,7 +49,7 @@ public class FourArrays {
 	 * @param n the array to be returned. Has to be 0-3
 	 * @throws IllegalArgumentException if n is not 0-3
 	 */
-	public Object[] get(int n) {
+	public T[] get(int n) {
 		if (n == 0) return a0;
 		if (n == 1) return a1;
 		if (n == 2) return a2;
