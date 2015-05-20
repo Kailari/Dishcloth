@@ -3,7 +3,7 @@ package dishcloth.engine.util.quadtree;
 import dishcloth.engine.util.DishMath;
 
 /**
- * This is the root of the quadtree. This class will either: <br>
+ * This is the root of the quadtree. Object of this class will either: <br>
  * -Have 4 children roots in array[] "children". <br>
  * -Have size, x and y coordinates and color(=type). This is called a leaf node.
  * <p>
@@ -43,13 +43,17 @@ public class Root {
 		}
 
 		if (leaf) {
-			// root contains only one color(or type), assign size, xc and yc
+			// root contains only one color(or type)
 			this.size = size;
 			this.xc = xc;
 			this.yc = yc;
 			// TODO: implement this:   this.type = grid[0];
 		} else {
 			// root contains more than one color(or type), split it into four pieces
+			this.size = size;
+			this.xc = xc;
+			this.yc = yc;
+
 			children = new Root[4];
 
 			// create the children
@@ -90,4 +94,5 @@ public class Root {
 	public boolean leaf() {
 		return leaf;
 	}
+
 }
