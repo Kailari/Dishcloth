@@ -10,6 +10,7 @@ package dishcloth.engine.world;
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * Created by ASDSausage on 14.5.2015
  */
+
 public interface IUpdateable {
 
     void DoUpdate(float delta);
