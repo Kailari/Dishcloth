@@ -16,6 +16,10 @@ public class MasterTree {
 
 	private Root[] roots;
 
+	private int xn, yn; // number of ancestor roots
+	private int size; // size of the ancestor roots
+
+
 	/**
 	 * Create a master(ancestor) branch for the quadtree.
 	 * This object will contain an array of the roots. The array's size will be either 1*n or n*1, where n is an integer.
@@ -39,6 +43,7 @@ public class MasterTree {
 		}
 
 		int min = Math.min( width, height ); // select the smallest square
+		this.size = min;
 
 		// calculate how many roots will be created in the vertical and horizontal direction
 		int xn = width / min;
@@ -46,6 +51,8 @@ public class MasterTree {
 		// to clarify: let width=16,height=4. min=4. xn=4,yn=1. so we have 4*1 roots
 
 		roots = new Root[xn * yn];
+		this.xn = xn;
+		this.yn = yn;
 
 		for (int yi = 0; yi < yn; yi++) {
 			for (int xi = 0; xi < xn; xi++) {
@@ -63,11 +70,6 @@ public class MasterTree {
 
 	public Root[] getRoots() {
 		return roots;
-	}
-
-	public Root get(int x, int y) {
-		// TODO: finish this...
-		return null;
 	}
 
 
