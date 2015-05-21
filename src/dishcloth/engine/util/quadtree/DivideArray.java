@@ -10,8 +10,6 @@ import dishcloth.engine.util.DishMath;
  */
 public class DivideArray {
 
-	private DivideArray() {} // We don't want to initialize this
-
 	/**
 	 * @param array   original array
 	 * @param width   width of the original array
