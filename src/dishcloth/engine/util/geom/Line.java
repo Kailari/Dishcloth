@@ -78,7 +78,7 @@ public class Line {
 	}
 
 	public String toString() {
-		if (Double.isNaN( slope() )) return "Line: x=" + getConstant();
+		if (Double.isNaN( slope() )) return "Line: x=" + p1.x;
 		if (DishMath.approxSame( slope(), 0 )) return "Line: y=" + getConstant();
 
 		String s = "Line: y=" + DishMath.cutDecimals( slope() ) + "*x";
