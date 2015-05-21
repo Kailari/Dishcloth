@@ -16,7 +16,7 @@ import java.util.List;
  * Created by ASDSausage on 21.5.2015
  */
 
-public class QuadTree<T extends IQuadTreeData> {
+public class QuadTree<T extends IQuadTreeDataObject> {
 
 	private QuadTreeCell<T> root;
 	private List<T> data;
