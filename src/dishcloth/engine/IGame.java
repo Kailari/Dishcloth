@@ -46,23 +46,19 @@ public interface IGame {
 
     /**
      * Internal Update method. Handles delta calculation, calls Update()
-     *
-     * @param delta     time passed since last update call.
      */
-    void doUpdate(float delta);
+    void doUpdate();
 
     /**
      * FPS-synchronized locked time-step update call. Do all your locked-time-step-requiring update logic here.
      *
-     * @param fixedDelta    time passed since last (fixed) update call.
      */
-    void fixedUpdate(float fixedDelta);
+    void fixedUpdate();
 
     /**
      * Internal fixed update call. Handles fps-synchronization and fixedDelta-calculation. Calls FixedUpdate()
-     * @param fixedDelta
      */
-    void doFixedUpdate(float fixedDelta);
+    void doFixedUpdate();
 
     /**
      * Do all your rendering here.
@@ -73,6 +69,16 @@ public interface IGame {
      * Internal render call. Calls Render()
      */
     void doRender();
+
+	/**
+	 * Internal call for shutdown. Calls shutdown();
+	 */
+	void doShutdown();
+
+	/**
+	 * Shuts down the game.
+	 */
+	void shutdown();
 
     /**
      * Unload content here
