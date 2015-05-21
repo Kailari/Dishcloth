@@ -1,16 +1,16 @@
 package dishcloth.game;
 
-import dishcloth.random.WtfMain;
-
 public class Program {
 
 	public static void main(String[] args) {
 
 		// Just don't care about this, okay? :D
 		// DummyMain.run();
-		new WtfMain();
+		// new WtfMain();
+
 
 	}
+
 
 /*
 * Tässä on se loop

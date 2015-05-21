@@ -1,5 +1,7 @@
 package dishcloth.engine.util;
 
+import java.text.DecimalFormat;
+
 /**
  * I will put some simple functions here which will be used frequently in our engine
  * <p>
@@ -7,8 +9,11 @@ package dishcloth.engine.util;
  */
 public class DishMath {
 
-	private DishMath() {}
+	private static final double THRESHOLD = 0.001; // 10^-3
+	private static final DecimalFormat df = new DecimalFormat( "#.###" );
 
+
+	private DishMath() {}
 
 	/**
 	 * Check if the number <b>n</b> is a power of two.
@@ -31,8 +36,74 @@ public class DishMath {
 
 		if (x < 0) return false; // if x is less than zero, then n is less than one. Only return true if x >= 0
 
-		if (x % 1 == 0) return true; // check if x is an integer
+		if (isInteger( x )) return true;// check if x is an integer
+		// if (x % 1 == 0) return true; // the old way
 		return false;
+	}
+
+
+	public static boolean approxSame(double d1, double d2, double threshold) {
+		double delta = Math.abs( d1 - d2 );
+		if (delta <= threshold) return true;
+		return false;
+	}
+
+	/**
+	 * Test if two doubles are approximately same using threshold value 10^-3
+	 */
+	public static boolean approxSame(double d1, double d2) {
+		return approxSame( d1, d2, DishMath.THRESHOLD );
+	}
+
+	/**
+	 * Test if double is approximately integer
+	 */
+	public static boolean isInteger(double d) {
+		double delta = Math.abs( d % 1 ); // 0 < delta < 1
+
+		boolean b1 = approxSame( delta, 1 ); // true when delta > 0.999
+		boolean b2 = approxSame( delta, 0 ); // true when delta < 0.001
+
+		return (b1 || b2);
+	}
+
+
+	/**
+	 * Round a double to integer
+	 */
+	public static int round(double d) {
+		int sign = sign( d );
+		d = Math.abs( d );
+		double delta = Math.abs( d % 1 ); // 0 < delta < 1
+
+		if (delta >= 0.5) {
+			return sign * ((int) (Math.ceil( d )));
+		} else {
+			return sign * ((int) (Math.floor( d )));
+		}
+	}
+
+
+	/**
+	 * Returns the sign of the number
+	 *
+	 * @return -1 if d < 0 <br>
+	 * 1 if d >= 0
+	 */
+	public static int sign(double d) {
+		if (d < 0) {
+			return -1;
+		} else {
+			return 1;
+		}
+	}
+
+	/**
+	 * Cuts some excess decimals off the double
+	 */
+
+	public static String cutDecimals(double d) {
+		return df.format( d );
 	}
 
 }
