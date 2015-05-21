@@ -4,7 +4,11 @@ public class Program {
 
 	public static void main(String[] args) {
 
-		// Just don't care about this, okay? :D
-		// DummyMain.run();
+		System.out.println("Application is starting...");
+
+		DishclothGame game = new DishclothGame();
+		game.run();
+
+		System.out.println("Application stopped.");
 	}
 }
