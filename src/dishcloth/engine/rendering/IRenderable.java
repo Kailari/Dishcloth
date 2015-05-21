@@ -1,4 +1,4 @@
-package dishcloth.engine.world;
+package dishcloth.engine.rendering;
 
 import dishcloth.engine.rendering.IRenderer;
 
@@ -13,8 +13,5 @@ import dishcloth.engine.rendering.IRenderer;
  * Created by ASDSausage on 14.5.2015
  */
 public interface IRenderable {
-
-    void DoRender(IRenderer renderer, double alpha);
-
     void Render(IRenderer renderer);
 }

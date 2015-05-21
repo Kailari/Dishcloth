@@ -1,7 +1,7 @@
 package dishcloth.engine.world.actors;
 
 import dishcloth.engine.rendering.IRenderer;
-import dishcloth.engine.world.IRenderable;
+import dishcloth.engine.rendering.IRenderable;
 import dishcloth.engine.world.IUpdateable;
 
 import java.util.ArrayList;
@@ -42,7 +42,6 @@ public abstract class AActor<T extends ActorState> implements IRenderable, IUpda
         FixedUpdate(fixedDelta);
     }
 
-    @Override
     public final void DoRender(IRenderer renderer, double alpha) {
         state.UpdateRenderState(alpha);
 
