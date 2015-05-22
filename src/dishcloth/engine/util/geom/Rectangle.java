@@ -44,14 +44,12 @@ public class Rectangle {
 		return new Point( x, y + h );
 	}
 
-	public Point getRightBottom() {
-		return new Point( x + w, y + h );
-	}
+	public Point getRightBottom() { return new Point( x + w, y + h ); }
 
 	public boolean containsPoint(Point point) {
-		return point.x > x //
+		return point.x >= x //
 				&& point.x < x + w //
-				&& point.y > y //
+				&& point.y >= y //
 				&& point.y < y + h; //
 	}
 
@@ -62,6 +60,11 @@ public class Rectangle {
 	public Rectangle common(Rectangle r) {
 		if (!overlap( r )) return null;
 
+		double top = Math.min( getLeftTop().y, r.getLeftTop().y );
+		double bottom = Math.max( getLeftBottom().y, r.getLeftBottom().y );
+
+		double left = Math.max( getLeftTop().x, r.getLeftTop().x );
+		double right = Math.min( getRightTop().x, r.getRightTop().x );
 
 		return null;
 	}
