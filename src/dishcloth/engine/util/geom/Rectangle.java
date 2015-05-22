@@ -22,6 +22,16 @@ public class Rectangle {
 		this.h = h;
 	}
 
+	private static boolean AOverlapB(Rectangle a, Rectangle b) {
+		boolean lt, rt, lb, rb;
+		lt = a.containsPoint( b.getLeftTop() );
+		lb = a.containsPoint( b.getLeftBottom() );
+		rt = a.containsPoint( b.getRightTop() );
+		rb = a.containsPoint( b.getRightBottom() );
+
+		return lt || lb || rt || rb;
+	}
+
 	public Point getLeftTop() {
 		return new Point( x, y );
 	}
@@ -39,10 +49,21 @@ public class Rectangle {
 	}
 
 	public boolean containsPoint(Point point) {
-		return point.x > x
-				&& point.x < x + w
-				&& point.y > y
-				&& point.y < y + h;
+		return point.x > x //
+				&& point.x < x + w //
+				&& point.y > y //
+				&& point.y < y + h; //
+	}
+
+	public boolean overlap(Rectangle r) {
+		return Rectangle.AOverlapB( this, r ) || Rectangle.AOverlapB( r, this );
+	}
+
+	public Rectangle common(Rectangle r) {
+		if (!overlap( r )) return null;
+
+
+		return null;
 	}
 
 
