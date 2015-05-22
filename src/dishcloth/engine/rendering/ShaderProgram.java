@@ -1,10 +1,12 @@
 package dishcloth.engine.rendering;
 
+import dishcloth.engine.exception.ShaderCompilationFailedException;
+import dishcloth.engine.exception.ShaderException;
+import dishcloth.engine.exception.ShaderLinkFailedException;
+import dishcloth.engine.io.IOHelper;
 import dishcloth.engine.util.logger.Debug;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-
+import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL20.*;
 
 /**
@@ -24,25 +26,91 @@ public class ShaderProgram {
 	int vertID;
 	int fragID;
 
-	public ShaderProgram() {
+	public ShaderProgram(String vShader, String fShader) {
 		programID = glCreateProgram();
-	}
-
-	public static String readFromFile(String filename) {
-
-		StringBuilder source = new StringBuilder();
 
 		try {
-			BufferedReader reader = new BufferedReader(
-					new InputStreamReader( ShaderProgram.class
-							                       .getClassLoader()
-							                       .getResourceAsStream( filename ) ) );
-		} catch (Exception e) {
-			Debug.logException( e, "IOHelper" );
-		}
+			attachVertexShader( vShader );
+			attachFragmentShader( fShader );
 
-		return source.toString();
+			linkProgram();
+		}
+		catch (ShaderException e) {
+			Debug.logException( e, this );
+		}
 	}
 
+	private void attachVertexShader(String name) throws ShaderCompilationFailedException {
+		String source = IOHelper.readLinesFromFile( "shaders/" + name + ".vert" );
 
+		// Create vertex shader
+		vertID = glCreateShader( GL_VERTEX_SHADER );
+		glShaderSource( vertID, source );
+
+		// Compile
+		glCompileShader( vertID );
+
+		// Find possible errors
+		if (glGetShaderi( vertID, GL_COMPILE_STATUS ) == GL_FALSE) {
+			throw new ShaderCompilationFailedException( "Vertex Shader compilation failed: "
+			                                            + glGetShaderInfoLog(vertID, glGetShaderi(vertID, GL_INFO_LOG_LENGTH)));
+		}
+
+		// Attach
+		glAttachShader( programID, vertID );
+	}
+
+	private void attachFragmentShader(String name) throws ShaderCompilationFailedException {
+		String source = IOHelper.readLinesFromFile( "shaders/" + name + ".frag" );
+
+		// Create vertex shader
+		fragID = glCreateShader( GL_FRAGMENT_SHADER );
+		glShaderSource( fragID, source );
+
+		// Compile
+		glCompileShader( fragID );
+
+		// Find possible errors
+		if (glGetShaderi( fragID, GL_COMPILE_STATUS ) == GL_FALSE) {
+			throw new ShaderCompilationFailedException( "Fragment Shader compilation failed: \n"
+					                                            + glGetShaderInfoLog(vertID, glGetShaderi(vertID, GL_INFO_LOG_LENGTH)));
+		}
+
+		// Attach
+		glAttachShader( programID, fragID );
+	}
+
+	private void linkProgram() throws ShaderLinkFailedException {
+		// Link
+		glLinkProgram( programID );
+
+		// Check for problems
+		if (glGetProgrami( programID, GL_LINK_STATUS ) == GL_FALSE) {
+			throw new ShaderLinkFailedException( "Shader program linking failed." );
+		}
+	}
+
+	public void bind() {
+		glUseProgram( programID );
+	}
+
+	public void unbind() {
+		bindNull();
+	}
+
+	public static void bindNull() {
+		glUseProgram( 0 );
+	}
+
+	public void dispose() {
+		unbind();
+
+		glDetachShader( programID, vertID );
+		glDetachShader( programID, fragID );
+
+		glDeleteShader( vertID );
+		glDeleteShader( fragID );
+
+		glDeleteProgram( programID );
+	}
 }

@@ -163,6 +163,8 @@ public abstract class AGame implements IGame {
 
 	@Override
 	public final void doRender() {
+		glClear( GL_COLOR_BUFFER_BIT );
+
 		// Call render()
 		render( null );
 

@@ -2,7 +2,13 @@ package dishcloth.game;
 
 import dishcloth.engine.AGame;
 import dishcloth.engine.rendering.Renderer;
-import dishcloth.engine.util.logger.Debug;
+import dishcloth.engine.rendering.ShaderProgram;
+import dishcloth.engine.rendering.VertexBufferObject;
+import org.lwjgl.BufferUtils;
+
+import java.nio.FloatBuffer;
+
+import static org.lwjgl.opengl.GL11.*;
 
 /**
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -17,16 +23,29 @@ import dishcloth.engine.util.logger.Debug;
 
 public class DishclothGame extends AGame {
 
+	ShaderProgram shaderProgram;
+	VertexBufferObject vbo;
+
 	@Override
 	public void initialize() {
-
-		Debug.logOK( "OK.", this );
 
 	}
 
 	@Override
 	public void loadContent() {
+		shaderProgram = new ShaderProgram( "default", "default" );
 
+		float[] vertices = new float[]{
+				+0.0f, +0.5f,
+				-0.5f, -0.5f,
+				+0.5f, -0.5f
+		};
+
+		int[] indices = new int[] {
+			0, 2, 1
+		};
+
+		vbo = new VertexBufferObject( vertices, indices );
 	}
 
 	@Override
@@ -42,15 +61,22 @@ public class DishclothGame extends AGame {
 	@Override
 	public void render(Renderer renderer) {
 
-	}
+		shaderProgram.bind();
 
-	@Override
-	public void shutdown() {
+		vbo.render();
 
+		shaderProgram.unbind();
 	}
 
 	@Override
 	public void unloadContent() {
+		shaderProgram.dispose();
+
+		vbo.dispose();
+	}
+
+	@Override
+	public void shutdown() {
 
 	}
 }
