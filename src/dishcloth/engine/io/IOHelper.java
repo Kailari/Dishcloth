@@ -1,6 +1,10 @@
 package dishcloth.engine.io;
 
+import dishcloth.engine.rendering.ShaderProgram;
 import dishcloth.engine.util.logger.Debug;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 
 /**
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -15,18 +19,5 @@ import dishcloth.engine.util.logger.Debug;
 
 public class IOHelper {
 
-	public static String readFromFile(String filename) {
-
-		StringBuilder source = new StringBuilder();
-
-		try {
-
-		}
-		catch (Exception e) {
-			Debug.logException( e, "IOHelper" );
-		}
-
-		return source.toString();
-	}
 
 }
