@@ -47,10 +47,10 @@ public class Rectangle {
 	public Point getRightBottom() { return new Point( x + w, y + h ); }
 
 	public boolean containsPoint(Point point) {
-		return point.x >= x //
-				&& point.x < x + w //
-				&& point.y >= y //
-				&& point.y < y + h; //
+		return point.x >= x
+				&& point.x < x + w
+				&& point.y >= y
+				&& point.y < y + h;
 	}
 
 	public boolean overlap(Rectangle r) {
@@ -59,16 +59,26 @@ public class Rectangle {
 
 	public Rectangle common(Rectangle r) {
 		if (!overlap( r )) return null;
-
-		double top = Math.min( getLeftTop().y, r.getLeftTop().y );
-		double bottom = Math.max( getLeftBottom().y, r.getLeftBottom().y );
+		// Currently not working... top left corner should be (0,0)
+		double top = Math.max( getLeftTop().y, r.getLeftTop().y );
+		double bottom = Math.min( getLeftBottom().y, r.getLeftBottom().y );
 
 		double left = Math.max( getLeftTop().x, r.getLeftTop().x );
 		double right = Math.min( getRightTop().x, r.getRightTop().x );
 
-		return null;
+		double dx = right - left;
+		double dy = bottom - top;
+
+		return new Rectangle( left, top, dx, dy );
 	}
 
-
-	// TODO: Methods for "is point in rectangle", "Rectangles intersect", "rectangles overlap", etc.
+	@Override
+	public String toString() {
+		return "Rectangle:[" +
+				"x=" + x +
+				"; y=" + y +
+				"; w=" + w +
+				"; h=" + h +
+				"]";
+	}
 }
