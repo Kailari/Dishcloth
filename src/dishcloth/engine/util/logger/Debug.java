@@ -1,7 +1,6 @@
-package dishcloth.engine.util;
+package dishcloth.engine.util.logger;
 
 import java.io.PrintStream;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -89,6 +88,29 @@ public class Debug {
 
 	public static void logErr(String message, Object context) {
 		log( message, context, DebugLevel.ERROR );
+	}
+
+	public static void logException(Exception e, String context) {
+
+		String stacktrace = "";
+		boolean first = true;
+		for (StackTraceElement ste : e.getStackTrace()) {
+			stacktrace += "\n" + (first ? "" : "    at ") + ste.toString();
+			first = false;
+		}
+
+		log( "\n" + e.getClass().getSimpleName() + " was thrown!"
+				     + "\n    Message:    " + e.getMessage()
+				     + "\n    Cause:      " + (e.getCause() == null ? "Not specified" : e.getCause())
+				     + "\n+----------------------------------------------------------------------------+"
+				     + "\n|   Stacktrace:                                                              |"
+				     + "\n+----------------------------------------------------------------------------+"
+				     + stacktrace,
+		     context, DebugLevel.EXCEPTION );
+	}
+
+	public static void logException(Exception e, Object context) {
+		logException( e, context.getClass().getSimpleName() );
 	}
 
 

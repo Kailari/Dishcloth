@@ -7,6 +7,7 @@ import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.system.MemoryUtil.*;
 
 import dishcloth.engine.exception.GameInitializationException;
+import dishcloth.engine.util.logger.Debug;
 import org.lwjgl.Sys;
 import org.lwjgl.opengl.GLContext;
 
@@ -34,21 +35,27 @@ public abstract class AGame implements IGame {
 	public void run() {
 
 		System.out.println("\n\n\n");
-		System.out.println( "+------------------------------------------+" );
-		System.out.println( "|               Running game...            |" );
-		System.out.println( "+------------------------------------------+" );
-		System.out.println();
-		System.out.println( "[INIT] Initializing..." );
-		doInitialize();
+		System.out.println( "||XX||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||XX||" );
+		System.out.println( "||==|+----------------------------------------------------------------------------------------+|==||" );
+		System.out.println( "||==||                                      Running game...                                   ||==||" );
+		System.out.println( "||==|+----------------------------------------------------------------------------------------+|==||" );
+		System.out.println( "||XX||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||XX||" );
+		System.out.println( "\n\n\n" );
 
-		System.out.println( "[INIT] Loading content..." );
+		Debug.log( "Initializing...", this );
+
+		doInitialize();
+		Debug.logOK( "Initializing successful!", this );
+
+		Debug.log( "Loading content...", this );
 		doLoadContent();
+		Debug.logOK( "Content loading successful!", this );
 
 		float delta = 0.0f;
 		timestep = 1f / 60f;
 
-		System.out.println();
-		System.out.println( "[RUNTIME] Entering main loop..." );
+		System.out.println("\n\n\n");
+		Debug.log( "Entering main loop...", this );
 		while (glfwWindowShouldClose( windowID ) != GL_TRUE
 				&& !windowShouldExit) {
 
@@ -87,12 +94,7 @@ public abstract class AGame implements IGame {
 			initialize();
 		} catch (GameInitializationException e) {
 
-			System.err.println( "[INIT/ERR] Initialization failed!" );
-			System.err.println( "    Message:    " + e.getMessage() );
-			System.err.println( "    Stacktrace: " );
-			System.err.println( "---------------------------------------------------------" );
-
-			e.printStackTrace();
+			Debug.logException( e, this );
 			System.exit( 1 );
 		}
 

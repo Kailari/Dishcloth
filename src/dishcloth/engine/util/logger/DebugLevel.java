@@ -1,4 +1,4 @@
-package dishcloth.engine.util;
+package dishcloth.engine.util.logger;
 
 /**
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -17,7 +17,8 @@ public enum DebugLevel {
 	NOTE( "NOTE", ANSIColor.BLUE ),
 	SUCCESS( "OK", ANSIColor.GREEN ),
 	WARNING( "WARN", ANSIColor.YELLOW ),
-	ERROR( "ERR", ANSIColor.RED );
+	ERROR( "ERR", ANSIColor.MAGENTA ),
+	EXCEPTION( "EXC", ANSIColor.RED );
 
 	private final String logPostfix;
 	private final ANSIColor logColor;

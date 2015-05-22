@@ -1,4 +1,6 @@
-package dishcloth.engine.util;
+package dishcloth.engine.util.logger;
+
+import dishcloth.engine.util.Color;
 
 /**
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *

@@ -1,4 +1,4 @@
-package dishcloth.engine.util;
+package dishcloth.engine.util.logger;
 
 import java.util.Date;
 
@@ -15,7 +15,7 @@ import java.util.Date;
 
 public class DebugMessageFormatter {
 
-	private static final int CONTEXT_MAX_LENGTH = 12;
+	private static final int CONTEXT_MAX_LENGTH = 16;
 	private static final int WHITESPACE_AFTER_PREFIX = 1;
 
 	public static String formatMessageString(String message, String context, DebugLevel debugLevel, Date date) {

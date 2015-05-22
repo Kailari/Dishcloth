@@ -1,7 +1,7 @@
 package dishcloth.game;
 
-import dishcloth.engine.util.ANSIColor;
-import dishcloth.engine.util.Debug;
+import dishcloth.engine.util.logger.ANSIColor;
+import dishcloth.engine.util.logger.Debug;
 
 public class Program {
 

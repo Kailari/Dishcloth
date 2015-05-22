@@ -15,8 +15,8 @@ public class Color {
 
 	public static final Color BLACK = new Color( 0, 0, 0 );
 	public static final Color RED = new Color( 255, 0, 0 );
-	public static final Color GREEN = new Color( 0, 255, 0);
-	public static final Color YELLOW = new Color( 255 , 255, 0 );
+	public static final Color GREEN = new Color( 0, 255, 0 );
+	public static final Color YELLOW = new Color( 255, 255, 0 );
 	public static final Color BLUE = new Color( 0, 0, 255 );
 	public static final Color MAGENTA = new Color( 255, 0, 255 );
 	public static final Color CYAN = new Color( 0, 255, 255 );
@@ -29,11 +29,16 @@ public class Color {
 
 
 	public Color(int r, int g, int b, int a) {
-		this( (byte) r, (byte) g, (byte) b, (byte) a );
+		byte br, bg, bb, ba;
+
+		this.r = (byte)(r - Byte.MIN_VALUE);
+		this.g = (byte)(g - Byte.MIN_VALUE);
+		this.b = (byte)(b - Byte.MIN_VALUE);
+		this.a = (byte)(a - Byte.MIN_VALUE);
 	}
 
 	public Color(int r, int g, int b) {
-		this(r, g ,b, 1);
+		this( r, g, b, 1 );
 	}
 
 	public Color(byte r, byte g, byte b, byte a) {
