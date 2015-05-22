@@ -5,7 +5,7 @@ package dishcloth.engine.util;
  * Color.java
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * <p>
- * A color. Stored as a 128-bit RGBA-value using floats
+ * A color. Stored as a 32-bit RGBA-value using floats
  * <p>
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * Created by ASDSausage on 21.5.2015
@@ -13,25 +13,37 @@ package dishcloth.engine.util;
 
 public class Color {
 
-	public static final Color RED = new Color( 1f, 0f, 0f, 1f );
-	public static final Color GREEN = new Color( 0f, 1f, 0f, 1f );
-	public static final Color BLUE = new Color( 0f, 0f, 1f, 1f );
-	public static final Color YELLOW = new Color( 1f, 0f, 0f, 1f );
+	public static final Color BLACK = new Color( 0, 0, 0 );
+	public static final Color RED = new Color( 255, 0, 0 );
+	public static final Color GREEN = new Color( 0, 255, 0);
+	public static final Color YELLOW = new Color( 255 , 255, 0 );
+	public static final Color BLUE = new Color( 0, 0, 255 );
+	public static final Color MAGENTA = new Color( 255, 0, 255 );
+	public static final Color CYAN = new Color( 0, 255, 255 );
+	public static final Color WHITE = new Color( 255, 255, 255 );
 
-	float r;    // 32bit
-	float g;    // 32bit
-	float b;    // 32bit
-	float a;    // 32bit
-	// = 128bit
+	byte r;    // 8 bit
+	byte g;    // 8 bit
+	byte b;    // 8 bit
+	byte a;    // 8 bit => 32 bit
 
-	public Color(float r, float g, float b, float a) {
+
+	public Color(int r, int g, int b, int a) {
+		this( (byte) r, (byte) g, (byte) b, (byte) a );
+	}
+
+	public Color(int r, int g, int b) {
+		this(r, g ,b, 1);
+	}
+
+	public Color(byte r, byte g, byte b, byte a) {
 		this.r = r;
 		this.g = g;
 		this.b = b;
 		this.a = a;
 	}
 
-	public Color(float r, float g, float b) {
-		this( r, g, b, 1f );
+	public Color(byte r, byte g, byte b) {
+		this( r, g, b, (byte) 255 );
 	}
 }

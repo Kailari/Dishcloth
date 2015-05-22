@@ -1,5 +1,11 @@
 package dishcloth.engine.util;
 
+import java.io.PrintStream;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
 /**
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * Debug.java
@@ -13,23 +19,93 @@ package dishcloth.engine.util;
 
 public class Debug {
 
-	public static void log(String message, String context, Level debugLvl) {
+	private static List<DebugMessage> messageList = new ArrayList<>();
+	private static List<PrintStream> outputStreams = new ArrayList<>();
 
+	static {
+		attachStream( System.out );
 	}
 
-	public enum Level {
+	public static void attachStream(PrintStream stream) {
+		outputStreams.add( stream );
+	}
 
-		LOG( "LOG", Color.RED ),
-		NOTE( "NOTE", Color.RED ),
-		WARNING( "WARN", Color.RED ),
-		ERROR( "ERR", Color.RED );
+	public static void detachStream(PrintStream stream) {
+		outputStreams.remove( stream );
+	}
 
-		private final String logPostfix;
-		private final Color logColor;
+	private static void log(String message, String context, DebugLevel debugLvl) {
+		Date logTime = new Date();
+		String messageString = DebugMessageFormatter.formatMessageString( message, context, debugLvl, logTime );
 
-		Level(String logPostfix, Color logColor) {
-			this.logPostfix = logPostfix;
-			this.logColor = logColor;
+		DebugMessage dbgMsg = new DebugMessage( debugLvl, context, logTime, message, messageString );
+
+		messageList.add( dbgMsg );
+
+		for (PrintStream s : outputStreams) {
+			s.println( dbgMsg.compiledMessage );
+		}
+	}
+
+	public static void log(String message, String context) {
+		log( message, context, DebugLevel.LOG );
+	}
+
+	public static void logNote(String message, String context) {
+		log( message, context, DebugLevel.NOTE );
+	}
+
+	public static void logOK(String message, String context) {
+		log( message, context, DebugLevel.SUCCESS );
+	}
+
+	public static void logWarn(String message, String context) {
+		log( message, context, DebugLevel.WARNING );
+	}
+
+	public static void logErr(String message, String context) {
+		log( message, context, DebugLevel.ERROR );
+	}
+
+	private static void log(String message, Object context, DebugLevel debugLvl) {
+		log( message, context.getClass().getSimpleName(), debugLvl );
+	}
+
+	public static void log(String message, Object context) {
+		log( message, context, DebugLevel.LOG );
+	}
+
+	public static void logNote(String message, Object context) {
+		log( message, context, DebugLevel.NOTE );
+	}
+
+	public static void logOK(String message, Object context) {
+		log( message, context, DebugLevel.SUCCESS );
+	}
+
+	public static void logWarn(String message, Object context) {
+		log( message, context, DebugLevel.WARNING );
+	}
+
+	public static void logErr(String message, Object context) {
+		log( message, context, DebugLevel.ERROR );
+	}
+
+
+	private static class DebugMessage {
+		DebugLevel dbgLvl;
+		String context;
+		Date timestamp;
+
+		String rawMessage;
+		String compiledMessage;
+
+		public DebugMessage(DebugLevel dbgLvl, String context, Date timestamp, String rawMessage, String compiledMessage) {
+			this.dbgLvl = dbgLvl;
+			this.context = context;
+			this.timestamp = timestamp;
+			this.rawMessage = rawMessage;
+			this.compiledMessage = compiledMessage;
 		}
 	}
 }
