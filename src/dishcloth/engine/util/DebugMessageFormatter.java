@@ -7,7 +7,7 @@ import java.util.Date;
  * DebugMessageFormatter.java
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * <p>
- * TODO: Description
+ * Formats debug log entry strings.
  * <p>
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * Created by ASDSausage on 22.5.2015
@@ -16,11 +16,7 @@ import java.util.Date;
 public class DebugMessageFormatter {
 
 	private static final int CONTEXT_MAX_LENGTH = 12;
-
-	private static final int MISC_CHARS_IN_PREFIX = 3;
 	private static final int WHITESPACE_AFTER_PREFIX = 1;
-
-	private static final int PREFIX_MAX_LENGTH = CONTEXT_MAX_LENGTH + MISC_CHARS_IN_PREFIX;
 
 	public static String formatMessageString(String message, String context, DebugLevel debugLevel, Date date) {
 		String prefix = String.format( "[%-"+CONTEXT_MAX_LENGTH+"S\\ %-4S]",
