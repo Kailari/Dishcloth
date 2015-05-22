@@ -19,8 +19,7 @@ public class Program {
 
 		Debug.log( ANSIColor.RED + "R" + ANSIColor.GREEN + "G" + ANSIColor.BLUE + "B" + ANSIColor.RESET, "mAiN" );
 
-		DishclothGame game = new DishclothGame();
-		game.run();
+		new DishclothGame().run();
 
 		System.out.println("Application stopped.");
 	}

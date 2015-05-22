@@ -8,7 +8,6 @@ import static org.lwjgl.system.MemoryUtil.*;
 
 import dishcloth.engine.exception.GameInitializationException;
 import dishcloth.engine.util.logger.Debug;
-import org.lwjgl.Sys;
 import org.lwjgl.opengl.GLContext;
 
 /**
@@ -32,7 +31,7 @@ public abstract class AGame implements IGame {
 
 
 	@Override
-	public void run() {
+	public final void run() {
 
 		System.out.println("\n\n\n");
 		System.out.println( "||XX||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||XX||" );
@@ -54,8 +53,8 @@ public abstract class AGame implements IGame {
 		float delta = 0.0f;
 		timestep = 1f / 60f;
 
-		System.out.println("\n\n\n");
-		Debug.log( "Entering main loop...", this );
+		System.out.println( "\n\n\n" );
+		Debug.logNote( "Entering main loop...", this );
 		while (glfwWindowShouldClose( windowID ) != GL_TRUE
 				&& !windowShouldExit) {
 
@@ -73,14 +72,14 @@ public abstract class AGame implements IGame {
 			doRender();
 		}
 
-		System.out.println( "[RUNTIME] Main loop ended..." );
+		Debug.logNote( "Main loop ended...", this );
 		System.out.println();
-		System.out.println( "[END] Unloading content..." );
+		Debug.logWarn( "Unloading content...", this );
 
 		doUnloadContent();
 
 
-		System.out.println( "[END] Shutting down..." );
+		Debug.logWarn( "Shutting down...", this );
 		doShutdown();
 	}
 
