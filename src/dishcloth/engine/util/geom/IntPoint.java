@@ -3,8 +3,6 @@ package dishcloth.engine.util.geom;
 
 import static java.lang.Math.*;
 
-import dishcloth.engine.util.DishMath;
-
 /**
  * Created by Lassi on 21.5.2015.
  */

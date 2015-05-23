@@ -1,6 +1,6 @@
 package dishcloth.engine.util.geom;
 
-import dishcloth.engine.util.DishMath;
+import dishcloth.engine.util.math.DishMath;
 
 /**
  * Created by Lassi on 21.5.2015.

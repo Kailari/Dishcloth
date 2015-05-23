@@ -1,4 +1,4 @@
-package dishcloth.engine.util;
+package dishcloth.engine.util.math;
 
 import java.text.DecimalFormat;
 

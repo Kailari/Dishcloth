@@ -6,9 +6,9 @@ import org.lwjgl.BufferUtils;
 
 import java.nio.ByteBuffer;
 
-import static org.lwjgl.opengl.GL11.GL_BYTE;
 import static org.lwjgl.opengl.GL11.GL_FLOAT;
 import static org.lwjgl.opengl.GL11.GL_UNSIGNED_BYTE;
+import static org.lwjgl.opengl.GL11.GL_UNSIGNED_SHORT;
 
 /**
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -28,27 +28,29 @@ public class Vertex {
 	public static final int POSITION_OFFSET = 0;
 	public static final int POSITION_TYPE = GL_FLOAT;
 	public static final int POSITION_SIZE = 2;
-	public static final int POSITION_STRIDE = SIZE_IN_BYTES;             // 1 float + 4 bytes = 8 bytes
+	public static final int POSITION_STRIDE = SIZE_IN_BYTES;
 
-	public static final int BRIGHTNESS_OFFSET = 8;      // 2 floats
-	public static final int BRIGHTNESS_TYPE = GL_FLOAT;
-	public static final int BRIGHTNESS_SIZE = 1;
-	public static final int BRIGHTNESS_STRIDE = SIZE_IN_BYTES;     // 4 bytes + 2 floats = 12 bytes
+	public static final int UV_OFFSET = 8;              // 2 floats
+	public static final int UV_TYPE = GL_UNSIGNED_SHORT;
+	public static final int UV_SIZE = 2;
+	public static final int UV_STRIDE = SIZE_IN_BYTES;
 
 	public static final int COLOR_OFFSET = 12;           // 3 floats
 	public static final int COLOR_TYPE = GL_UNSIGNED_BYTE;
 	public static final int COLOR_SIZE = 4;
-	public static final int COLOR_STRIDE = SIZE_IN_BYTES;          // 3 floats = 12 bytes
+	public static final int COLOR_STRIDE = SIZE_IN_BYTES;
 
 
-	float x, y, brightness; // 3 x 32bit -> 96 bit
-	byte r, g, b, a;        // 4 x 8 bit -> 32 bit -> total 128 bit
+	float x, y;             // 2 x 32 bit -> 64 bit
+	short u, v;             // 2 x 16 bit -> 32 bit -> total 96 bit
+	byte r, g, b, a;        // 4 x  8 bit -> 32 bit -> total 128 bit
 
-	public Vertex(float x, float y, float brightness, byte r, byte g, byte b, byte a) {
+	public Vertex(float x, float y, short u, short v, byte r, byte g, byte b, byte a) {
 		this.x = x;
 		this.y = y;
 
-		this.brightness = brightness;
+		this.u = u;
+		this.v = v;
 
 		this.r = r;
 		this.g = g;
@@ -56,16 +58,8 @@ public class Vertex {
 		this.a = a;
 	}
 
-	public Vertex(Point p, float brightness, Color color) {
-		this.x = (float) p.x;
-		this.y = (float) p.y;
-
-		this.brightness = brightness;
-
-		this.r = color.r;
-		this.g = color.g;
-		this.b = color.b;
-		this.a = color.a;
+	public Vertex(Point p, short u, short v, Color color) {
+		this( (float) p.x, (float) p.y, u, v, color.r, color.g, color.b, color.a );
 	}
 
 	public static ByteBuffer getAsBytes(Vertex[] vertices) {
@@ -75,7 +69,9 @@ public class Vertex {
 		for (Vertex v : vertices) {
 			buff.putFloat( v.x );
 			buff.putFloat( v.y );
-			buff.putFloat( v.brightness );
+
+			buff.putShort( v.u );
+			buff.putShort( v.v );
 
 			buff.put( v.r );
 			buff.put( v.g );
@@ -95,7 +91,8 @@ public class Vertex {
 		this.a = color.a;
 	}
 
-	public void setBrightness(float brightness) {
-		this.brightness = brightness;
+	public void setUV(short u, short v) {
+		this.u = u;
+		this.v = v;
 	}
 }

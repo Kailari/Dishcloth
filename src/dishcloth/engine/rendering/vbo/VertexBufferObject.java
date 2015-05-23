@@ -53,14 +53,14 @@ public class VertexBufferObject {
 		                       Vertex.POSITION_STRIDE,
 		                       Vertex.POSITION_OFFSET );
 
-		// Brightness (float)
+		// Texture coordinates (2 x short)
 		glEnableVertexAttribArray( 1 );
 		glVertexAttribPointer( 1,
-		                       Vertex.BRIGHTNESS_SIZE,
-		                       Vertex.BRIGHTNESS_TYPE,
+		                       Vertex.UV_SIZE,
+		                       Vertex.UV_TYPE,
 		                       false,
-		                       Vertex.BRIGHTNESS_STRIDE,
-		                       Vertex.BRIGHTNESS_OFFSET );
+		                       Vertex.UV_STRIDE,
+		                       Vertex.UV_OFFSET );
 
 		// Color (4 x byte)
 		glEnableVertexAttribArray( 2 );

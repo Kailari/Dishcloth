@@ -1,6 +1,6 @@
 package dishcloth.engine.world.actors;
 
-import dishcloth.engine.util.Vector2;
+import dishcloth.engine.util.math.Vector2;
 import dishcloth.engine.world.AValueState;
 
 /**

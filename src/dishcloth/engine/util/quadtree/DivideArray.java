@@ -1,6 +1,6 @@
 package dishcloth.engine.util.quadtree;
 
-import dishcloth.engine.util.DishMath;
+import dishcloth.engine.util.math.DishMath;
 
 /**
  * This class will return a cut from the original array.

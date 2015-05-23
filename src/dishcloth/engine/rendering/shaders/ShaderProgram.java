@@ -3,8 +3,12 @@ package dishcloth.engine.rendering.shaders;
 import dishcloth.engine.exception.ShaderCompilationFailedException;
 import dishcloth.engine.exception.ShaderException;
 import dishcloth.engine.exception.ShaderLinkFailedException;
+import dishcloth.engine.exception.ShaderUniformException;
 import dishcloth.engine.io.IOHelper;
 import dishcloth.engine.util.logger.Debug;
+import dishcloth.engine.util.math.Matrix4;
+
+import java.util.HashMap;
 
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL20.*;
@@ -21,10 +25,12 @@ import static org.lwjgl.opengl.GL20.*;
  */
 
 public class ShaderProgram {
-	int programID;
+	private int programID;
 
-	int vertID;
-	int fragID;
+	private int vertID;
+	private int fragID;
+
+	private HashMap<String, Integer> uniformCache = new HashMap<>();
 
 	public ShaderProgram(String vShader, String fShader) {
 		programID = glCreateProgram();
@@ -34,8 +40,7 @@ public class ShaderProgram {
 			attachFragmentShader( fShader );
 
 			linkProgram();
-		}
-		catch (ShaderException e) {
+		} catch (ShaderException e) {
 			Debug.logException( e, this );
 		}
 	}
@@ -53,7 +58,7 @@ public class ShaderProgram {
 		// Find possible errors
 		if (glGetShaderi( vertID, GL_COMPILE_STATUS ) == GL_FALSE) {
 			throw new ShaderCompilationFailedException( "Vertex Shader compilation failed: "
-			                                            + glGetShaderInfoLog(vertID, glGetShaderi(vertID, GL_INFO_LOG_LENGTH)));
+					                                            + glGetShaderInfoLog( vertID, glGetShaderi( vertID, GL_INFO_LOG_LENGTH ) ) );
 		}
 
 		// Attach
@@ -73,7 +78,7 @@ public class ShaderProgram {
 		// Find possible errors
 		if (glGetShaderi( fragID, GL_COMPILE_STATUS ) == GL_FALSE) {
 			throw new ShaderCompilationFailedException( "Fragment Shader compilation failed: \n"
-					                                            + glGetShaderInfoLog(vertID, glGetShaderi(vertID, GL_INFO_LOG_LENGTH)));
+					                                            + glGetShaderInfoLog( vertID, glGetShaderi( vertID, GL_INFO_LOG_LENGTH ) ) );
 		}
 
 		// Attach
@@ -95,12 +100,14 @@ public class ShaderProgram {
 	}
 
 	public void unbind() {
-		bindNull();
-	}
-
-	public static void bindNull() {
 		glUseProgram( 0 );
 	}
+
+
+
+	/* ************************************************************************************************************** */
+	/*                                                  UNIFORMS                                                      */
+	/* ************************************************************************************************************** */
 
 	public void dispose() {
 		unbind();
@@ -112,5 +119,59 @@ public class ShaderProgram {
 		glDeleteShader( fragID );
 
 		glDeleteProgram( programID );
+	}
+
+	private int findUniformLocation(String name) throws ShaderUniformException {
+		if (uniformCache.containsKey( name )) {
+			return uniformCache.get( name );
+		}
+
+		int uniformLocation = glGetUniformLocation( programID, name );
+		if (uniformLocation == -1) {
+			throw new ShaderUniformException( "Invalid uniform variable: \"" + name + "\"!" );
+		}
+
+		uniformCache.put( name, uniformLocation );
+
+		return uniformLocation;
+	}
+
+
+	public void setUniformFloat(String name, float f) throws ShaderUniformException {
+		glUniform1f( findUniformLocation( name ), f );
+	}
+
+	public void setUniformVec2f(String name, float x, float y) throws ShaderUniformException {
+		glUniform2f( findUniformLocation( name ), x, y );
+	}
+	
+	public void setUniformVec3f(String name, float x, float y, float z) throws ShaderUniformException {
+		glUniform3f( findUniformLocation( name ), x, y, z );
+	}
+	
+	public void setUniformVec4f(String name, float x, float y, float z, float w) throws ShaderUniformException {
+		glUniform4f( findUniformLocation( name ), x, y, z, w );
+	}
+	
+	
+	public void setUniformInt(String name, int i) throws ShaderUniformException {
+		glUniform1i( findUniformLocation( name ), i );
+	}
+	
+	public void setUniformVec2I(String name, int x, int y) throws ShaderUniformException {
+		glUniform2i( findUniformLocation( name ), x, y );
+	}
+	
+	public void setUniformVec3I(String name, int x, int y, int z) throws ShaderUniformException {
+		glUniform3i( findUniformLocation( name ), x, y, z );
+	}
+	
+	public void setUniformVec4I(String name, int x, int y, int z, int w) throws ShaderUniformException {
+		glUniform4i( findUniformLocation( name ), x, y, z, w );
+	}
+
+
+	public void setUniformMat4(String name, Matrix4 mat) throws ShaderUniformException {
+		glUniformMatrix2fv( findUniformLocation( name ), false, mat.toFloatBuffer() );
 	}
 }
