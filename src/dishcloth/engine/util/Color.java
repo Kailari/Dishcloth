@@ -22,19 +22,14 @@ public class Color {
 	public static final Color CYAN = new Color( 0, 255, 255 );
 	public static final Color WHITE = new Color( 255, 255, 255 );
 
-	byte r;    // 8 bit
-	byte g;    // 8 bit
-	byte b;    // 8 bit
-	byte a;    // 8 bit => 32 bit
+	public byte r, g, b, a;
 
 
 	public Color(int r, int g, int b, int a) {
-		byte br, bg, bb, ba;
-
-		this.r = (byte)(r - Byte.MIN_VALUE);
-		this.g = (byte)(g - Byte.MIN_VALUE);
-		this.b = (byte)(b - Byte.MIN_VALUE);
-		this.a = (byte)(a - Byte.MIN_VALUE);
+		this.r = (byte)r;
+		this.g = (byte)g;
+		this.b = (byte)b;
+		this.a = (byte)a;
 	}
 
 	public Color(int r, int g, int b) {

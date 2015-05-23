@@ -1,9 +1,11 @@
 #version 330 core
 
+in vec4 vColor;
+
 out vec4 fragColor;
 
 void main()
 {
-	// Set all pixels white
-	fragColor = vec4(1.0);
+	// Set all pixels to input color
+	fragColor = vColor;
 }

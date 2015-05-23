@@ -10,7 +10,7 @@ import java.text.DecimalFormat;
 public class DishMath {
 
 	private static final double THRESHOLD = 0.001; // 10^-3
-	private static final DecimalFormat df = new DecimalFormat( "#.###" );
+	private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat( "#.###" );
 
 
 	private DishMath() {}
@@ -73,7 +73,9 @@ public class DishMath {
 	 */
 
 	public static String cutDecimals(double d) {
-		return df.format( d );
+		return DECIMAL_FORMAT.format( d );
 	}
+
+
 
 }

@@ -1,7 +1,9 @@
 package dishcloth.engine.rendering.vbo;
 
+import dishcloth.engine.rendering.vbo.shapes.Polygon;
 import org.lwjgl.BufferUtils;
 
+import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
@@ -28,7 +30,11 @@ public class VertexBufferObject {
 
 	private int vaoID;  // Render info
 
-	public VertexBufferObject(float[] vertices, int[] elements) {
+	public VertexBufferObject(Polygon p) {
+		this(p.getVertices(), p.getIndices());
+	}
+
+	public VertexBufferObject(Vertex[] vertices, int[] indices) {
 		vboID = glGenBuffers();
 
 		vaoID = glGenVertexArrays();
@@ -36,26 +42,45 @@ public class VertexBufferObject {
 
 		glBindBuffer( GL_ARRAY_BUFFER, vboID );
 
-		FloatBuffer buff = BufferUtils.createFloatBuffer( vertices.length );
-		buff.put( vertices ).flip();
+		glBufferData( GL_ARRAY_BUFFER, Vertex.getAsBytes( vertices ), GL_STATIC_DRAW );
 
-		glBufferData( GL_ARRAY_BUFFER, buff, GL_STATIC_DRAW );
-
+		// Position (vec2)
 		glEnableVertexAttribArray( 0 );
-		glVertexAttribPointer( 0, 2, GL_FLOAT, false, 0, 0 );
+		glVertexAttribPointer( 0,
+		                       Vertex.POSITION_SIZE,
+		                       Vertex.POSITION_TYPE,
+		                       false,
+		                       Vertex.POSITION_STRIDE,
+		                       Vertex.POSITION_OFFSET );
 
+		// Brightness (float)
+		glEnableVertexAttribArray( 1 );
+		glVertexAttribPointer( 1,
+		                       Vertex.BRIGHTNESS_SIZE,
+		                       Vertex.BRIGHTNESS_TYPE,
+		                       false,
+		                       Vertex.BRIGHTNESS_STRIDE,
+		                       Vertex.BRIGHTNESS_OFFSET );
 
+		// Color (4 x byte)
+		glEnableVertexAttribArray( 2 );
+		glVertexAttribPointer( 2,
+		                       Vertex.COLOR_SIZE,
+		                       Vertex.COLOR_TYPE,
+		                       true,
+		                       Vertex.COLOR_STRIDE,
+		                       Vertex.COLOR_OFFSET );
 
 		iboID = glGenBuffers();
 
 		glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, iboID );
 
-		IntBuffer iBuff = BufferUtils.createIntBuffer( elements.length );
-		iBuff.put( elements ).flip();
+		IntBuffer iBuff = BufferUtils.createIntBuffer( indices.length );
+		iBuff.put( indices ).flip();
 
 		glBufferData( GL_ELEMENT_ARRAY_BUFFER, iBuff, GL_STATIC_DRAW );
 
-		nIndices = elements.length;
+		nIndices = indices.length;
 
 		// Unbind everything
 		glBindVertexArray( 0 );
@@ -68,7 +93,7 @@ public class VertexBufferObject {
 		// Bind VAO. All rendering hints/buffers are stored in VAO, so no further instructions are needed.
 		glBindVertexArray( vaoID );
 
-		glDrawElements(GL_TRIANGLES, nIndices, GL_UNSIGNED_INT, 0);
+		glDrawElements( GL_TRIANGLES, nIndices, GL_UNSIGNED_INT, 0 );
 
 		// Unbind VAO
 		glBindVertexArray( 0 );

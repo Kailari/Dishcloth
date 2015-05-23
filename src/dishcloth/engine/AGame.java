@@ -113,7 +113,7 @@ public abstract class AGame implements IGame {
 		glfwWindowHint( GLFW_RESIZABLE, GL_FALSE );
 
 		// Create window handle
-		windowID = glfwCreateWindow( 800, 600, "Dishcloth", NULL, NULL );
+		windowID = glfwCreateWindow( 400, 400, "Dishcloth", NULL, NULL );
 
 		// Validate windowID
 		if (windowID == NULL) {

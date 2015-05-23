@@ -3,7 +3,11 @@ package dishcloth.game;
 import dishcloth.engine.AGame;
 import dishcloth.engine.rendering.Renderer;
 import dishcloth.engine.rendering.shaders.ShaderProgram;
+import dishcloth.engine.rendering.vbo.Vertex;
 import dishcloth.engine.rendering.vbo.VertexBufferObject;
+import dishcloth.engine.rendering.vbo.shapes.Polygon;
+import dishcloth.engine.rendering.vbo.shapes.RegularNGon;
+import dishcloth.engine.util.Color;
 
 /**
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -30,17 +34,14 @@ public class DishclothGame extends AGame {
 	public void loadContent() {
 		shaderProgram = new ShaderProgram( "default", "default" );
 
-		float[] vertices = new float[]{
-				+0.0f, +0.5f,
-				-0.5f, -0.5f,
-				+0.5f, -0.5f
-		};
+		Polygon p = new RegularNGon( 4, 1f );
+		p.setVertexColor( 0, Color.RED );
+		p.setVertexColor( 1, Color.GREEN );
+		p.setVertexColor( 2, Color.BLUE );
+		p.setVertexColor( 3, Color.MAGENTA );
 
-		int[] indices = new int[] {
-			0, 2, 1
-		};
+		vbo = new VertexBufferObject( p );
 
-		vbo = new VertexBufferObject( vertices, indices );
 	}
 
 	@Override
