@@ -1,4 +1,4 @@
-package dishcloth.engine.rendering;
+package dishcloth.engine.rendering.shaders;
 
 import dishcloth.engine.exception.ShaderCompilationFailedException;
 import dishcloth.engine.exception.ShaderException;

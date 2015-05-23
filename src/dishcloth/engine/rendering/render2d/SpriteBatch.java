@@ -1,4 +1,7 @@
-package dishcloth.engine.rendering;
+package dishcloth.engine.rendering.render2d;
+
+import dishcloth.engine.rendering.IRenderable;
+import dishcloth.engine.rendering.IRenderer;
 
 /**
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *

@@ -1,8 +1,8 @@
-package dishcloth.engine.rendering;
+package dishcloth.engine.rendering.textures;
 
 /**
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- * Material.java
+ * Texture.java
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * <p>
  * TODO: Description
@@ -11,5 +11,5 @@ package dishcloth.engine.rendering;
  * Created by ASDSausage on 21.5.2015
  */
 
-public class Material {
+public class Texture {
 }

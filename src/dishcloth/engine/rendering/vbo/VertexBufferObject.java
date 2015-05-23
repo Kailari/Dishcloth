@@ -1,4 +1,4 @@
-package dishcloth.engine.rendering;
+package dishcloth.engine.rendering.vbo;
 
 import org.lwjgl.BufferUtils;
 
