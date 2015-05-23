@@ -31,35 +31,19 @@ public class Vertex {
 	public static final int POSITION_STRIDE = SIZE_IN_BYTES;
 
 	public static final int UV_OFFSET = 8;              // 2 floats
-	public static final int UV_TYPE = GL_UNSIGNED_SHORT;
+	public static final int UV_TYPE = GL_FLOAT;
 	public static final int UV_SIZE = 2;
 	public static final int UV_STRIDE = SIZE_IN_BYTES;
 
-	public static final int COLOR_OFFSET = 12;           // 3 floats
-	public static final int COLOR_TYPE = GL_UNSIGNED_BYTE;
-	public static final int COLOR_SIZE = 4;
-	public static final int COLOR_STRIDE = SIZE_IN_BYTES;
 
+	float x, y, u, v; // 4 floats --> 128 bit
 
-	float x, y;             // 2 x 32 bit -> 64 bit
-	short u, v;             // 2 x 16 bit -> 32 bit -> total 96 bit
-	byte r, g, b, a;        // 4 x  8 bit -> 32 bit -> total 128 bit
-
-	public Vertex(float x, float y, short u, short v, byte r, byte g, byte b, byte a) {
+	public Vertex(float x, float y, float u, float v) {
 		this.x = x;
 		this.y = y;
 
 		this.u = u;
 		this.v = v;
-
-		this.r = r;
-		this.g = g;
-		this.b = b;
-		this.a = a;
-	}
-
-	public Vertex(Point p, short u, short v, Color color) {
-		this( (float) p.x, (float) p.y, u, v, color.r, color.g, color.b, color.a );
 	}
 
 	public static ByteBuffer getAsBytes(Vertex[] vertices) {
@@ -70,13 +54,8 @@ public class Vertex {
 			buff.putFloat( v.x );
 			buff.putFloat( v.y );
 
-			buff.putShort( v.u );
-			buff.putShort( v.v );
-
-			buff.put( v.r );
-			buff.put( v.g );
-			buff.put( v.b );
-			buff.put( v.a );
+			buff.putFloat( v.u );
+			buff.putFloat( v.v );
 		}
 
 		buff.flip();
@@ -84,14 +63,7 @@ public class Vertex {
 		return buff;
 	}
 
-	public void setColor(Color color) {
-		this.r = color.r;
-		this.g = color.g;
-		this.b = color.b;
-		this.a = color.a;
-	}
-
-	public void setUV(short u, short v) {
+	public void setUV(float u, float v) {
 		this.u = u;
 		this.v = v;
 	}

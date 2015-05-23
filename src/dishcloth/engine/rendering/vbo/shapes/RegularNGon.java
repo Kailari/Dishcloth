@@ -35,7 +35,9 @@ public class RegularNGon extends Polygon {
 		for (int i = 0; i < n; i++) {
 			float x = (float)(Math.cos(currentAngle) * radius);
 			float y = (float)(Math.sin(currentAngle) * radius);
-			vertices[i] = new Vertex( x, y, 1f, Color.WHITE.r, Color.WHITE.g, Color.WHITE.b, Color.WHITE.a );
+
+			// TODO: Calculate UV coordinates
+			vertices[i] = new Vertex( x, y, x, y);
 
 			currentAngle -= angleStep;
 		}

@@ -3,11 +3,10 @@ package dishcloth.game;
 import dishcloth.engine.AGame;
 import dishcloth.engine.rendering.Renderer;
 import dishcloth.engine.rendering.shaders.ShaderProgram;
-import dishcloth.engine.rendering.vbo.Vertex;
+import dishcloth.engine.rendering.textures.Texture;
 import dishcloth.engine.rendering.vbo.VertexBufferObject;
 import dishcloth.engine.rendering.vbo.shapes.Polygon;
-import dishcloth.engine.rendering.vbo.shapes.RegularNGon;
-import dishcloth.engine.util.Color;
+import dishcloth.engine.rendering.vbo.shapes.Quad;
 
 /**
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -23,6 +22,7 @@ import dishcloth.engine.util.Color;
 public class DishclothGame extends AGame {
 
 	ShaderProgram shaderProgram;
+	Texture uvGrid;
 	VertexBufferObject vbo;
 
 	@Override
@@ -33,12 +33,9 @@ public class DishclothGame extends AGame {
 	@Override
 	public void loadContent() {
 		shaderProgram = new ShaderProgram( "default", "default" );
+		uvGrid = new Texture( "/textures/debug/uv_checker.png" );
 
-		Polygon p = new RegularNGon( 4, 1f );
-		p.setVertexColor( 0, Color.RED );
-		p.setVertexColor( 1, Color.GREEN );
-		p.setVertexColor( 2, Color.BLUE );
-		p.setVertexColor( 3, Color.MAGENTA );
+		Polygon p = new Quad(1f, 1f);
 
 		vbo = new VertexBufferObject( p );
 
@@ -58,15 +55,18 @@ public class DishclothGame extends AGame {
 	public void render(Renderer renderer) {
 
 		shaderProgram.bind();
+		uvGrid.bind();
 
 		vbo.render();
 
+		uvGrid.unbind();
 		shaderProgram.unbind();
 	}
 
 	@Override
 	public void unloadContent() {
 		shaderProgram.dispose();
+		uvGrid.dispose();
 
 		vbo.dispose();
 	}

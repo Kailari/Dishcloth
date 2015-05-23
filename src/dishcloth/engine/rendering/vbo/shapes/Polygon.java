@@ -49,12 +49,7 @@ public class Polygon {
 		return indices;
 	}
 
-	public void setVertexColor(int index, Color color, float brightness) {
-		vertices[index].setColor(color);
-		vertices[index].setBrightness(brightness);
-	}
-
-	public void setVertexColor(int index, Color color) {
-		setVertexColor( index, color, 1f );
+	public void setVertexUV(int index, float u, float v) {
+		vertices[index].setUV( u, v );
 	}
 }

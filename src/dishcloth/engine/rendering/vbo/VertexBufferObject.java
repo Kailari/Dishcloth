@@ -44,7 +44,7 @@ public class VertexBufferObject {
 
 		glBufferData( GL_ARRAY_BUFFER, Vertex.getAsBytes( vertices ), GL_STATIC_DRAW );
 
-		// Position (vec2)
+		// Position (float vec2)
 		glEnableVertexAttribArray( 0 );
 		glVertexAttribPointer( 0,
 		                       Vertex.POSITION_SIZE,
@@ -53,7 +53,7 @@ public class VertexBufferObject {
 		                       Vertex.POSITION_STRIDE,
 		                       Vertex.POSITION_OFFSET );
 
-		// Texture coordinates (2 x short)
+		// Texture coordinates (float vec2)
 		glEnableVertexAttribArray( 1 );
 		glVertexAttribPointer( 1,
 		                       Vertex.UV_SIZE,
@@ -61,15 +61,6 @@ public class VertexBufferObject {
 		                       false,
 		                       Vertex.UV_STRIDE,
 		                       Vertex.UV_OFFSET );
-
-		// Color (4 x byte)
-		glEnableVertexAttribArray( 2 );
-		glVertexAttribPointer( 2,
-		                       Vertex.COLOR_SIZE,
-		                       Vertex.COLOR_TYPE,
-		                       true,
-		                       Vertex.COLOR_STRIDE,
-		                       Vertex.COLOR_OFFSET );
 
 		iboID = glGenBuffers();
 
