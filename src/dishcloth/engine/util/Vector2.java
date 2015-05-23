@@ -1,5 +1,7 @@
 package dishcloth.engine.util;
 
+import dishcloth.engine.util.geom.Point;
+
 /**
  * ********************************************************************************************************************
  * Vector2.java
@@ -11,7 +13,7 @@ package dishcloth.engine.util;
  * Created by ASDSausage on 14.5.2015
  */
 
-public class Vector2 {
+public class Vector2 extends Point {
 
     // CONSTANTS -->
 
@@ -24,9 +26,6 @@ public class Vector2 {
     public static final Vector2 DOWN    = new Vector2( 0f,-1f);
 
     // <-- CONSTANTS
-
-    public double x;
-    public double y;
     
     public double magnitude() {
         return Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
