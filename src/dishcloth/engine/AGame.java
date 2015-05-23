@@ -24,6 +24,8 @@ import org.lwjgl.opengl.GLContext;
 
 public abstract class AGame implements IGame {
 
+	protected int screenWidth, screenHeight;
+
 	private long windowID;
 	private boolean windowShouldExit;
 
@@ -50,7 +52,7 @@ public abstract class AGame implements IGame {
 		doLoadContent();
 		Debug.logOK( "Content loading successful!", this );
 
-		float delta = 0.0f;
+
 		timestep = 1f / 60f;
 
 		System.out.println( "\n\n\n" );
@@ -106,6 +108,8 @@ public abstract class AGame implements IGame {
 			throw new GameInitializationException( "glfwInit() failed!" );
 		}
 
+		screenWidth = 800;
+		screenHeight = 600;
 
 		// Initialize window
 
@@ -113,7 +117,7 @@ public abstract class AGame implements IGame {
 		glfwWindowHint( GLFW_RESIZABLE, GL_FALSE );
 
 		// Create window handle
-		windowID = glfwCreateWindow( 400, 400, "Dishcloth", NULL, NULL );
+		windowID = glfwCreateWindow( screenWidth, screenHeight, "Dishcloth", NULL, NULL );
 
 		// Validate windowID
 		if (windowID == NULL) {

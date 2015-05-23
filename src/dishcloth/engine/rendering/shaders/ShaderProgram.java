@@ -30,9 +30,11 @@ public class ShaderProgram {
 	private int vertID;
 	private int fragID;
 
-	private HashMap<String, Integer> uniformCache = new HashMap<>();
+	private HashMap<String, Integer> uniformCache;
 
 	public ShaderProgram(String vShader, String fShader) {
+		uniformCache = new HashMap<>();
+
 		programID = glCreateProgram();
 
 		try {
@@ -172,6 +174,6 @@ public class ShaderProgram {
 
 
 	public void setUniformMat4(String name, Matrix4 mat) throws ShaderUniformException {
-		glUniformMatrix2fv( findUniformLocation( name ), false, mat.toFloatBuffer() );
+		glUniformMatrix4fv( findUniformLocation( name ), false, mat.toFloatBuffer() );
 	}
 }
