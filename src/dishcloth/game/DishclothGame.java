@@ -2,13 +2,8 @@ package dishcloth.game;
 
 import dishcloth.engine.AGame;
 import dishcloth.engine.rendering.Renderer;
-import dishcloth.engine.rendering.ShaderProgram;
-import dishcloth.engine.rendering.VertexBufferObject;
-import org.lwjgl.BufferUtils;
-
-import java.nio.FloatBuffer;
-
-import static org.lwjgl.opengl.GL11.*;
+import dishcloth.engine.rendering.shaders.ShaderProgram;
+import dishcloth.engine.rendering.vbo.VertexBufferObject;
 
 /**
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
