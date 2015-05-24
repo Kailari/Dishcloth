@@ -8,9 +8,9 @@ import dishcloth.engine.util.math.DishMath;
 public class Point {
 
 
-	public double x, y;
+	public float x, y;
 
-	public Point(double x, double y) {
+	public Point(float x, float y) {
 		this.x = x;
 		this.y = y;
 	}
@@ -22,11 +22,11 @@ public class Point {
 	}
 
 
-	public static double distance(double x1, double y1, double x2, double y2) {
+	public static float distance(float x1, float y1, float x2, float y2) {
 		return distance( new Point( x1, y1 ), new Point( x2, y2 ) );
 	}
 
-	public static double distance(Point p1, Point p2) {
+	public static float distance(Point p1, Point p2) {
 		return p1.distance( p2 );
 	}
 
@@ -35,12 +35,12 @@ public class Point {
 	}
 
 
-	public double distance(double x, double y) {
+	public float distance(float x, float y) {
 		return distance( new Point( x, y ) );
 	}
 
-	public double distance(Point p) {
-		return Math.sqrt( Math.pow( x - p.x, 2 ) + Math.pow( y - p.y, 2 ) );
+	public float distance(Point p) {
+		return (float) Math.sqrt( Math.pow( x - p.x, 2 ) + Math.pow( y - p.y, 2 ) );
 	}
 
 	public boolean equals(Point p) {
