@@ -37,6 +37,7 @@ public class DishclothGame extends AGame {
 	SpriteBatch spriteBatch;
 	Sprite sprite;
 	Sprite sprite2;
+	Sprite overlay;
 
 	Point position;
 	float t, angle;
@@ -50,7 +51,7 @@ public class DishclothGame extends AGame {
 		projectionMatrix = MatrixUtility.createOrthographicViewMatrix( -halfW, halfW,
 		                                                               -halfH, halfH,
 		                                                               -1.0f, 1.0f );
-		viewMatrix = new Matrix4( Matrix4.IDENTITY );
+		viewMatrix = Matrix4.identity();
 
 		position = new Point( 0, 0 );
 	}
@@ -58,9 +59,12 @@ public class DishclothGame extends AGame {
 	@Override
 	public void loadContent() {
 		spriteBatch = new SpriteBatch( new ShaderProgram( "sprite", "default" ) );
+
 		Texture uvGrid = new Texture( "/textures/debug/uv_checker.png" );
 		sprite = new Sprite( uvGrid, 8, 8, 0 );
 		sprite2 = new Sprite( uvGrid, 1, 1, 0 );
+
+		overlay = new Sprite( new Texture( "/textures/debug/800x600.png" ), 1, 1, 0);
 	}
 
 	@Override
@@ -69,8 +73,8 @@ public class DishclothGame extends AGame {
 
 		sprite.setFrame( Math.round( t ) );
 
-		position.x = (float) Math.cos( Math.toRadians( angle ) ) * 1.75f;
-		position.y = (float) Math.sin( Math.toRadians( angle ) ) * 1.75f;
+		position.x = (float) Math.cos( Math.toRadians( angle ) ) * 200f;
+		position.y = (float) Math.sin( Math.toRadians( angle ) ) * 200f;
 
 		angle = t * (360f / 10f);
 	}
@@ -83,17 +87,24 @@ public class DishclothGame extends AGame {
 	@Override
 	public void render(IRenderer renderer) {
 
-		sprite2.render( spriteBatch, new Point( 0, 0 ), -angle );
+		sprite2.render( spriteBatch, new Point( -512f, 512f ), -angle, Color.WHITE, new Point( 512f, -512f ) );
 
-		sprite.render( spriteBatch, position, 0f, Color.GREEN );
-		sprite.render( spriteBatch, new Point( 0f, 0f ), angle );
+		sprite.render( spriteBatch, new Point(-64 + position.x, 64 + position.y), 0f,
+		               Color.CYAN, new Point( 64f, -64f ) );
+		sprite.render( spriteBatch, new Point(-64 - position.x, 64 - position.y), -angle,
+		               Color.GREEN, new Point( 64f, -64f ) );
+
+		sprite.render( spriteBatch, new Point( -64f, 64f ), angle, Color.WHITE, new Point( 64f, -64f ) );
+
+		overlay.render( spriteBatch, new Point( -400f, 300 ), 0f, Color.WHITE, new Point(400, -300));
 
 		spriteBatch.render( renderer );
 	}
 
 	@Override
 	public void unloadContent() {
-		sprite.dispose();   // Both sprites use same texture, dispose only one of them
+		sprite.dispose();   // Both sprites use the same texture, dispose only one of them
+		overlay.dispose();
 		spriteBatch.dispose();
 	}
 

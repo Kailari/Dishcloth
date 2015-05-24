@@ -9,6 +9,7 @@ import dishcloth.engine.rendering.textures.Texture;
 import dishcloth.engine.rendering.vbo.VertexBufferObject;
 import dishcloth.engine.rendering.vbo.shapes.Quad;
 import dishcloth.engine.util.Color;
+import dishcloth.engine.util.geom.Point;
 import dishcloth.engine.util.geom.Rectangle;
 import dishcloth.engine.util.logger.Debug;
 import dishcloth.engine.util.math.Matrix4;
@@ -42,16 +43,16 @@ public class SpriteBatch implements IRenderable {
 	public SpriteBatch(ShaderProgram shader) {
 		this.renderQueue = new HashMap<>();
 		this.renderShader = shader;
-		this.dummyQuad = new VertexBufferObject( new Quad( 1f, 1f ) );
+		this.dummyQuad = new VertexBufferObject( new Quad( new Rectangle( 0f, 0f, 1f, 1f ) ) );
 	}
 
-	public void queue(Texture texture, Rectangle destination, Rectangle source, float angle, Color tint) {
+	public void queue(Texture texture, Rectangle destination, Rectangle source, float angle, Color tint, Point origin) {
 		if (!renderQueue.containsKey( texture.getGLTexID() )) {
 			renderQueue.put( texture.getGLTexID(), new ArrayList<>() );
 		}
 
 		renderQueue.get( texture.getGLTexID() ).add( new TextureRenderInfo(
-				source, destination, angle, texture, tint ) );
+				source, destination, angle, origin, texture, tint ) );
 	}
 
 	@Override
@@ -74,9 +75,17 @@ public class SpriteBatch implements IRenderable {
 
 				for (TextureRenderInfo sInfo : entry.getValue()) {
 
-					transform = MatrixUtility.createScaling( sInfo.dest.w, sInfo.dest.h, 1f )
-							.multiply( MatrixUtility.createTranslation( sInfo.dest.x, sInfo.dest.y, 0f ) )
-							.multiply( MatrixUtility.createRotationZ( sInfo.angle ) );
+					// Create modelview matrix
+
+					// 1. apply origin (origin is relative to center)
+					// 2. apply rotation locally
+
+					transform = MatrixUtility.createTranslation( sInfo.dest.x + sInfo.origin.x,
+					                                             sInfo.dest.y + sInfo.origin.y, 0f )
+							.multiply( MatrixUtility.createRotationZ( sInfo.angle ) )
+							.multiply( MatrixUtility.createTranslation( -sInfo.origin.x,
+							                                            -sInfo.origin.y, 0f) )
+							.multiply( MatrixUtility.createScaling( sInfo.dest.w, sInfo.dest.h, 1f ) );
 
 					renderShader.setUniformMat4( "mat_project", AGame.projectionMatrix );
 					renderShader.setUniformMat4( "mat_view", AGame.viewMatrix );
@@ -107,14 +116,16 @@ public class SpriteBatch implements IRenderable {
 		Texture texture;
 		Color tint;
 		float angle;
+		Point origin;
 
 		float u, v, uSize, vSize;
 
-		public TextureRenderInfo(Rectangle src, Rectangle dest, float angle, Texture texture, Color tint) {
+		public TextureRenderInfo(Rectangle src, Rectangle dest, float angle, Point origin, Texture texture, Color tint) {
 			this.dest = dest;
 			this.texture = texture;
 			this.angle = angle;
 			this.tint = tint;
+			this.origin = origin;
 
 			this.uSize = src.w / texture.getWidth();
 			this.vSize = src.h / texture.getHeight();

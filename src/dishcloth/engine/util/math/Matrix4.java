@@ -3,6 +3,7 @@ package dishcloth.engine.util.math;
 import org.lwjgl.BufferUtils;
 
 import java.nio.FloatBuffer;
+import java.rmi.MarshalException;
 
 /**
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -17,54 +18,74 @@ import java.nio.FloatBuffer;
 
 public class Matrix4 {
 
-	public static final Matrix4 IDENTITY = new Matrix4( 1f, 0f, 0f, 0f,
-	                                                    0f, 1f, 0f, 0f,
-	                                                    0f, 0f, 1f, 0f,
-	                                                    0f, 0f, 0f, 1f);
+	// [ 00, 01, 02, 03 ]       [ 0, 4,  8, 12 ]
+	// [ 10, 11, 12, 13 ] ---|\ [ 1, 5,  9, 13 ]
+	// [ 20, 21, 22, 23 ] ---|/ [ 2, 6, 10, 14 ]
+	// [ 30, 31, 32, 33 ]       [ 3, 7, 11, 15 ]
 
-	public float[] elements;
+	private float[] elements;
 
-	private Matrix4(float... elements) {
+	public Matrix4() {
+		elements = new float[16];
+	}
+
+	public Matrix4(float... elements) {
 		this.elements = elements;
 	}
 
-	public Matrix4() {
-		this.elements = new float[16];  // 4 x 4 = 16
+	public void setElement(int n, int m, float value) {
+		elements[getIndex( n, m )] = value;
 	}
 
-	public Matrix4(Matrix4 source) {
-		this.elements = source.elements;
+	public void setElement(int index, float value) {
+		elements[index] = value;
 	}
 
-	/**
-	 * Don't ask me how this works. Matrix4 multiplication is something from the dark side of magimatics.
-	 * PURE DARK MAGIC INFUSED WITH MATHEMATICSSSSSSS
-	 */
+	public float getElement(int n, int m) {
+		return elements[getIndex( n, m )];
+	}
+
+	public int getIndex(int n, int m) {
+		return n + m * 4;
+	}
+
 	public Matrix4 multiply(Matrix4 other) {
 		Matrix4 result = new Matrix4();
-		for (int x = 0; x < 4; x++) {
-			for (int y = 0; y < 4; y++) {
-				float sum = 0.0f;
-				for (int e = 0; e < 4; e++) {
-					sum += this.elements[x + e * 4] * other.elements[e + y * 4];
-				}
-				result.elements[x + y * 4] = sum;
+		for (int i = 0; i < 4; i++) {
+			for (int j = 0; j < 4; j++) {
+				result.setElement( i, j, multiplyEntry( this, other, i, j ) );
 			}
 		}
+
 		return result;
 	}
 
-	public void setElement(int i, float v) {
-		elements[i] = v;
-	}
+	private static float multiplyEntry(Matrix4 A, Matrix4 B, int i, int j) {
+		float sum = 0f;
+		for (int k = 0; k < 4; k++) {
+			sum += A.getElement( i, k ) * B.getElement( k, j );
+		}
 
-	public float getElement(int i) {
-		return elements[i];
+		return sum;
 	}
 
 	public FloatBuffer toFloatBuffer() {
 		FloatBuffer buff = BufferUtils.createFloatBuffer( 16 );
-		buff.put( elements ).flip();
+		for (int i = 0; i < 16; i++) {
+			buff.put( elements[i] );
+		}
+
+		buff.flip();
+
 		return buff;
+	}
+
+	public static Matrix4 identity() {
+		return new Matrix4(
+				1f, 0f, 0f, 0f,
+				0f, 1f, 0f, 0f,
+				0f, 0f, 1f, 0f,
+				0f, 0f, 0f, 1f
+		);
 	}
 }

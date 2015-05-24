@@ -46,23 +46,7 @@ public class Sprite {
 		this.frame = frame;
 	}
 
-	public Texture getTexture() {
-		return texture;
-	}
-
-	public int getTextureID() {
-		return texture.getGLTexID();
-	}
-
-	public int getnColumns() {
-		return nColumns;
-	}
-
-	public int getnRows() {
-		return nRows;
-	}
-
-	public void render(SpriteBatch spriteBatch, Point position, float angle, Color tint) {
+	public void render(SpriteBatch spriteBatch, Point position, float angle, Color tint, Point origin) {
 		float frameW = (float) texture.getWidth() / nColumns;
 		float frameH = (float) texture.getHeight() / nRows;
 
@@ -72,11 +56,15 @@ public class Sprite {
 		Rectangle sourceRectangle = new Rectangle( frameW * column, frameH * row, frameW, frameH );
 		Rectangle destinationRectangle = new Rectangle( position.x, position.y, frameW, frameH );
 
-		spriteBatch.queue( texture, destinationRectangle, sourceRectangle, angle, tint );
+		spriteBatch.queue( texture, destinationRectangle, sourceRectangle, angle, tint, origin );
+	}
+
+	public void render(SpriteBatch spriteBatch, Point position, float angle, Color tint) {
+		render( spriteBatch, position, angle, tint, new Point( 0f, 0f ) );
 	}
 
 	public void render(SpriteBatch spriteBatch, Point position, float angle) {
-		render( spriteBatch, position, angle, Color.WHITE );
+		render( spriteBatch, position, angle, Color.WHITE, new Point(0f, 0f) );
 	}
 
 	public void render(SpriteBatch spriteBatch, Point position) {

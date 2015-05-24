@@ -1,5 +1,7 @@
 package dishcloth.engine.util.math;
 
+import dishcloth.engine.util.geom.Point;
+
 /**
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * MatrixUtility.java
@@ -48,6 +50,20 @@ public class MatrixUtility {
 		translationMatrix.setElement( 12, x );
 		translationMatrix.setElement( 13, y );
 		translationMatrix.setElement( 14, z );
+
+		return translationMatrix;
+	}
+
+	public static Matrix4 createTranslation2D(float x, float y) {
+		Matrix4 translationMatrix = new Matrix4();
+
+		translationMatrix.setElement( 0, 1f );
+		translationMatrix.setElement( 5, 1f );
+		translationMatrix.setElement( 10, 1f );
+		translationMatrix.setElement( 15, 1f );
+
+		translationMatrix.setElement( 12, x );
+		translationMatrix.setElement( 13, y );
 
 		return translationMatrix;
 	}
@@ -115,7 +131,18 @@ public class MatrixUtility {
 		scalingMatrix.setElement( 0, x );
 		scalingMatrix.setElement( 5, y );
 		scalingMatrix.setElement( 10, z );
-		scalingMatrix.setElement( 15, 1 );
+		scalingMatrix.setElement( 15, 1f );
+
+		return scalingMatrix;
+	}
+
+	public static Matrix4 createScaling2D(float x, float y) {
+		Matrix4 scalingMatrix = new Matrix4();
+
+		scalingMatrix.setElement( 0, x );
+		scalingMatrix.setElement( 5, y );
+		scalingMatrix.setElement( 10, 1f );
+		scalingMatrix.setElement( 15, 1f );
 
 		return scalingMatrix;
 	}
