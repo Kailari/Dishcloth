@@ -2,6 +2,7 @@ package dishcloth.engine.rendering.render2d;
 
 
 import dishcloth.engine.rendering.textures.Texture;
+import dishcloth.engine.util.Color;
 import dishcloth.engine.util.geom.Point;
 import dishcloth.engine.util.geom.Rectangle;
 
@@ -21,6 +22,13 @@ public class Sprite {
 	private Texture texture;
 
 	private int nColumns, nRows, frame;
+
+	public Sprite(Texture texture, int nColumns, int nRows, int frame) {
+		this.texture = texture;
+		this.nColumns = nColumns;
+		this.nRows = nRows;
+		this.frame = frame;
+	}
 
 	public int getFrame() {
 		return frame;
@@ -54,26 +62,27 @@ public class Sprite {
 		return nRows;
 	}
 
-	public Sprite(Texture texture, int nColumns, int nRows, int frame) {
-		this.texture = texture;
-		this.nColumns = nColumns;
-		this.nRows = nRows;
-		this.frame = frame;
-	}
-
-	public void render(SpriteBatch spriteBatch, Point position, float angle) {
-
+	public void render(SpriteBatch spriteBatch, Point position, float angle, Color tint) {
 		float frameW = (float) texture.getWidth() / nColumns;
 		float frameH = (float) texture.getHeight() / nRows;
 
-		int row = (int)Math.floor( (float) frame / (float) nColumns );
+		int row = (int) Math.floor( (float) frame / (float) nColumns );
 		int column = frame % nColumns;
 
 		Rectangle sourceRectangle = new Rectangle( frameW * column, frameH * row, frameW, frameH );
 		Rectangle destinationRectangle = new Rectangle( position.x, position.y, frameW, frameH );
 
-		spriteBatch.queue( texture, destinationRectangle, sourceRectangle, angle );
+		spriteBatch.queue( texture, destinationRectangle, sourceRectangle, angle, tint );
 	}
+
+	public void render(SpriteBatch spriteBatch, Point position, float angle) {
+		render( spriteBatch, position, angle, Color.WHITE );
+	}
+
+	public void render(SpriteBatch spriteBatch, Point position) {
+		render( spriteBatch, position, 0f );
+	}
+
 
 	public void dispose() {
 		texture.dispose();

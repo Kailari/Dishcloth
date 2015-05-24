@@ -11,7 +11,9 @@ import dishcloth.engine.rendering.textures.Texture;
 import dishcloth.engine.rendering.vbo.VertexBufferObject;
 import dishcloth.engine.rendering.vbo.shapes.Polygon;
 import dishcloth.engine.rendering.vbo.shapes.Quad;
+import dishcloth.engine.util.Color;
 import dishcloth.engine.util.geom.Point;
+import dishcloth.engine.util.geom.Rectangle;
 import dishcloth.engine.util.logger.Debug;
 import dishcloth.engine.util.math.Matrix4;
 import dishcloth.engine.util.math.MatrixUtility;
@@ -67,8 +69,8 @@ public class DishclothGame extends AGame {
 
 		sprite.setFrame( Math.round( t ) );
 
-		position.x = (float) Math.cos( t ) * 1.75f;
-		position.y = (float) Math.sin( t ) * 1.75f;
+		position.x = (float) Math.cos( Math.toRadians( angle ) ) * 1.75f;
+		position.y = (float) Math.sin( Math.toRadians( angle ) ) * 1.75f;
 
 		angle = t * (360f / 10f);
 	}
@@ -83,7 +85,7 @@ public class DishclothGame extends AGame {
 
 		sprite2.render( spriteBatch, new Point( 0, 0 ), -angle );
 
-		sprite.render( spriteBatch, position, 0f );
+		sprite.render( spriteBatch, position, 0f, Color.GREEN );
 		sprite.render( spriteBatch, new Point( 0f, 0f ), angle );
 
 		spriteBatch.render( renderer );
