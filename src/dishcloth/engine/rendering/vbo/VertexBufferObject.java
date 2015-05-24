@@ -28,7 +28,7 @@ public class VertexBufferObject {
 	private int iboID;  // Indices
 	private int nIndices;
 
-	private int vaoID;  // Render info
+	private int vaoID;  // render info
 
 	public VertexBufferObject(Polygon p) {
 		this(p.getVertices(), p.getIndices());

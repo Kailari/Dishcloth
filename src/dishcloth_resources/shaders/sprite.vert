@@ -9,10 +9,12 @@ uniform mat4 mat_project;		// Projection
 uniform mat4 mat_view;			// Camera location
 uniform mat4 mat_modelview;		// Object's world location
 
+uniform vec4 subtexture;
+
 void main()
 {
 	// Apply projection and transformations
 	gl_Position = mat_project * mat_modelview * mat_view * vec4(position, 0.0, 1.0);
 
-	tCoord = uv;
+	tCoord = subtexture.xy + (uv * subtexture.zw);
 }

@@ -97,14 +97,6 @@ public class ShaderProgram {
 		}
 	}
 
-	public void bind() {
-		glUseProgram( programID );
-	}
-
-	public void unbind() {
-		glUseProgram( 0 );
-	}
-
 
 
 	/* ************************************************************************************************************** */
@@ -112,7 +104,7 @@ public class ShaderProgram {
 	/* ************************************************************************************************************** */
 
 	public void dispose() {
-		unbind();
+		glUseProgram( 0 );
 
 		glDetachShader( programID, vertID );
 		glDetachShader( programID, fragID );
@@ -175,5 +167,9 @@ public class ShaderProgram {
 
 	public void setUniformMat4(String name, Matrix4 mat) throws ShaderUniformException {
 		glUniformMatrix4fv( findUniformLocation( name ), false, mat.toFloatBuffer() );
+	}
+
+	public int getGLShaderID() {
+		return programID;
 	}
 }

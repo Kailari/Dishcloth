@@ -2,15 +2,22 @@ package dishcloth.game;
 
 import dishcloth.engine.AGame;
 import dishcloth.engine.exception.ShaderUniformException;
+import dishcloth.engine.rendering.IRenderer;
 import dishcloth.engine.rendering.Renderer;
+import dishcloth.engine.rendering.render2d.Sprite;
+import dishcloth.engine.rendering.render2d.SpriteBatch;
 import dishcloth.engine.rendering.shaders.ShaderProgram;
 import dishcloth.engine.rendering.textures.Texture;
 import dishcloth.engine.rendering.vbo.VertexBufferObject;
 import dishcloth.engine.rendering.vbo.shapes.Polygon;
 import dishcloth.engine.rendering.vbo.shapes.Quad;
+import dishcloth.engine.util.geom.Point;
 import dishcloth.engine.util.logger.Debug;
 import dishcloth.engine.util.math.Matrix4;
 import dishcloth.engine.util.math.MatrixUtility;
+
+import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL20.glUseProgram;
 
 /**
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -25,45 +32,34 @@ import dishcloth.engine.util.math.MatrixUtility;
 
 public class DishclothGame extends AGame {
 
-	ShaderProgram shaderProgram;
-	Texture uvGrid;
-	VertexBufferObject vbo;
-
-	Matrix4 projectionMatrix;
-	Matrix4 viewMatrix;
+	SpriteBatch spriteBatch;
+	Sprite sprite;
 
 	@Override
 	public void initialize() {
 
 		float halfW = screenWidth / 2f;
 		float halfH = screenHeight / 2f;
-		float aspectRatio = (float)screenHeight / (float)screenWidth;
 
-		projectionMatrix = MatrixUtility.createOrthographicViewMatrix( -1.0f, 1.0f,
-		                                                               -1.0f * aspectRatio, 1.0f * aspectRatio,
+		projectionMatrix = MatrixUtility.createOrthographicViewMatrix( -halfW, halfW,
+		                                                               -halfH, halfH,
 		                                                               -1.0f, 1.0f );
 		viewMatrix = new Matrix4( Matrix4.IDENTITY );
 	}
 
 	@Override
 	public void loadContent() {
-		shaderProgram = new ShaderProgram( "default", "default" );
-		uvGrid = new Texture( "/textures/debug/uv_checker.png" );
-
-		Polygon p = new Quad( 1f, 1f );
-
-		vbo = new VertexBufferObject( p );
-
+		spriteBatch = new SpriteBatch( new ShaderProgram( "sprite", "default" ) );
+		sprite = new Sprite( new Texture( "/textures/debug/uv_checker.png" ),
+		                     8, 8, 0 );
 	}
 
 	float t;
 	@Override
 	public void update(float delta) {
-
 		t += delta;
-		viewMatrix = MatrixUtility.createTranslation( (float)Math.sin( t ) * 0.5f, 0f, 0f )
-				.multiply( MatrixUtility.createRotationZ( t * 45f ) );
 
+		sprite.setFrame( Math.round( t ) );
 	}
 
 	@Override
@@ -72,34 +68,26 @@ public class DishclothGame extends AGame {
 	}
 
 	@Override
-	public void render(Renderer renderer) {
+	public void render(IRenderer renderer) {
 
-		shaderProgram.bind();
-		uvGrid.bind();
+		sprite.render( spriteBatch, new Point( 0f, 0f ) );
 
-		try {
-			shaderProgram.setUniformMat4( "mat_project", projectionMatrix );
-			shaderProgram.setUniformMat4( "mat_view", viewMatrix );
-		} catch (ShaderUniformException e) {
-			Debug.logException( e, this );
-		}
-
-		vbo.render();
-
-		uvGrid.unbind();
-		shaderProgram.unbind();
+		spriteBatch.render( renderer );
 	}
 
 	@Override
 	public void unloadContent() {
-		shaderProgram.dispose();
-		uvGrid.dispose();
-
-		vbo.dispose();
+		sprite.dispose();
+		spriteBatch.dispose();
 	}
 
 	@Override
 	public void shutdown() {
 
+	}
+
+	@Override
+	protected IRenderer createRenderer() {
+		return new Renderer();
 	}
 }

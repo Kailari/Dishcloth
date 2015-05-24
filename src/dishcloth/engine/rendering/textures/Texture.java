@@ -7,6 +7,7 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.nio.IntBuffer;
+import java.util.HashMap;
 
 import static org.lwjgl.opengl.GL11.*;
 
@@ -22,6 +23,15 @@ import static org.lwjgl.opengl.GL11.*;
  */
 
 public class Texture {
+
+	private static HashMap<Integer, Texture> textureCache = new HashMap<>();
+
+	public static Texture findByID(int textureID) {
+		if (textureCache.containsKey( textureID )) {
+			return textureCache.get( textureID );
+		}
+		return null;
+	}
 
 	private int width, height;
 	private int textureID;
@@ -47,6 +57,8 @@ public class Texture {
 
 		// Unbind
 		glBindTexture( GL_TEXTURE_2D, 0 );
+
+		textureCache.put( textureID, this );
 	}
 
 	private int[] readRawPixelData(String filename) {
@@ -94,6 +106,21 @@ public class Texture {
 
 	public void dispose() {
 		unbind();
+
+		textureCache.remove( textureID );
+
 		glDeleteTextures( textureID );
+	}
+
+	public int getGLTexID() {
+		return textureID;
+	}
+
+	public int getWidth() {
+		return width;
+	}
+
+	public int getHeight() {
+		return height;
 	}
 }

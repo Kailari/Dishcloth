@@ -7,7 +7,9 @@ import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.system.MemoryUtil.*;
 
 import dishcloth.engine.exception.GameInitializationException;
+import dishcloth.engine.rendering.IRenderer;
 import dishcloth.engine.util.logger.Debug;
+import dishcloth.engine.util.math.Matrix4;
 import org.lwjgl.opengl.GLContext;
 
 /**
@@ -28,9 +30,13 @@ public abstract class AGame implements IGame {
 
 	private long windowID;
 	private boolean windowShouldExit;
+	private IRenderer renderer;
 
 	private float simulationTimePool, timestep, currentTime, oldTime, delta;
 
+	// XXX: Just temporarily here
+	public static Matrix4 projectionMatrix;
+	public static Matrix4 viewMatrix;
 
 	@Override
 	public final void run() {
@@ -91,6 +97,8 @@ public abstract class AGame implements IGame {
 		try {
 			initWindow();
 
+			renderer = createRenderer();
+
 			// Call initialize
 			initialize();
 		} catch (GameInitializationException e) {
@@ -100,6 +108,8 @@ public abstract class AGame implements IGame {
 		}
 
 	}
+
+	protected abstract IRenderer createRenderer();
 
 	private final void initWindow() throws GameInitializationException {
 
@@ -170,7 +180,7 @@ public abstract class AGame implements IGame {
 		glClear( GL_COLOR_BUFFER_BIT );
 
 		// Call render()
-		render( null );
+		render( renderer );
 
 		// Swap buffers
 		glfwSwapBuffers( windowID );

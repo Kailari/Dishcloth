@@ -1,5 +1,9 @@
 package dishcloth.engine.rendering;
 
+import dishcloth.engine.rendering.shaders.ShaderProgram;
+import dishcloth.engine.rendering.textures.Texture;
+import dishcloth.engine.rendering.vbo.VertexBufferObject;
+
 /**
  * IRenderer.java
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -13,8 +17,19 @@ package dishcloth.engine.rendering;
 
 public interface IRenderer {
 
-    void Initialize();
+	void bindShader(ShaderProgram program);
 
-    void RenderTexture();
+	void bindShader(int programID);
 
+	int getBoundShaderID();
+
+	void bindTexture(Texture texture);
+
+	void bindTexture(int textureID);
+
+	int getBoundTextureID();
+
+	void renderVBOTextured(Texture texture, VertexBufferObject vbo);
+
+	void renderVBO(VertexBufferObject vbo);
 }

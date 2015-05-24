@@ -1,5 +1,6 @@
 package dishcloth.engine;
 
+import dishcloth.engine.rendering.IRenderer;
 import dishcloth.engine.rendering.Renderer;
 
 /***********************************************************************************************************************
@@ -63,10 +64,10 @@ public interface IGame {
     /**
      * Do all your rendering here.
      */
-    void render(Renderer renderer);
+    void render(IRenderer renderer);
 
     /**
-     * Internal render call. Calls Render()
+     * Internal render call. Calls render()
      */
     void doRender();
 

@@ -108,4 +108,15 @@ public class MatrixUtility {
 
 		return rotationMatrix;
 	}
+
+	public static Matrix4 createScaling(float x, float y, float z) {
+		Matrix4 scalingMatrix = new Matrix4();
+
+		scalingMatrix.setElement( 0, x );
+		scalingMatrix.setElement( 5, y );
+		scalingMatrix.setElement( 10, z );
+		scalingMatrix.setElement( 15, 1 );
+
+		return scalingMatrix;
+	}
 }

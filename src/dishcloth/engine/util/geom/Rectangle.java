@@ -49,10 +49,10 @@ public class Rectangle {
 	}
 
 	public boolean containsPoint(Point point) {
-		return point.x > x //
-				&& point.x < x + w //
-				&& point.y > y //
-				&& point.y < y + h; //
+		return point.x > x
+				&& point.x < x + w
+				&& point.y > y
+				&& point.y < y + h;
 	}
 
 	public boolean overlap(Rectangle r) {
@@ -65,7 +65,4 @@ public class Rectangle {
 
 		return null;
 	}
-
-
-	// TODO: Methods for "is point in rectangle", "Rectangles intersect", "rectangles overlap", etc.
 }
