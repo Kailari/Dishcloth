@@ -13,9 +13,9 @@ package dishcloth.engine.util.geom;
 
 public class Rectangle {
 
-	public double x, y, w, h;
+	public float x, y, w, h;
 
-	public Rectangle(double x, double y, double w, double h) {
+	public Rectangle(float x, float y, float w, float h) {
 		this.x = x;
 		this.y = y;
 		this.w = w;
