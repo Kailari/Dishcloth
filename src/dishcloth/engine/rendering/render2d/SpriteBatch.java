@@ -41,15 +41,15 @@ public class SpriteBatch implements IRenderable {
 	public SpriteBatch(ShaderProgram shader) {
 		this.renderQueue = new HashMap<>();
 		this.renderShader = shader;
-		this.dummyQuad = new VertexBufferObject( new Quad(new Rectangle( 0f, 0f, 1f, 1f )) );
+		this.dummyQuad = new VertexBufferObject( new Quad(1f, 1f) );
 	}
 
-	public void queue(Texture texture, Rectangle destination, Rectangle source) {
+	public void queue(Texture texture, Rectangle destination, Rectangle source, float angle) {
 		if (!renderQueue.containsKey( texture.getGLTexID() )) {
 			renderQueue.put( texture.getGLTexID(), new ArrayList<>() );
 		}
 
-		renderQueue.get( texture.getGLTexID() ).add( new TextureRenderInfo( source, destination, texture ) );
+		renderQueue.get( texture.getGLTexID() ).add( new TextureRenderInfo( source, destination, angle, texture ) );
 	}
 
 	@Override
@@ -73,6 +73,7 @@ public class SpriteBatch implements IRenderable {
 				for (TextureRenderInfo sInfo : entry.getValue()) {
 
 					transform = MatrixUtility.createScaling( sInfo.dest.w, sInfo.dest.h, 1f )
+							.multiply( MatrixUtility.createRotationZ( sInfo.angle ) )
 							.multiply( MatrixUtility.createTranslation( sInfo.dest.x, sInfo.dest.y, 0f ) );
 
 					renderShader.setUniformMat4( "mat_project", AGame.projectionMatrix );
@@ -99,11 +100,14 @@ public class SpriteBatch implements IRenderable {
 	private class TextureRenderInfo {
 		Rectangle dest;
 		Texture texture;
+		float angle;
+
 		float u, v, uSize, vSize;
 
-		public TextureRenderInfo(Rectangle source, Rectangle dest, Texture texture) {
+		public TextureRenderInfo(Rectangle source, Rectangle dest, float angle, Texture texture) {
 			this.dest = dest;
 			this.texture = texture;
+			this.angle = angle;
 
 			this.uSize = source.w / texture.getWidth();
 			this.vSize = source.h / texture.getHeight();

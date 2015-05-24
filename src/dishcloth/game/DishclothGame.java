@@ -34,6 +34,10 @@ public class DishclothGame extends AGame {
 
 	SpriteBatch spriteBatch;
 	Sprite sprite;
+	Sprite sprite2;
+
+	Point position;
+	float t, angle;
 
 	@Override
 	public void initialize() {
@@ -45,21 +49,28 @@ public class DishclothGame extends AGame {
 		                                                               -halfH, halfH,
 		                                                               -1.0f, 1.0f );
 		viewMatrix = new Matrix4( Matrix4.IDENTITY );
+
+		position = new Point( 0, 0 );
 	}
 
 	@Override
 	public void loadContent() {
 		spriteBatch = new SpriteBatch( new ShaderProgram( "sprite", "default" ) );
-		sprite = new Sprite( new Texture( "/textures/debug/uv_checker.png" ),
-		                     8, 8, 0 );
+		Texture uvGrid = new Texture( "/textures/debug/uv_checker.png" );
+		sprite = new Sprite( uvGrid, 8, 8, 0 );
+		sprite2 = new Sprite( uvGrid, 1, 1, 0 );
 	}
 
-	float t;
 	@Override
 	public void update(float delta) {
 		t += delta;
 
 		sprite.setFrame( Math.round( t ) );
+
+		position.x = (float) Math.cos( t ) * 1.75f;
+		position.y = (float) Math.sin( t ) * 1.75f;
+
+		angle = t * (360f / 10f);
 	}
 
 	@Override
@@ -70,14 +81,17 @@ public class DishclothGame extends AGame {
 	@Override
 	public void render(IRenderer renderer) {
 
-		sprite.render( spriteBatch, new Point( 0f, 0f ) );
+		sprite2.render( spriteBatch, new Point( 0, 0 ), -angle );
+
+		sprite.render( spriteBatch, position, 0f );
+		sprite.render( spriteBatch, new Point( 0f, 0f ), angle );
 
 		spriteBatch.render( renderer );
 	}
 
 	@Override
 	public void unloadContent() {
-		sprite.dispose();
+		sprite.dispose();   // Both sprites use same texture, dispose only one of them
 		spriteBatch.dispose();
 	}
 

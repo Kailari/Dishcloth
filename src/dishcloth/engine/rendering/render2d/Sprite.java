@@ -61,7 +61,7 @@ public class Sprite {
 		this.frame = frame;
 	}
 
-	public void render(SpriteBatch spriteBatch, Point position) {
+	public void render(SpriteBatch spriteBatch, Point position, float angle) {
 
 		float frameW = (float) texture.getWidth() / nColumns;
 		float frameH = (float) texture.getHeight() / nRows;
@@ -72,7 +72,7 @@ public class Sprite {
 		Rectangle sourceRectangle = new Rectangle( frameW * column, frameH * row, frameW, frameH );
 		Rectangle destinationRectangle = new Rectangle( position.x, position.y, frameW, frameH );
 
-		spriteBatch.queue( texture, destinationRectangle, sourceRectangle );
+		spriteBatch.queue( texture, destinationRectangle, sourceRectangle, angle );
 	}
 
 	public void dispose() {
