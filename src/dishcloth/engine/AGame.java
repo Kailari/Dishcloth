@@ -7,7 +7,10 @@ import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.system.MemoryUtil.*;
 
 import dishcloth.engine.exception.GameInitializationException;
+import dishcloth.engine.rendering.IRenderer;
 import dishcloth.engine.util.logger.Debug;
+import dishcloth.engine.util.math.Matrix4;
+import dishcloth.engine.util.time.Time;
 import org.lwjgl.opengl.GLContext;
 
 /**
@@ -24,22 +27,27 @@ import org.lwjgl.opengl.GLContext;
 
 public abstract class AGame implements IGame {
 
+	// XXX: Matrices are just temporarily here
+	public static Matrix4 projectionMatrix;
+	public static Matrix4 viewMatrix;
+	protected int screenWidth, screenHeight;
 	private long windowID;
 	private boolean windowShouldExit;
+	private IRenderer renderer;
+	private Timing timing;
 
-	private float simulationTimePool, timestep, currentTime, oldTime, delta;
-
+	protected boolean doUpdateTime = true;
 
 	@Override
 	public final void run() {
 
-		System.out.println("\n\n\n");
+		System.out.println( "\n\n\n" );
 		System.out.println( "||XX||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||XX||" );
 		System.out.println( "||==|+----------------------------------------------------------------------------------------+|==||" );
 		System.out.println( "||==||                                      Running game...                                   ||==||" );
 		System.out.println( "||==|+----------------------------------------------------------------------------------------+|==||" );
 		System.out.println( "||XX||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||XX||" );
-		System.out.println( "\n\n\n" );
+		System.out.println( "\n" );
 
 		Debug.log( "Initializing...", this );
 
@@ -50,26 +58,33 @@ public abstract class AGame implements IGame {
 		doLoadContent();
 		Debug.logOK( "Content loading successful!", this );
 
-		float delta = 0.0f;
-		timestep = 1f / 60f;
+		timing = new Timing();
 
-		System.out.println( "\n\n\n" );
+		timing.timestep = 1f / 60f;
+
+		System.out.println( "\n" );
 		Debug.logNote( "Entering main loop...", this );
 		while (glfwWindowShouldClose( windowID ) != GL_TRUE
 				&& !windowShouldExit) {
 
+			timing.tick++;
+
 			// Update time
-			oldTime = currentTime;
-			currentTime = (float) glfwGetTime();
+			float oldTime = timing.currentTime;
+			timing.currentTime = (float) glfwGetTime();
 
 			// Calculate delta
-			delta = currentTime - oldTime;
+			timing.delta = timing.currentTime - oldTime;
 
 			doUpdate();
 
 			doFixedUpdate();
 
 			doRender();
+
+			if (doUpdateTime) {
+				Time.update(timing);
+			}
 		}
 
 		Debug.logNote( "Main loop ended...", this );
@@ -81,13 +96,16 @@ public abstract class AGame implements IGame {
 
 		Debug.logWarn( "Shutting down...", this );
 		doShutdown();
-	}
 
+		Debug.logOK( "I'll be back...", this );
+	}
 
 	@Override
 	public final void doInitialize() {
 		try {
 			initWindow();
+
+			renderer = createRenderer();
 
 			// Call initialize
 			initialize();
@@ -99,6 +117,8 @@ public abstract class AGame implements IGame {
 
 	}
 
+	protected abstract IRenderer createRenderer();
+
 	private final void initWindow() throws GameInitializationException {
 
 		// Init GLFW - if glfwInit succeeds, it returns GL_TRUE
@@ -106,6 +126,8 @@ public abstract class AGame implements IGame {
 			throw new GameInitializationException( "glfwInit() failed!" );
 		}
 
+		screenWidth = 800;
+		screenHeight = 600;
 
 		// Initialize window
 
@@ -113,7 +135,7 @@ public abstract class AGame implements IGame {
 		glfwWindowHint( GLFW_RESIZABLE, GL_FALSE );
 
 		// Create window handle
-		windowID = glfwCreateWindow( 800, 600, "Dishcloth", NULL, NULL );
+		windowID = glfwCreateWindow( screenWidth, screenHeight, "Dishcloth", NULL, NULL );
 
 		// Validate windowID
 		if (windowID == NULL) {
@@ -133,7 +155,6 @@ public abstract class AGame implements IGame {
 		loadContent();
 	}
 
-
 	@Override
 	public final void doUpdate() {
 
@@ -141,30 +162,37 @@ public abstract class AGame implements IGame {
 		glfwPollEvents();
 
 		// Call update
-		update( delta );
+		update( timing.delta );
 	}
 
 	@Override
 	public final void doFixedUpdate() {
 
-		simulationTimePool += delta;
+		timing.simulationTimePool += timing.delta;
 
-		while (simulationTimePool >= timestep) {
+		while (timing.simulationTimePool >= timing.timestep) {
 			// TODO: Store old state
 
-			fixedUpdate();
+			timing.fixedTick++;
+			timing.simulationTimePool -= timing.timestep;
 
-			simulationTimePool -= timestep;
+			if (doUpdateTime) {
+				Time.update(timing);
+			}
+
+			fixedUpdate();
 		}
 
-		float t = simulationTimePool / timestep;
+		float t = timing.simulationTimePool / timing.timestep;
 		// TODO: Interpolate world state using 't'
 	}
 
 	@Override
 	public final void doRender() {
+		glClear( GL_COLOR_BUFFER_BIT );
+
 		// Call render()
-		render( null );
+		render( renderer );
 
 		// Swap buffers
 		glfwSwapBuffers( windowID );
@@ -187,5 +215,34 @@ public abstract class AGame implements IGame {
 
 		// Terminate glfw
 		glfwTerminate();
+	}
+
+	public class Timing {
+		private float simulationTimePool, timestep, currentTime, delta;
+		private int tick, fixedTick;
+
+		public float getSimulationTimePool() {
+			return simulationTimePool;
+		}
+
+		public float getTimestep() {
+			return timestep;
+		}
+
+		public float getCurrentTime() {
+			return currentTime;
+		}
+
+		public float getDelta() {
+			return delta;
+		}
+
+		public int getTick() {
+			return tick;
+		}
+
+		public int getFixedTick() {
+			return fixedTick;
+		}
 	}
 }

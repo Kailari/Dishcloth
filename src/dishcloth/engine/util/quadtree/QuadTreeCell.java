@@ -193,7 +193,7 @@ class QuadTreeCell<T extends IQuadTreeDataObject> {
 
 		children = new ArrayList<>();
 
-		double halfSize = bounds.w / 2d;
+		float halfSize = bounds.w / 2f;
 		Point dataPos = data.getPosition();
 		boolean dataAdded = false;
 

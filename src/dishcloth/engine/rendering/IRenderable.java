@@ -13,5 +13,5 @@ import dishcloth.engine.rendering.IRenderer;
  * Created by ASDSausage on 14.5.2015
  */
 public interface IRenderable {
-    void Render(IRenderer renderer);
+    void render(IRenderer renderer);
 }

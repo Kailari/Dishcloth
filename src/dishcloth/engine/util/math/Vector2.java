@@ -1,4 +1,6 @@
-package dishcloth.engine.util;
+package dishcloth.engine.util.math;
+
+import dishcloth.engine.util.geom.Point;
 
 /**
  * ********************************************************************************************************************
@@ -11,7 +13,7 @@ package dishcloth.engine.util;
  * Created by ASDSausage on 14.5.2015
  */
 
-public class Vector2 {
+public class Vector2 extends Point {
 
     // CONSTANTS -->
 
@@ -24,16 +26,13 @@ public class Vector2 {
     public static final Vector2 DOWN    = new Vector2( 0f,-1f);
 
     // <-- CONSTANTS
-
-    public double x;
-    public double y;
     
-    public double magnitude() {
-        return Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
+    public float magnitude() {
+        return (float)Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
     }
 
 
-    public Vector2(double x, double y) {
+    public Vector2(float x, float y) {
         this.x = x;
         this.y = y;
     }
@@ -91,13 +90,13 @@ public class Vector2 {
      * @param scalar    scalar multiplier
      * @return  this multiplied by the scalar
      */
-    public Vector2 multiply(double scalar) {
+    public Vector2 multiply(float scalar) {
         x *= scalar;
         y *= scalar;
         return this;
     }
 
-    public static Vector2 multiply(Vector2 v0, double scalar) {
+    public static Vector2 multiply(Vector2 v0, float scalar) {
         return new Vector2( v0.x * scalar, v0.y * scalar );
     }
 
@@ -106,7 +105,7 @@ public class Vector2 {
      * @param vec   the other vector
      * @return      dot product
      */
-    public double dot(Vector2 vec) {
+    public float dot(Vector2 vec) {
         return x * vec.x + y * vec.y;
     }
 
@@ -115,15 +114,15 @@ public class Vector2 {
      * @param vec   the other vector
      * @return      the determinant
      */
-    public double determinant(Vector2 vec) {
+    public float determinant(Vector2 vec) {
         return x * vec.y - y * vec.x;
     }
 
-    public double angleTo(Vector2 vec) {
-        return Math.toDegrees( Math.atan2( this.dot(vec), this.determinant(vec)) );
+    public float angleTo(Vector2 vec) {
+        return (float) Math.toDegrees( Math.atan2( this.dot(vec), this.determinant(vec)) );
     }
 
-    public static Vector2 lerp(Vector2 v0, Vector2 v1, double t) {
+    public static Vector2 lerp(Vector2 v0, Vector2 v1, float t) {
         return Vector2.multiply(v0, 1 - t).add(Vector2.multiply(v1, t));
     }
 }

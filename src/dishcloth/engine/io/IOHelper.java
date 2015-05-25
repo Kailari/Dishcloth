@@ -2,6 +2,10 @@ package dishcloth.engine.io;
 
 import dishcloth.engine.util.logger.Debug;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+
 /**
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * IOHelper.java
@@ -15,18 +19,34 @@ import dishcloth.engine.util.logger.Debug;
 
 public class IOHelper {
 
-	public static String readFromFile(String filename) {
+	public static final String RES_PATH = "/dishcloth_resources/";
+
+	public static InputStream createInputStream(String filename) {
+		return IOHelper.class.getResourceAsStream( RES_PATH + filename );
+	}
+
+	public static String readLinesFromFile(String filename) {
+
+		// Remove slashes from the start
+		if (filename.startsWith( "/" ) || filename.startsWith( "\\" )) {
+			filename = filename.substring( 1 );
+		}
+
 
 		StringBuilder source = new StringBuilder();
-
 		try {
+			BufferedReader reader = new BufferedReader(
+					new InputStreamReader( createInputStream( filename ) ) );
 
-		}
-		catch (Exception e) {
+			String line;
+			while ((line = reader.readLine()) != null) {
+				source.append( line ).append( "\n" );
+			}
+
+		} catch (Exception e) {
 			Debug.logException( e, "IOHelper" );
 		}
 
 		return source.toString();
 	}
-
 }

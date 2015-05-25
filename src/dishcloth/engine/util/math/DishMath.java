@@ -1,4 +1,4 @@
-package dishcloth.engine.util;
+package dishcloth.engine.util.math;
 
 import java.text.DecimalFormat;
 
@@ -10,7 +10,7 @@ import java.text.DecimalFormat;
 public class DishMath {
 
 	private static final double THRESHOLD = 0.001; // 10^-3
-	private static final DecimalFormat df = new DecimalFormat( "#.###" );
+	private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat( "#.###" );
 
 
 	private DishMath() {}
@@ -69,41 +69,13 @@ public class DishMath {
 
 
 	/**
-	 * Round a double to integer
-	 */
-	public static int round(double d) {
-		int sign = sign( d );
-		d = Math.abs( d );
-		double delta = Math.abs( d % 1 ); // 0 < delta < 1
-
-		if (delta >= 0.5) {
-			return sign * ((int) (Math.ceil( d )));
-		} else {
-			return sign * ((int) (Math.floor( d )));
-		}
-	}
-
-
-	/**
-	 * Returns the sign of the number
-	 *
-	 * @return -1 if d < 0 <br>
-	 * 1 if d >= 0
-	 */
-	public static int sign(double d) {
-		if (d < 0) {
-			return -1;
-		} else {
-			return 1;
-		}
-	}
-
-	/**
 	 * Cuts some excess decimals off the double
 	 */
 
 	public static String cutDecimals(double d) {
-		return df.format( d );
+		return DECIMAL_FORMAT.format( d );
 	}
+
+
 
 }

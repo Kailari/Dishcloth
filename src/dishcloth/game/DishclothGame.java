@@ -1,8 +1,25 @@
 package dishcloth.game;
 
 import dishcloth.engine.AGame;
+import dishcloth.engine.exception.ShaderUniformException;
+import dishcloth.engine.rendering.IRenderer;
 import dishcloth.engine.rendering.Renderer;
+import dishcloth.engine.rendering.render2d.Sprite;
+import dishcloth.engine.rendering.render2d.SpriteBatch;
+import dishcloth.engine.rendering.shaders.ShaderProgram;
+import dishcloth.engine.rendering.textures.Texture;
+import dishcloth.engine.rendering.vbo.VertexBufferObject;
+import dishcloth.engine.rendering.vbo.shapes.Polygon;
+import dishcloth.engine.rendering.vbo.shapes.Quad;
+import dishcloth.engine.util.Color;
+import dishcloth.engine.util.geom.Point;
+import dishcloth.engine.util.geom.Rectangle;
 import dishcloth.engine.util.logger.Debug;
+import dishcloth.engine.util.math.Matrix4;
+import dishcloth.engine.util.math.MatrixUtility;
+
+import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL20.glUseProgram;
 
 /**
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -17,21 +34,49 @@ import dishcloth.engine.util.logger.Debug;
 
 public class DishclothGame extends AGame {
 
+	SpriteBatch spriteBatch;
+	Sprite sprite;
+	Sprite sprite2;
+	Sprite overlay;
+
+	Point position;
+	float t, angle;
+
 	@Override
 	public void initialize() {
 
-		Debug.logOK( "OK.", this );
+		float halfW = screenWidth / 2f;
+		float halfH = screenHeight / 2f;
 
+		projectionMatrix = MatrixUtility.createOrthographicViewMatrix( -halfW, halfW,
+		                                                               -halfH, halfH,
+		                                                               -1.0f, 1.0f );
+		viewMatrix = Matrix4.identity();
+
+		position = new Point( 0, 0 );
 	}
 
 	@Override
 	public void loadContent() {
+		spriteBatch = new SpriteBatch( new ShaderProgram( "sprite", "default" ) );
 
+		Texture uvGrid = new Texture( "/textures/debug/uv_checker.png" );
+		sprite = new Sprite( uvGrid, 8, 8, 0 );
+		sprite2 = new Sprite( uvGrid, 1, 1, 0 );
+
+		overlay = new Sprite( new Texture( "/textures/debug/800x600.png" ), 1, 1, 0);
 	}
 
 	@Override
 	public void update(float delta) {
+		t += delta;
 
+		sprite.setFrame( Math.round( t ) );
+
+		position.x = (float) Math.cos( Math.toRadians( angle ) ) * 200f;
+		position.y = (float) Math.sin( Math.toRadians( angle ) ) * 200f;
+
+		angle = t * (360f / 10f);
 	}
 
 	@Override
@@ -40,8 +85,27 @@ public class DishclothGame extends AGame {
 	}
 
 	@Override
-	public void render(Renderer renderer) {
+	public void render(IRenderer renderer) {
 
+		sprite2.render( spriteBatch, new Point( -512f, 512f ), -angle, Color.WHITE, new Point( 512f, -512f ) );
+
+		sprite.render( spriteBatch, new Point(-64 + position.x, 64 + position.y), 0f,
+		               Color.CYAN, new Point( 64f, -64f ) );
+		sprite.render( spriteBatch, new Point(-64 - position.x, 64 - position.y), -angle,
+		               Color.GREEN, new Point( 64f, -64f ) );
+
+		sprite.render( spriteBatch, new Point( -64f, 64f ), angle, Color.WHITE, new Point( 64f, -64f ) );
+
+		overlay.render( spriteBatch, new Point( -400f, 300 ), 0f, Color.WHITE, new Point(400, -300));
+
+		spriteBatch.render( renderer );
+	}
+
+	@Override
+	public void unloadContent() {
+		sprite.dispose();   // Both sprites use the same texture, dispose only one of them
+		overlay.dispose();
+		spriteBatch.dispose();
 	}
 
 	@Override
@@ -50,7 +114,7 @@ public class DishclothGame extends AGame {
 	}
 
 	@Override
-	public void unloadContent() {
-
+	protected IRenderer createRenderer() {
+		return new Renderer();
 	}
 }

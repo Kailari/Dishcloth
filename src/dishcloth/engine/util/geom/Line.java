@@ -1,6 +1,6 @@
 package dishcloth.engine.util.geom;
 
-import dishcloth.engine.util.DishMath;
+import dishcloth.engine.util.math.DishMath;
 
 /**
  * Created by Lassi on 21.5.2015.
@@ -16,33 +16,33 @@ public class Line {
 		this.p2 = p2;
 	}
 
-	public Line(Point p1, double slope) {
+	/**
+	 * Returns the slope of the line
+	 *
+	 * @return NaN if line is vertical, 0 if line is horizontal. Otherwise returns the slope
+	 */
+	public float slope() {
+		if (DishMath.approxSame( p1.x, p2.x )) return Float.NaN; // vertical line
+		if (DishMath.approxSame( p1.y, p2.y )) return 0.0f; // horizontal line
+
+		return (p2.y - p1.y) / (p2.x - p1.x);
+	}
+	
+	public Line(Point p1, float slope) {
 		this.p1 = p1;
 		if (Double.isNaN( slope )) {
 			this.p2 = new Point( p1.x, p1.y + 1 );
 		} else {
 			this.p2 = new Point( p1.x + slope, p1.y + 1 );
 		}
-
-	}
-
-	/**
-	 * Returns the slope of the line
-	 *
-	 * @return NaN if line is vertical, 0 if line is horizontal. Otherwise returns the slope
-	 */
-	public double slope() {
-		if (DishMath.approxSame( p1.x, p2.x )) return Double.NaN; // vertical line
-		if (DishMath.approxSame( p1.y, p2.y )) return 0.0; // horizontal line
-
-		return (p2.y - p1.y) / (p2.x - p1.x);
+		
 	}
 
 	/**
 	 * @return point where two lines meet. If these two lines are parallel, result will be null
 	 */
 	public Point intersection(Line l) {
-		if (Double.isNaN( slope() ) && Double.isNaN( l.slope() )) return null;
+		if (Float.isNaN( slope() ) && Float.isNaN( l.slope() )) return null;
 		if (DishMath.approxSame( slope(), l.slope() )) return null;
 
 		/*
@@ -53,8 +53,8 @@ public class Line {
 		 * y=x*k1+c1
 		 */
 
-		double x = (l.getConstant() - getConstant()) / (slope() - l.slope());
-		double y = x * slope() + getConstant();
+		float x = (l.getConstant() - getConstant()) / (slope() - l.slope());
+		float y = x * slope() + getConstant();
 
 		Point p = new Point( x, y );
 		return p;
@@ -65,13 +65,13 @@ public class Line {
 	 *
 	 * @return NaN if the line is horizontal
 	 */
-	public double getConstant() {
+	public float getConstant() {
 		/*
 		 * y-y0=k(x-x0)
 		 * y=k*x-k*x0+y0
 		 * => y=k*x+c, c=y0-k*x0
 		 */
-		if (Double.isNaN( slope() ) && DishMath.approxSame( p1.x, 0 )) return Double.NaN;
+		if (Double.isNaN( slope() ) && DishMath.approxSame( p1.x, 0 )) return Float.NaN;
 		if (DishMath.approxSame( slope(), 0 )) return p1.y;
 
 		return p1.y - slope() * p1.x;
@@ -83,7 +83,7 @@ public class Line {
 		if (DishMath.approxSame( slope(), 0 )) return "Line: y=" + getConstant();
 
 		String s = "Line: y=" + DishMath.cutDecimals( slope() ) + "*x";
-		double c = getConstant();
+		float c = getConstant();
 		if (DishMath.approxSame( c, 0 )) {
 			return s; // return y=k*x (without +c)
 		} else if (c > 0) {

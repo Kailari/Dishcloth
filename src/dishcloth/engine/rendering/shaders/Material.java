@@ -1,23 +1,16 @@
-package dishcloth.engine.rendering;
+package dishcloth.engine.rendering.shaders;
 
 /**
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- * Sprite.java
+ * Material.java
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * <p>
- * TODO: Description
+ * Material wraps a shader to a bit more easy-to-use form.
  * <p>
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * Created by ASDSausage on 21.5.2015
  */
 
-public class Sprite implements IRenderable {
-	private Texture atlas;
+public class Material {
 
-	private int nRows, nColumns, frameW, frameH;
-
-	@Override
-	public void Render(IRenderer renderer) {
-
-	}
 }
