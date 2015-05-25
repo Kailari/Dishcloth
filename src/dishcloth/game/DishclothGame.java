@@ -4,6 +4,7 @@ import dishcloth.engine.AGame;
 import dishcloth.engine.exception.ShaderUniformException;
 import dishcloth.engine.rendering.IRenderer;
 import dishcloth.engine.rendering.Renderer;
+import dishcloth.engine.rendering.render2d.Anchor;
 import dishcloth.engine.rendering.render2d.Sprite;
 import dishcloth.engine.rendering.render2d.SpriteBatch;
 import dishcloth.engine.rendering.shaders.ShaderProgram;
@@ -61,10 +62,10 @@ public class DishclothGame extends AGame {
 		spriteBatch = new SpriteBatch( new ShaderProgram( "sprite", "default" ) );
 
 		Texture uvGrid = new Texture( "/textures/debug/uv_checker.png" );
-		sprite = new Sprite( uvGrid, 8, 8, 0 );
+		sprite = new Sprite( uvGrid, 8, 8, 0, Anchor.CENTER );
 		sprite2 = new Sprite( uvGrid, 1, 1, 0 );
 
-		overlay = new Sprite( new Texture( "/textures/debug/800x600.png" ), 1, 1, 0);
+		overlay = new Sprite( new Texture( "/textures/debug/800x600.png" ), 1, 1, 0 );
 	}
 
 	@Override
@@ -89,14 +90,14 @@ public class DishclothGame extends AGame {
 
 		sprite2.render( spriteBatch, new Point( -512f, 512f ), -angle, Color.WHITE, new Point( 512f, -512f ) );
 
-		sprite.render( spriteBatch, new Point(-64 + position.x, 64 + position.y), 0f,
-		               Color.CYAN, new Point( 64f, -64f ) );
-		sprite.render( spriteBatch, new Point(-64 - position.x, 64 - position.y), -angle,
-		               Color.GREEN, new Point( 64f, -64f ) );
+		// "sprite" uses default origin set as "Anchor.CENTER", thus no pivot parameter is needed
+		sprite.render( spriteBatch, new Point( -64 + position.x, 64 + position.y ), 0f, Color.CYAN );
+		sprite.render( spriteBatch, new Point( -64 - position.x, 64 - position.y ), -angle, Color.GREEN );
 
-		sprite.render( spriteBatch, new Point( -64f, 64f ), angle, Color.WHITE, new Point( 64f, -64f ) );
+		sprite.render( spriteBatch, new Point( -64f, 64f ), angle );
 
-		overlay.render( spriteBatch, new Point( -400f, 300 ), 0f, Color.WHITE, new Point(400, -300));
+		// "overlay" has default pivot "TOPLEFT" and uses manual pivot (400, -300)
+		overlay.render( spriteBatch, new Point( -400f, 300 ), 0f, Color.WHITE, new Point( 400, -300 ) );
 
 		spriteBatch.render( renderer );
 	}
