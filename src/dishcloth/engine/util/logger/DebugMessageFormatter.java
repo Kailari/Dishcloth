@@ -15,7 +15,7 @@ import java.util.Date;
 
 public class DebugMessageFormatter {
 
-	private static final int CONTEXT_MAX_LENGTH = 12;
+	private static final int CONTEXT_MAX_LENGTH = 14;
 	private static final int WHITESPACE_AFTER_PREFIX = 1;
 
 	public static String formatMessageString(String message, String context, DebugLevel debugLevel, Date date) {
@@ -26,7 +26,7 @@ public class DebugMessageFormatter {
 		String whitespace = new String( new char[WHITESPACE_AFTER_PREFIX] ).replace( '\0', ' ' );
 
 		return createTimestamp( date ) +
-				debugLevel.applyColor( prefix + whitespace + message );
+				debugLevel.applyColor( prefix + whitespace) + message;
 	}
 
 	private static String createTimestamp(Date date) {
