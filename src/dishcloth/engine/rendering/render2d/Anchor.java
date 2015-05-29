@@ -1,0 +1,36 @@
+package dishcloth.engine.rendering.render2d;
+
+import dishcloth.engine.util.geom.Point;
+
+/**
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * Anchor.java
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * <p>
+ * TODO: Description
+ * <p>
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * Created by ASDSausage on 25.5.2015
+ */
+public enum Anchor {
+	TOPLEFT( 0f, 0f ),
+	TOPMID( 0.5f, 0f ),
+	TOPRIGHT( 1f, 0f ),
+	MIDLEFT( 0f, -0.5f ),
+	CENTER( 0.5f, -0.5f ),
+	MIDRIGHT( 1f, -0.5f ),
+	BOTLEFT( 0f, -1f ),
+	BOTMID( 0.5f, -1f ),
+	BOTRIGHT( 1f, -1f );
+
+	private float xOffsetMultiplier, yOffsetMultiplier;
+
+	Anchor(float x, float y) {
+		xOffsetMultiplier = x;
+		yOffsetMultiplier = y;
+	}
+
+	public Point createPivot(float w, float h) {
+		return new Point( xOffsetMultiplier * w, yOffsetMultiplier * h );
+	}
+}

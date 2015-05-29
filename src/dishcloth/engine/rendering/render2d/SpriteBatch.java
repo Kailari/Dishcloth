@@ -73,29 +73,31 @@ public class SpriteBatch implements IRenderable {
 			try {
 				Matrix4 transform;
 
-				for (TextureRenderInfo sInfo : entry.getValue()) {
+				// Projection and view are the same for all sprites.
+				renderShader.setUniformMat4( "mat_project", AGame.projectionMatrix );
+				renderShader.setUniformMat4( "mat_view", AGame.viewMatrix );
+
+				for (TextureRenderInfo info : entry.getValue()) {
+
+					// TODO: Cache modelview matrices. Update them only if object's properties have changed
 
 					// Create modelview matrix
+					transform = MatrixUtility.createTranslation( info.dest.x + info.origin.x,
+					                                             info.dest.y + info.origin.y, 0f )
+							.multiply( MatrixUtility.createRotationZ( info.angle ) )
+							.multiply( MatrixUtility.createTranslation( -info.origin.x,
+							                                            -info.origin.y, 0f ) )
+							.multiply( MatrixUtility.createScaling( info.dest.w, info.dest.h, 1f ) );
 
-					// 1. apply origin (origin is relative to center)
-					// 2. apply rotation locally
 
-					transform = MatrixUtility.createTranslation( sInfo.dest.x + sInfo.origin.x,
-					                                             sInfo.dest.y + sInfo.origin.y, 0f )
-							.multiply( MatrixUtility.createRotationZ( sInfo.angle ) )
-							.multiply( MatrixUtility.createTranslation( -sInfo.origin.x,
-							                                            -sInfo.origin.y, 0f) )
-							.multiply( MatrixUtility.createScaling( sInfo.dest.w, sInfo.dest.h, 1f ) );
-
-					renderShader.setUniformMat4( "mat_project", AGame.projectionMatrix );
-					renderShader.setUniformMat4( "mat_view", AGame.viewMatrix );
-
+					// Set modelview matrix and other per-sprite uniforms
 					renderShader.setUniformMat4( "mat_modelview", transform );
-					renderShader.setUniformVec4f( "subtexture", sInfo.u, sInfo.v, sInfo.uSize, sInfo.vSize );
+					renderShader.setUniformVec4f( "subtexture", info.u, info.v, info.uSize, info.vSize );
 
 					renderShader.setUniformVec4f( "color_tint",
-					                              sInfo.tint.r, sInfo.tint.g, sInfo.tint.b, sInfo.tint.a );
+					                              info.tint.r, info.tint.g, info.tint.b, info.tint.a );
 
+					// Render
 					dummyQuad.render();
 				}
 			} catch (ShaderUniformException e) {
@@ -103,6 +105,7 @@ public class SpriteBatch implements IRenderable {
 			}
 		}
 
+		// Got everything rendered, clear queue
 		renderQueue.clear();
 	}
 

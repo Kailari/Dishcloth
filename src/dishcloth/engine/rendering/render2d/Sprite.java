@@ -23,11 +23,28 @@ public class Sprite {
 
 	private int nColumns, nRows, frame;
 
-	public Sprite(Texture texture, int nColumns, int nRows, int frame) {
+	private float frameW, frameH;
+
+	private Point defaultOrigin;
+
+	public Sprite(Texture texture, int nColumns, int nRows, int frame, Anchor anchor) {
 		this.texture = texture;
 		this.nColumns = nColumns;
 		this.nRows = nRows;
 		this.frame = frame;
+
+		this.frameW = (float) texture.getWidth() / this.nColumns;
+		this.frameH = (float) texture.getHeight() / this.nRows;
+
+		this.defaultOrigin = anchor.createPivot( frameW, frameH );
+	}
+
+	public Sprite(Texture texture, int nColumns, int nRows, int frame) {
+		this(texture, nColumns, nRows, frame, Anchor.TOPLEFT);
+	}
+
+	public Sprite(Texture texture) {
+		this(texture, 1, 1, 0);
 	}
 
 	public int getFrame() {
@@ -47,9 +64,6 @@ public class Sprite {
 	}
 
 	public void render(SpriteBatch spriteBatch, Point position, float angle, Color tint, Point origin) {
-		float frameW = (float) texture.getWidth() / nColumns;
-		float frameH = (float) texture.getHeight() / nRows;
-
 		int row = (int) Math.floor( (float) frame / (float) nColumns );
 		int column = frame % nColumns;
 
@@ -60,11 +74,11 @@ public class Sprite {
 	}
 
 	public void render(SpriteBatch spriteBatch, Point position, float angle, Color tint) {
-		render( spriteBatch, position, angle, tint, new Point( 0f, 0f ) );
+		render( spriteBatch, position, angle, tint, defaultOrigin );
 	}
 
 	public void render(SpriteBatch spriteBatch, Point position, float angle) {
-		render( spriteBatch, position, angle, Color.WHITE, new Point(0f, 0f) );
+		render( spriteBatch, position, angle, Color.WHITE );
 	}
 
 	public void render(SpriteBatch spriteBatch, Point position) {
