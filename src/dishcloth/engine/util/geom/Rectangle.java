@@ -15,11 +15,18 @@ public class Rectangle {
 
 	public float x, y, w, h;
 
+	/**
+	 * Point (x,y) is the <b>bottom left</b> corner.
+	 */
 	public Rectangle(float x, float y, float w, float h) {
 		this.x = x;
 		this.y = y;
 		this.w = w;
 		this.h = h;
+	}
+
+	public Rectangle(Location location, float x, float y, float w, float h) {
+		this( location.getX( x, w ), location.getY( y, h ), w, h );
 	}
 
 	private static boolean AOverlapB(Rectangle a, Rectangle b) {
@@ -33,20 +40,20 @@ public class Rectangle {
 		return lt || lb || rt || rb;
 	}
 
-	public Point getLeftTop() {
+	public Point getLeftBottom() {
 		return new Point( x, y );
 	}
 
-	public Point getRightTop() {
-		return new Point( x + w, y);
-	}
-
-	public Point getLeftBottom() {
-		return new Point( x, y - h);
+	public Point getLeftTop() {
+		return new Point( x, y + h );
 	}
 
 	public Point getRightBottom() {
-		return new Point( x + w, y - h );
+		return new Point( x + w, y );
+	}
+
+	public Point getRightTop() {
+		return new Point( x + w, y + h );
 	}
 
 	public boolean containsPoint(Point point) {
@@ -62,17 +69,17 @@ public class Rectangle {
 
 	public Rectangle common(Rectangle r) {
 		if (!overlap( r )) return null;
-		// Currently not working... top left corner should be (0,0)
-		double top = Math.max( getLeftTop().y, r.getLeftTop().y );
-		double bottom = Math.min( getLeftBottom().y, r.getLeftBottom().y );
 
-		double left = Math.max( getLeftTop().x, r.getLeftTop().x );
-		double right = Math.min( getRightTop().x, r.getRightTop().x );
+		float top = Math.min( getLeftTop().y, r.getLeftTop().y );
+		float bottom = Math.max( getLeftBottom().y, r.getLeftBottom().y );
 
-		double dx = right - left;
-		double dy = bottom - top;
+		float left = Math.max( getLeftBottom().x, r.getLeftBottom().x );
+		float right = Math.min( getRightBottom().x, r.getRightBottom().x );
 
-		return new Rectangle( left, top, dx, dy );
+		float dx = right - left;
+		float dy = top - bottom;
+
+		return new Rectangle( left, bottom, dx, dy );
 	}
 
 	@Override
@@ -84,4 +91,26 @@ public class Rectangle {
 				"; h=" + h +
 				"]";
 	}
+
+	public enum Location {
+		LeftBot( 0, 0 ), LeftTop( 0, 1 ), RightBot( 1, 0 ), RightTop( 1, 1 );
+
+		private final int xm, ym; // X and Y factors. xm, ym = 0,1
+
+		Location(int xm, int ym) {
+			this.xm = xm;
+			this.ym = ym;
+		}
+
+		private float getX(float x, float w) {
+			return x - w * xm;
+		}
+
+		private float getY(float y, float h) {
+			return y - h * ym;
+		}
+
+	}
+
+
 }
