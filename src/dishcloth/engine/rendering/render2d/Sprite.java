@@ -27,7 +27,7 @@ public class Sprite {
 
 	private Point defaultOrigin;
 
-	public Sprite(Texture texture, int nColumns, int nRows, int frame, Anchor anchor) {
+	public Sprite(Texture texture, int nColumns, int nRows, int frame, float defaultOriginX, float defaultOriginY) {
 		this.texture = texture;
 		this.nColumns = nColumns;
 		this.nRows = nRows;
@@ -36,15 +36,25 @@ public class Sprite {
 		this.frameW = (float) texture.getWidth() / this.nColumns;
 		this.frameH = (float) texture.getHeight() / this.nRows;
 
-		this.defaultOrigin = anchor.createPivot( frameW, frameH );
+		this.defaultOrigin = new Point( defaultOriginX, defaultOriginY );
+	}
+
+	public Sprite(Texture texture, int nColumns, int nRows, int frame, Point defaultOrigin) {
+		this( texture, nColumns, nRows, frame, defaultOrigin.x, defaultOrigin.y );
+	}
+
+	public Sprite(Texture texture, int nColumns, int nRows, int frame, Anchor anchor) {
+		this( texture, nColumns, nRows, frame,
+		      anchor.createPivot( (float) texture.getWidth() / nColumns,
+		                          (float) texture.getHeight() / nRows ) );
 	}
 
 	public Sprite(Texture texture, int nColumns, int nRows, int frame) {
-		this(texture, nColumns, nRows, frame, Anchor.TOPLEFT);
+		this( texture, nColumns, nRows, frame, Anchor.TOPLEFT );
 	}
 
 	public Sprite(Texture texture) {
-		this(texture, 1, 1, 0);
+		this( texture, 1, 1, 0 );
 	}
 
 	public int getFrame() {

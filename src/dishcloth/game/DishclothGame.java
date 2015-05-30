@@ -36,30 +36,20 @@ import static org.lwjgl.opengl.GL20.glUseProgram;
 public class DishclothGame extends AGame {
 
 	SpriteBatch spriteBatch;
-	Sprite sprite;
-	Sprite sprite2;
-	Sprite overlay;
+	Sprite sprite, sprite2, overlay;
 
 	Point position;
 	float t, angle;
 
 	@Override
 	public void initialize() {
-
-		float halfW = screenWidth / 2f;
-		float halfH = screenHeight / 2f;
-
-		projectionMatrix = MatrixUtility.createOrthographicViewMatrix( -halfW, halfW,
-		                                                               -halfH, halfH,
-		                                                               -1.0f, 1.0f );
-		viewMatrix = Matrix4.identity();
-
 		position = new Point( 0, 0 );
 	}
 
 	@Override
 	public void loadContent() {
-		spriteBatch = new SpriteBatch( new ShaderProgram( "sprite", "default" ) );
+		spriteBatch = new SpriteBatch( new ShaderProgram( "sprite", "default" ),
+		                               getViewportCamera() );
 
 		Texture uvGrid = new Texture( "/textures/debug/uv_checker.png" );
 		sprite = new Sprite( uvGrid, 8, 8, 0, Anchor.CENTER );
@@ -112,10 +102,5 @@ public class DishclothGame extends AGame {
 	@Override
 	public void shutdown() {
 
-	}
-
-	@Override
-	protected IRenderer createRenderer() {
-		return new Renderer();
 	}
 }

@@ -7,7 +7,10 @@ import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.system.MemoryUtil.*;
 
 import dishcloth.engine.exception.GameInitializationException;
+import dishcloth.engine.rendering.ICamera;
 import dishcloth.engine.rendering.IRenderer;
+import dishcloth.engine.rendering.OrthographicCamera;
+import dishcloth.engine.rendering.Renderer;
 import dishcloth.engine.util.logger.Debug;
 import dishcloth.engine.util.math.Matrix4;
 import dishcloth.engine.util.time.Time;
@@ -27,27 +30,28 @@ import org.lwjgl.opengl.GLContext;
 
 public abstract class AGame implements IGame {
 
-	// XXX: Matrices are just temporarily here
-	public static Matrix4 projectionMatrix;
-	public static Matrix4 viewMatrix;
 	protected int screenWidth, screenHeight;
+	protected boolean doUpdateTime = true;
 	private long windowID;
 	private boolean windowShouldExit;
 	private IRenderer renderer;
+	private ICamera viewportCamera;
 	private Timing timing;
 
-	protected boolean doUpdateTime = true;
+	public ICamera getViewportCamera() {
+		return viewportCamera;
+	}
 
 	@Override
 	public final void run() {
 
-		System.out.println( "\n\n\n" );
-		System.out.println( "||XX||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||XX||" );
-		System.out.println( "||==|+----------------------------------------------------------------------------------------+|==||" );
-		System.out.println( "||==||                                      Running game...                                   ||==||" );
-		System.out.println( "||==|+----------------------------------------------------------------------------------------+|==||" );
-		System.out.println( "||XX||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||XX||" );
-		System.out.println( "\n" );
+		Debug.log( "", this );
+		Debug.log( "||XX||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||XX||", this );
+		Debug.log( "||==|+----------------------------------------------------------------------------------------+|==||", this );
+		Debug.log( "||==||                                      Running game...                                   ||==||", this );
+		Debug.log( "||==|+----------------------------------------------------------------------------------------+|==||", this );
+		Debug.log( "||XX||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||XX||", this );
+		Debug.log( "", this );
 
 		Debug.log( "Initializing...", this );
 
@@ -62,7 +66,7 @@ public abstract class AGame implements IGame {
 
 		timing.timestep = 1f / 60f;
 
-		System.out.println( "\n" );
+		Debug.log( "", this );
 		Debug.logNote( "Entering main loop...", this );
 		while (glfwWindowShouldClose( windowID ) != GL_TRUE
 				&& !windowShouldExit) {
@@ -83,12 +87,12 @@ public abstract class AGame implements IGame {
 			doRender();
 
 			if (doUpdateTime) {
-				Time.update(timing);
+				Time.update( timing );
 			}
 		}
 
 		Debug.logNote( "Main loop ended...", this );
-		System.out.println();
+		Debug.log( "", this );
 		Debug.logWarn( "Unloading content...", this );
 
 		doUnloadContent();
@@ -96,16 +100,24 @@ public abstract class AGame implements IGame {
 
 		Debug.logWarn( "Shutting down...", this );
 		doShutdown();
-
-		Debug.logOK( "I'll be back...", this );
 	}
 
 	@Override
 	public final void doInitialize() {
 		try {
+			// Initialize window
 			initWindow();
 
-			renderer = createRenderer();
+			// Create renderer
+			renderer = new Renderer();
+
+			// Create camera
+			float halfW = screenWidth / 2f;
+			float halfH = screenHeight / 2f;
+			viewportCamera = new OrthographicCamera( -halfW, halfW,
+			                                         -halfH, halfH,
+			                                          -1.0f, 1.0f );
+
 
 			// Call initialize
 			initialize();
@@ -116,8 +128,6 @@ public abstract class AGame implements IGame {
 		}
 
 	}
-
-	protected abstract IRenderer createRenderer();
 
 	private final void initWindow() throws GameInitializationException {
 
@@ -177,7 +187,7 @@ public abstract class AGame implements IGame {
 			timing.simulationTimePool -= timing.timestep;
 
 			if (doUpdateTime) {
-				Time.update(timing);
+				Time.update( timing );
 			}
 
 			fixedUpdate();

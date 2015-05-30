@@ -2,6 +2,7 @@ package dishcloth.engine.rendering.render2d;
 
 import dishcloth.engine.AGame;
 import dishcloth.engine.exception.ShaderUniformException;
+import dishcloth.engine.rendering.ICamera;
 import dishcloth.engine.rendering.IRenderable;
 import dishcloth.engine.rendering.IRenderer;
 import dishcloth.engine.rendering.shaders.ShaderProgram;
@@ -39,11 +40,21 @@ public class SpriteBatch implements IRenderable {
 	private HashMap<Integer, List<TextureRenderInfo>> renderQueue;
 	private ShaderProgram renderShader;
 	private VertexBufferObject dummyQuad;
+	private ICamera targetCamera;
 
-	public SpriteBatch(ShaderProgram shader) {
+	public SpriteBatch(ShaderProgram shader, ICamera camera) {
 		this.renderQueue = new HashMap<>();
 		this.renderShader = shader;
 		this.dummyQuad = new VertexBufferObject( new Quad( new Rectangle( 0f, 0f, 1f, 1f ) ) );
+		this.targetCamera = camera;
+	}
+
+	public ICamera getTargetCamera() {
+		return targetCamera;
+	}
+
+	public void setTargetCamera(ICamera targetCamera) {
+		this.targetCamera = targetCamera;
 	}
 
 	public void queue(Texture texture, Rectangle destination, Rectangle source, float angle, Color tint, Point origin) {
@@ -74,8 +85,8 @@ public class SpriteBatch implements IRenderable {
 				Matrix4 transform;
 
 				// Projection and view are the same for all sprites.
-				renderShader.setUniformMat4( "mat_project", AGame.projectionMatrix );
-				renderShader.setUniformMat4( "mat_view", AGame.viewMatrix );
+				renderShader.setUniformMat4( "mat_project", targetCamera.getProjectionMatrix() );
+				renderShader.setUniformMat4( "mat_view", targetCamera.getViewMatrix() );
 
 				for (TextureRenderInfo info : entry.getValue()) {
 
