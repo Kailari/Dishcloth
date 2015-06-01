@@ -49,6 +49,8 @@ public class DishclothGame extends AGame {
 		upArrowRepeatEvent = new KeyInputRepeatEvent( getWindowID(), GLFW.GLFW_KEY_UP );
 		downArrowRepeatEvent = new KeyInputRepeatEvent( getWindowID(), GLFW.GLFW_KEY_DOWN );
 
+		// TODO: Make registerEvent() return the event, so that you could call event = createEvent("eventName")
+		//          This would collapse both event = new Event() and Handler.registerEvent() lines on a single line.
 		InputHandler.registerEvent( leftArrowRepeatEvent, "leftEvent" );
 		InputHandler.registerEvent( rightArrowRepeatEvent, "rightEvent" );
 		InputHandler.registerEvent( upArrowRepeatEvent, "upEvent" );
