@@ -8,7 +8,7 @@ import java.io.InputStreamReader;
 
 /**
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- * IOHelper.java
+ * FileIOHelper.java
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * <p>
  * Helper class for handling basic file I/O
@@ -17,12 +17,12 @@ import java.io.InputStreamReader;
  * Created by ASDSausage on 22.5.2015
  */
 
-public class IOHelper {
+public class FileIOHelper {
 
 	public static final String RES_PATH = "/dishcloth_resources/";
 
 	public static InputStream createInputStream(String filename) {
-		return IOHelper.class.getResourceAsStream( RES_PATH + filename );
+		return FileIOHelper.class.getResourceAsStream( RES_PATH + filename );
 	}
 
 	public static String readLinesFromFile(String filename) {
@@ -44,7 +44,7 @@ public class IOHelper {
 			}
 
 		} catch (Exception e) {
-			Debug.logException( e, "IOHelper" );
+			Debug.logException( e, "FileIOHelper" );
 		}
 
 		return source.toString();

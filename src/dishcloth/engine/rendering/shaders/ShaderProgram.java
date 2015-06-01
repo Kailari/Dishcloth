@@ -4,7 +4,7 @@ import dishcloth.engine.exception.ShaderCompilationFailedException;
 import dishcloth.engine.exception.ShaderException;
 import dishcloth.engine.exception.ShaderLinkFailedException;
 import dishcloth.engine.exception.ShaderUniformException;
-import dishcloth.engine.io.IOHelper;
+import dishcloth.engine.io.FileIOHelper;
 import dishcloth.engine.util.logger.Debug;
 import dishcloth.engine.util.math.Matrix4;
 
@@ -48,7 +48,7 @@ public class ShaderProgram {
 	}
 
 	private void attachVertexShader(String name) throws ShaderCompilationFailedException {
-		String source = IOHelper.readLinesFromFile( "shaders/" + name + ".vert" );
+		String source = FileIOHelper.readLinesFromFile( "shaders/" + name + ".vert" );
 
 		// Create vertex shader
 		vertID = glCreateShader( GL_VERTEX_SHADER );
@@ -68,7 +68,7 @@ public class ShaderProgram {
 	}
 
 	private void attachFragmentShader(String name) throws ShaderCompilationFailedException {
-		String source = IOHelper.readLinesFromFile( "shaders/" + name + ".frag" );
+		String source = FileIOHelper.readLinesFromFile( "shaders/" + name + ".frag" );
 
 		// Create vertex shader
 		fragID = glCreateShader( GL_FRAGMENT_SHADER );

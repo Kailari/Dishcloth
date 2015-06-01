@@ -1,6 +1,6 @@
 package dishcloth.engine.rendering.textures;
 
-import dishcloth.engine.io.IOHelper;
+import dishcloth.engine.io.FileIOHelper;
 import org.lwjgl.BufferUtils;
 
 import javax.imageio.ImageIO;
@@ -65,7 +65,7 @@ public class Texture {
 
 		int[] pixels = null;
 		try {
-			BufferedImage image = ImageIO.read( IOHelper.createInputStream( filename ) );
+			BufferedImage image = ImageIO.read( FileIOHelper.createInputStream( filename ) );
 
 			width = image.getWidth();
 			height = image.getHeight();
