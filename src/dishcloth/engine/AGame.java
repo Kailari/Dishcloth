@@ -38,6 +38,10 @@ public abstract class AGame implements IGame {
 	private ICamera viewportCamera;
 	private Timing timing;
 
+	public long getWindowID() {
+		return windowID;
+	}
+
 	public ICamera getViewportCamera() {
 		return viewportCamera;
 	}
@@ -116,7 +120,7 @@ public abstract class AGame implements IGame {
 			float halfH = screenHeight / 2f;
 			viewportCamera = new OrthographicCamera( -halfW, halfW,
 			                                         -halfH, halfH,
-			                                          -1.0f, 1.0f );
+			                                         -1.0f, 1.0f );
 
 
 			// Call initialize
