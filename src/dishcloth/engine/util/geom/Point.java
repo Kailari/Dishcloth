@@ -48,6 +48,7 @@ public class Point {
 		return false;
 	}
 
+	@Override
 	public String toString() {
 		// We don't want to print (0.123456789,9.87654321), we want (0.123,9.876). That should be precise enough
 		return "Point:(" + DishMath.cutDecimals( x ) + ";" + DishMath.cutDecimals( y ) + ")";

@@ -77,6 +77,7 @@ public class Line {
 		return p1.y - slope() * p1.x;
 	}
 
+	@Override
 	public String toString() {
 		if (Double.isNaN( slope() )) return "Line: x=" + p1.x;
 		if (DishMath.approxSame( slope(), 0 )) return "Line: y=" + getConstant();
