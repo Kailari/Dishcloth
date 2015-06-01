@@ -27,6 +27,29 @@ public class InputHandler {
 
 	private static HashMap<String, InputEvent> eventLookupTable = new HashMap<>();
 
+	@SuppressWarnings("unchecked")
+	public static void updateEvents() {
+		// Java 8 porn. Streams and method references.
+
+		// Streams:
+		//      for (a : b)
+		//   becomes:
+		//      a.stream().//.forEach()
+		//
+		// Method references (shorter way to write certain lambdas):
+		//      event -> event.triggerCondition()
+		//   becomes:
+		//      InputEvent::triggerCondition
+
+		events.stream().filter( InputEvent::triggerCondition ).forEach( event -> {
+			for (InputAction action : boundActions.get( event )) {
+				// NOTE: This is unchecked but as main binding method forces using compatible types,
+				// it should not be a problem
+				action.trigger( event );
+			}
+		} );
+	}
+
 	public static void registerEvent(InputEvent event, String lookupName) {
 		if (!events.contains( event )
 				&& !boundActions.containsKey( event )
@@ -39,22 +62,25 @@ public class InputHandler {
 		}
 	}
 
-	public static void bindAction(InputEvent event, InputAction action) {
+	public static <T extends InputEvent, T2 extends InputAction<T>> void bindAction(T event, T2 action) {
 		if (events.contains( event ) && boundActions.containsKey( event )) {
 			List<InputAction> actions = boundActions.get( event );
 
 			actions.add( action );
 
-			boundActions.put(event, actions);
+			boundActions.put( event, actions );
 		}
 	}
 
+	/**
+	 * A reeeeaaaally bad way of binding stuff to events. (Unchecked behaviour)
+	 */
+	@SuppressWarnings("unchecked")
 	public static void bindAction(String eventName, InputAction action) {
 		try {
 			bindAction( getEvent( eventName ), action );
-		}
-		catch (EventException e) {
-			Debug.logException(e, "InputHandler");
+		} catch (EventException e) {
+			Debug.logException( e, "InputHandler" );
 		}
 	}
 

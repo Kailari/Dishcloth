@@ -1,26 +1,20 @@
 package dishcloth.game;
 
 import dishcloth.engine.AGame;
-import dishcloth.engine.exception.ShaderUniformException;
+import dishcloth.engine.io.input.InputAction;
+import dishcloth.engine.io.input.InputEvent;
+import dishcloth.engine.io.input.InputHandler;
+import dishcloth.engine.io.input.events.KeyInputEvent;
+import dishcloth.engine.io.input.events.KeyInputRepeatEvent;
 import dishcloth.engine.rendering.IRenderer;
-import dishcloth.engine.rendering.Renderer;
 import dishcloth.engine.rendering.render2d.Anchor;
 import dishcloth.engine.rendering.render2d.Sprite;
 import dishcloth.engine.rendering.render2d.SpriteBatch;
 import dishcloth.engine.rendering.shaders.ShaderProgram;
 import dishcloth.engine.rendering.textures.Texture;
-import dishcloth.engine.rendering.vbo.VertexBufferObject;
-import dishcloth.engine.rendering.vbo.shapes.Polygon;
-import dishcloth.engine.rendering.vbo.shapes.Quad;
 import dishcloth.engine.util.Color;
 import dishcloth.engine.util.geom.Point;
-import dishcloth.engine.util.geom.Rectangle;
-import dishcloth.engine.util.logger.Debug;
-import dishcloth.engine.util.math.Matrix4;
-import dishcloth.engine.util.math.MatrixUtility;
-
-import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL20.glUseProgram;
+import org.lwjgl.glfw.GLFW;
 
 /**
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -38,12 +32,53 @@ public class DishclothGame extends AGame {
 	SpriteBatch spriteBatch;
 	Sprite sprite, sprite2, overlay;
 
+	KeyInputEvent leftArrowRepeatEvent;
+	KeyInputEvent rightArrowRepeatEvent;
+	KeyInputEvent upArrowRepeatEvent;
+	KeyInputEvent downArrowRepeatEvent;
+
 	Point position;
 	float t, angle;
 
 	@Override
 	public void initialize() {
 		position = new Point( 0, 0 );
+
+		leftArrowRepeatEvent = new KeyInputRepeatEvent( getWindowID(), GLFW.GLFW_KEY_LEFT );
+		rightArrowRepeatEvent = new KeyInputRepeatEvent( getWindowID(), GLFW.GLFW_KEY_RIGHT );
+		upArrowRepeatEvent = new KeyInputRepeatEvent( getWindowID(), GLFW.GLFW_KEY_UP );
+		downArrowRepeatEvent = new KeyInputRepeatEvent( getWindowID(), GLFW.GLFW_KEY_DOWN );
+
+		InputHandler.registerEvent( leftArrowRepeatEvent, "leftEvent" );
+		InputHandler.registerEvent( rightArrowRepeatEvent, "rightEvent" );
+		InputHandler.registerEvent( upArrowRepeatEvent, "upEvent" );
+		InputHandler.registerEvent( downArrowRepeatEvent, "downEvent" );
+
+		// YE OLDE WAY OF DOING IT
+		InputHandler.bindAction( leftArrowRepeatEvent, new InputAction() {
+			@Override
+			public void trigger(InputEvent eventTrigger) {
+				Point p = getViewportCamera().getPosition();
+				getViewportCamera().setPosition( new Point( p.x - 1f, p.y ) );
+			}
+		} );
+
+		// THE _NEW_ WAY. Lambdas. yay!
+		// (You can just write it the old way and press alt+enter when it highlights a warning)
+		InputHandler.bindAction( rightArrowRepeatEvent, eventTrigger -> {
+			Point p = getViewportCamera().getPosition();
+			getViewportCamera().setPosition( new Point( p.x + 1f, p.y ) );
+		} );
+
+		InputHandler.bindAction( upArrowRepeatEvent, eventTrigger -> {
+			Point p = getViewportCamera().getPosition();
+			getViewportCamera().setPosition( new Point( p.x, p.y + 1f ) );
+		} );
+
+		InputHandler.bindAction( downArrowRepeatEvent, eventTrigger -> {
+			Point p = getViewportCamera().getPosition();
+			getViewportCamera().setPosition( new Point( p.x, p.y - 1f ) );
+		} );
 	}
 
 	@Override

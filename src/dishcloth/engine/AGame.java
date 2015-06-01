@@ -7,6 +7,7 @@ import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.system.MemoryUtil.*;
 
 import dishcloth.engine.exception.GameInitializationException;
+import dishcloth.engine.io.input.InputHandler;
 import dishcloth.engine.rendering.ICamera;
 import dishcloth.engine.rendering.IRenderer;
 import dishcloth.engine.rendering.OrthographicCamera;
@@ -174,6 +175,9 @@ public abstract class AGame implements IGame {
 
 		// Poll glfw events (input etc.)
 		glfwPollEvents();
+
+		// Update InputHandler
+		InputHandler.updateEvents();
 
 		// Call update
 		update( timing.delta );

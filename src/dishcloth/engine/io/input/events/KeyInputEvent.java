@@ -1,6 +1,7 @@
 package dishcloth.engine.io.input.events;
 
 import dishcloth.engine.io.input.InputEvent;
+import dishcloth.engine.util.logger.Debug;
 
 import static org.lwjgl.glfw.GLFW.*;
 
@@ -34,14 +35,13 @@ public class KeyInputEvent implements InputEvent {
 	public boolean triggerCondition() {
 		int result = glfwGetKey( window, keyCode );
 
-		boolean state = ((triggerOnPress && result == GLFW_PRESS)
-				|| (triggerOnRelease && result == GLFW_RELEASE));
+		boolean state = result == GLFW_PRESS;
 
-		// lastState == true if last state was GLFW_PRESS
-		state = (state || (triggerOnRepeat && result == GLFW_REPEAT && lastState));
+		state = (triggerOnPress && state && !lastState)
+				|| (triggerOnRelease && !state && lastState)
+				|| (triggerOnRepeat && state && lastState);
 
-		lastState = (result == GLFW_PRESS);
-
+		lastState = result == GLFW_PRESS;
 		return state;
 	}
 }
