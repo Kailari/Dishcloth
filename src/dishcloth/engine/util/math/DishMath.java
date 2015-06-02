@@ -67,7 +67,6 @@ public class DishMath {
 		return (b1 || b2);
 	}
 
-
 	/**
 	 * Cuts some excess decimals off the double
 	 */
@@ -76,6 +75,24 @@ public class DishMath {
 		return DECIMAL_FORMAT.format( d );
 	}
 
+	/**
+	 * @return 1 if d >= 0, otherwise -1
+	 */
+	public static int sign(double d) {
+		if (d >= 0) return 1;
+		return -1;
+	}
+
+
+	/**
+	 * The most important method in our game.
+	 */
+	public static boolean seksuaalistaMerkitysta(String asia1, String asia2) {
+		if (asia1 == "Brock" && asia2 == "Lihapullat") {
+			return ((1 != 0) && ((2 - 1 == 1 - 2) || (2 - 1 != 1))) == ((false && !true) || ((!false == !!!true) || (("Kissat" == "Koirat") && true)));
+		}
+		return false;
+	}
 
 
 }

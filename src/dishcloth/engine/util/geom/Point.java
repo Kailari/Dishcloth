@@ -10,6 +10,11 @@ public class Point {
 
 	public float x, y;
 
+	public Point(Point point) {
+		this.x = point.x;
+		this.y = point.y;
+	}
+
 	public Point(float x, float y) {
 		this.x = x;
 		this.y = y;
@@ -34,13 +39,24 @@ public class Point {
 		return p1.equals( p2 );
 	}
 
-
 	public float distance(float x, float y) {
 		return distance( new Point( x, y ) );
 	}
 
 	public float distance(Point p) {
 		return (float) Math.sqrt( Math.pow( x - p.x, 2 ) + Math.pow( y - p.y, 2 ) );
+	}
+
+	/**
+	 * Move the point <b>by</b> amount in parameters
+	 */
+	public void add(float xa, float ya) {
+		x += xa;
+		y += ya;
+	}
+
+	public void add(Point p) {
+		add( p.x, p.y );
 	}
 
 	public boolean equals(Point p) {
