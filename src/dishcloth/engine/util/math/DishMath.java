@@ -94,5 +94,17 @@ public class DishMath {
 		return false;
 	}
 
+	public static float clampAngle(float deg) {
+		float result = deg % 360f;
+		if (result < 0) return result + 360f;
+		return result;
+	}
+
+	public static float clampAngleRad(float rad) {
+		float result = (float) (rad % 2 * Math.PI);
+		if (result < 0) return result + (float) (2 * Math.PI);
+		return result;
+	}
+
 
 }

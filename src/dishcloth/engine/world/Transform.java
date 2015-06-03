@@ -49,14 +49,10 @@ public class Transform {
 
 	public void addRotation(float deg) {
 		rotation += deg;
+		rotation = DishMath.clampAngle( rotation );
 
 		// TODO: Clamp angle to [ 0, 359 ]. Might be a good idea to make DishMath method for it.
-
-		// No. Instead, of adding rotation directly to the children, calculate global rotation
-		// separately by .getGlobalRotation()
-		// for (int i = 0; i < children.size(); i++) {
-		//	children.get( i ).addRotation( deg );
-		//}
+		// TODO: done, test if it works...
 	}
 
 	public void addRotationRad(float rad) {
@@ -72,7 +68,9 @@ public class Transform {
 		addChild( new Transform( this, x, y, rotation ) );
 	}
 
+	// TODO: add parameter (change child coordinates)
 	public void addChild(Transform child) {
+		// TODO: detect incest. incest != wincest
 		// Won't work! Pass-by-value-oddity prevents it (AFAIK)
 		// child.parent = this;
 
@@ -88,7 +86,8 @@ public class Transform {
 
 	/**
 	 * Detaches child from its parent
-	 * @param transform    child to detach
+	 *
+	 * @param transform child to detach
 	 */
 	public void detachChild(Transform transform) {
 		int index;
@@ -99,7 +98,8 @@ public class Transform {
 
 	/**
 	 * Detaches child from its parent
-	 * @param index    index of child to detach.
+	 *
+	 * @param index index of child to detach.
 	 */
 	public void detachChild(int index) {
 		if (index > 0 && index < getChildCount()) {
@@ -118,7 +118,8 @@ public class Transform {
 
 	/**
 	 * Returns child with given index
-	 * @param index    index where to look for the child.
+	 *
+	 * @param index index where to look for the child.
 	 * @return null if index is out of bounds. Otherwise, the child.
 	 */
 	public Transform getChild(int index) {
@@ -127,16 +128,6 @@ public class Transform {
 		}
 
 		return null;
-	}
-
-	/**
-	 * Sets parent of a transform. If you need to set parent from public context, use parent.addChild(...) instead.
- 	 * NOTE: THIS METHOD IS PRIVATE FOR A REASON. THIS METHOD DOES NOT INCLUDE HANDLING CHANGE IN
-	 * CHILD-PARENT-RELATIONSHIP ON THE PARENT-SIDE AND CHILD NEEDS TO BE REMOVED SEPARATELY.
-	 * @param parent    new parent.
-	 */
-	private void setParent(Transform parent) {
-		this.parent = parent;
 	}
 
 	/**
@@ -205,7 +196,7 @@ public class Transform {
 	}
 
 	/**
-	 * @return  local location relative to the parent's location and rotation
+	 * @return local location relative to the parent's location and rotation
 	 */
 	public Point getLocation() {
 		return location;
@@ -213,14 +204,15 @@ public class Transform {
 
 	/**
 	 * Sets local location. Local location is relative to parent's location and rotation.
-	 * @param location    new location
+	 *
+	 * @param location new location
 	 */
 	public void setLocation(Point location) {
 		this.location = location;
 	}
 
 	/**
-	 * @return  local rotation relative to the parent's rotation
+	 * @return local rotation relative to the parent's rotation
 	 */
 	public float getRotation() {
 		return rotation;
@@ -228,7 +220,8 @@ public class Transform {
 
 	/**
 	 * Sets local rotation. Local rotation is relative to parent's rotation.
-	 * @param rotation    new rotation
+	 *
+	 * @param rotation new rotation
 	 */
 	public void setRotation(float rotation) {
 		this.rotation = rotation;
@@ -236,6 +229,17 @@ public class Transform {
 
 	public Transform getParent() {
 		return parent;
+	}
+
+	/**
+	 * Sets parent of a transform. If you need to set parent from public context, use parent.addChild(...) instead.
+	 * NOTE: THIS METHOD IS PRIVATE FOR A REASON. THIS METHOD DOES NOT INCLUDE HANDLING CHANGE IN
+	 * CHILD-PARENT-RELATIONSHIP ON THE PARENT-SIDE AND CHILD NEEDS TO BE REMOVED SEPARATELY.
+	 *
+	 * @param parent new parent.
+	 */
+	private void setParent(Transform parent) {
+		this.parent = parent;
 	}
 
 	@Override
