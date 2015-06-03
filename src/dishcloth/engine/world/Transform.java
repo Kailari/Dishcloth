@@ -12,7 +12,7 @@ import java.util.List;
  */
 public class Transform {
 
-	public List<Transform> children;
+	private List<Transform> children;
 	private Transform parent;
 	private Point location;
 	private float rotation; // in deg
@@ -23,7 +23,7 @@ public class Transform {
 
 	public Transform(Point location, float rotation) {
 		this.location = location;
-		children = new ArrayList<Transform>();
+		children = new ArrayList<>();
 
 		addRotation( rotation );
 	}
@@ -50,12 +50,16 @@ public class Transform {
 	public void addRotation(float deg) {
 		rotation += deg;
 
-		for (int i = 0; i < children.size(); i++) {
-			children.get( i ).addRotation( deg );
-		}
+		// TODO: Clamp angle to [ 0, 359 ]. Might be a good idea to make DishMath method for it.
+
+		// No. Instead, of adding rotation directly to the children, calculate global rotation
+		// separately by .getGlobalRotation()
+		// for (int i = 0; i < children.size(); i++) {
+		//	children.get( i ).addRotation( deg );
+		//}
 	}
 
-	public void addRotationDeg(float rad) {
+	public void addRotationRad(float rad) {
 		addRotation( (float) Math.toDegrees( rad ) );
 	}
 
@@ -69,18 +73,86 @@ public class Transform {
 	}
 
 	public void addChild(Transform child) {
-		child.parent = this;
+		// Won't work! Pass-by-value-oddity prevents it (AFAIK)
+		// child.parent = this;
+
+		// ...instead, we must call setter. Somehow, this ensures that we have reference to the right Transform
+		// and allows us to change the instance passed to us as a parameter. Calling just "parameter.variable = value"
+		// changes instance locally, and everything would still be the same outside of this method. By calling setter,
+		// however, we change THE instance and not just local instance.
+		child.setParent( this );
 		children.add( child );
 
 		child.addRotation( this.rotation );
+	}
 
+	/**
+	 * Detaches child from its parent
+	 * @param transform    child to detach
+	 */
+	public void detachChild(Transform transform) {
+		int index;
+		if ((index = children.indexOf( transform )) != -1) {
+			children.remove( index );
+		}
+	}
+
+	/**
+	 * Detaches child from its parent
+	 * @param index    index of child to detach.
+	 */
+	public void detachChild(int index) {
+		if (index > 0 && index < getChildCount()) {
+			children.get( index ).setParent( null );
+
+			children.remove( index );
+		}
+	}
+
+	/**
+	 * @return the number of children of this transform
+	 */
+	public int getChildCount() {
+		return children.size();
+	}
+
+	/**
+	 * Returns child with given index
+	 * @param index    index where to look for the child.
+	 * @return null if index is out of bounds. Otherwise, the child.
+	 */
+	public Transform getChild(int index) {
+		if (index > 0 && index < getChildCount()) {
+			return children.get( index );
+		}
+
+		return null;
+	}
+
+	/**
+	 * Sets parent of a transform. If you need to set parent from public context, use parent.addChild(...) instead.
+ 	 * NOTE: THIS METHOD IS PRIVATE FOR A REASON. THIS METHOD DOES NOT INCLUDE HANDLING CHANGE IN
+	 * CHILD-PARENT-RELATIONSHIP ON THE PARENT-SIDE AND CHILD NEEDS TO BE REMOVED SEPARATELY.
+	 * @param parent    new parent.
+	 */
+	private void setParent(Transform parent) {
+		this.parent = parent;
+	}
+
+	/**
+	 * Checks if given transform is child of this transform.
+	 *
+	 * @param transform Possible child.
+	 * @return true if transform is child.
+	 */
+	public boolean isChild(Transform transform) {
+		return children.contains( transform );
 	}
 
 	public Point getGlobalPosition(boolean printDebug) {
 		if (parent == null) {
 			return new Point( location );
 		}
-
 
 		/*
 		* The point 'location' is a point on a circle with radius r and center (0,0) [because the location is relative
@@ -104,7 +176,7 @@ public class Transform {
 
 
 		float r = location.distance( 0f, 0f );
-		float a = (float) (Math.acos( location.x / r ) + Math.toRadians( parent.rotation ));
+		float a = (float) (Math.acos( location.x / r ) + Math.toRadians( parent.getGlobalRotation() ));
 
 		// new (relative) location
 		float xc = (float) (r * Math.cos( a ));
@@ -126,6 +198,44 @@ public class Transform {
 
 
 		return result;
+	}
+
+	public float getGlobalRotation() {
+		return (this.parent == null ? rotation : parent.getGlobalRotation() + rotation);
+	}
+
+	/**
+	 * @return  local location relative to the parent's location and rotation
+	 */
+	public Point getLocation() {
+		return location;
+	}
+
+	/**
+	 * Sets local location. Local location is relative to parent's location and rotation.
+	 * @param location    new location
+	 */
+	public void setLocation(Point location) {
+		this.location = location;
+	}
+
+	/**
+	 * @return  local rotation relative to the parent's rotation
+	 */
+	public float getRotation() {
+		return rotation;
+	}
+
+	/**
+	 * Sets local rotation. Local rotation is relative to parent's rotation.
+	 * @param rotation    new rotation
+	 */
+	public void setRotation(float rotation) {
+		this.rotation = rotation;
+	}
+
+	public Transform getParent() {
+		return parent;
 	}
 
 	@Override
