@@ -24,7 +24,7 @@ public class QuadTree<T extends IQuadTreeDataObject> {
 	public QuadTree(Rectangle bounds) {
 		data = new ArrayList<>();
 
-		root = new QuadTreeCell<T>( bounds, this );
+		root = new QuadTreeCell<>( bounds, this );
 	}
 
 	/**

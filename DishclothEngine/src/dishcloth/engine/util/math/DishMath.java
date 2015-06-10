@@ -84,6 +84,18 @@ public class DishMath {
 		return -1;
 	}
 
+	/**
+	 * Linear interpolation between values
+	 * @param a    starting value
+	 * @param b    target value
+	 * @param t    interpolation "time". 0f means result is a, 1f means result is b.
+	 *                0.5f is the midpoint between the values.
+	 */
+	public static float lerp(float a, float b, float t)
+	{
+		return a + t * (b - a);
+	}
+
 
 	/**
 	 * The most important method in our game.

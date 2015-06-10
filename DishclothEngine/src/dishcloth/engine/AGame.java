@@ -15,6 +15,7 @@ import dishcloth.engine.rendering.Renderer;
 import dishcloth.engine.util.logger.Debug;
 import dishcloth.engine.util.math.Matrix4;
 import dishcloth.engine.util.time.Time;
+import dishcloth.engine.world.block.BlockIDHandler;
 import org.lwjgl.opengl.GLContext;
 
 /**
@@ -110,19 +111,10 @@ public abstract class AGame implements IGame {
 	@Override
 	public final void doInitialize() {
 		try {
-			// Initialize window
-			initWindow();
 
-			// Create renderer
-			renderer = new Renderer();
+			initHardware();
 
-			// Create camera
-			float halfW = screenWidth / 2f;
-			float halfH = screenHeight / 2f;
-			viewportCamera = new OrthographicCamera( -halfW, halfW,
-			                                         -halfH, halfH,
-			                                         -1.0f, 1.0f );
-
+			BlockIDHandler.initialize( "dummy" );
 
 			// Call initialize
 			initialize();
@@ -133,6 +125,22 @@ public abstract class AGame implements IGame {
 		}
 
 	}
+
+	private void initHardware() throws GameInitializationException {
+		// Initialize window
+		initWindow();
+
+		// Create renderer
+		renderer = new Renderer();
+
+		// Create camera
+		float halfW = screenWidth / 2f;
+		float halfH = screenHeight / 2f;
+		viewportCamera = new OrthographicCamera( -halfW, halfW,
+		                                         -halfH, halfH,
+		                                         -1.0f, 1.0f );
+	}
+
 
 	private final void initWindow() throws GameInitializationException {
 

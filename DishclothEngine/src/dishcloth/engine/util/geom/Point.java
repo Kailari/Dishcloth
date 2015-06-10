@@ -26,6 +26,15 @@ public class Point {
 		this.y = 0;
 	}
 
+	public Point (IntPoint point) {
+		this.x = point.x;
+		this.y = point.y;
+	}
+
+	public IntPoint toIntPoint() {
+		return new IntPoint( Math.round( this.x ), Math.round( this.y ) );
+	}
+
 
 	public static float distance(float x1, float y1, float x2, float y2) {
 		return distance( new Point( x1, y1 ), new Point( x2, y2 ) );

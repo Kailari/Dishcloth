@@ -16,7 +16,7 @@ import java.util.List;
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * Created by Lassi on 20.5.2015.
  */
-class QuadTreeCell<T extends IQuadTreeDataObject> {
+public class QuadTreeCell<T extends IQuadTreeDataObject> {
 
 	private int depth;
 	private Rectangle bounds;
