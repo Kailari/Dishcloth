@@ -73,6 +73,15 @@ public class InputHandler {
 	}
 
 	/**
+	 * Unbinds ALL ACTIONS from given event (actions may be anonymous so they cannot be identified)
+	 */
+	public static void unbindActions(InputEvent event) {
+		if (boundActions.containsKey( event )) {
+			boundActions.get( event ).clear();
+		}
+	}
+
+	/**
 	 * A reeeeaaaally bad way of binding stuff to events. (Unchecked behaviour)
 	 */
 	@SuppressWarnings("unchecked")

@@ -48,7 +48,7 @@ public class ShaderProgram {
 	}
 
 	private void attachVertexShader(String name) throws ShaderCompilationFailedException {
-		String source = FileIOHelper.readLinesFromFile( "shaders/" + name + ".vert" );
+		String source = FileIOHelper.readLinesFromFile( name + ".vert" );
 
 		// Create vertex shader
 		vertID = glCreateShader( GL_VERTEX_SHADER );
@@ -68,7 +68,7 @@ public class ShaderProgram {
 	}
 
 	private void attachFragmentShader(String name) throws ShaderCompilationFailedException {
-		String source = FileIOHelper.readLinesFromFile( "shaders/" + name + ".frag" );
+		String source = FileIOHelper.readLinesFromFile( name + ".frag" );
 
 		// Create vertex shader
 		fragID = glCreateShader( GL_FRAGMENT_SHADER );

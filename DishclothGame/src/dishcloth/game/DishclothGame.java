@@ -85,14 +85,14 @@ public class DishclothGame extends AGame {
 
 	@Override
 	public void loadContent() {
-		spriteBatch = new SpriteBatch( new ShaderProgram( "sprite", "default" ),
+		spriteBatch = new SpriteBatch( new ShaderProgram( "engine/shaders/sprite", "engine/shaders/default" ),
 		                               getViewportCamera() );
 
-		Texture uvGrid = new Texture( "/textures/debug/uv_checker.png" );
+		Texture uvGrid = new Texture( "engine/textures/debug/uv_checker.png" );
 		sprite = new Sprite( uvGrid, 8, 8, 0, Anchor.CENTER );
 		sprite2 = new Sprite( uvGrid, 1, 1, 0 );
 
-		overlay = new Sprite( new Texture( "/textures/debug/800x600.png" ), 1, 1, 0 );
+		overlay = new Sprite( new Texture( "engine/textures/debug/800x600.png" ), 1, 1, 0 );
 	}
 
 	@Override

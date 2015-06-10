@@ -7,13 +7,15 @@ import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.system.MemoryUtil.*;
 
 import dishcloth.engine.exception.GameInitializationException;
+import dishcloth.engine.io.input.InputEvent;
 import dishcloth.engine.io.input.InputHandler;
+import dishcloth.engine.io.input.events.KeyInputEvent;
+import dishcloth.engine.io.input.events.KeyInputRepeatEvent;
 import dishcloth.engine.rendering.ICamera;
 import dishcloth.engine.rendering.IRenderer;
 import dishcloth.engine.rendering.OrthographicCamera;
 import dishcloth.engine.rendering.Renderer;
 import dishcloth.engine.util.logger.Debug;
-import dishcloth.engine.util.math.Matrix4;
 import dishcloth.engine.util.time.Time;
 import dishcloth.engine.world.block.BlockIDHandler;
 import org.lwjgl.opengl.GLContext;
@@ -39,6 +41,8 @@ public abstract class AGame implements IGame {
 	private IRenderer renderer;
 	private ICamera viewportCamera;
 	private Timing timing;
+
+	protected InputEvent escapePressedEvent;
 
 	public long getWindowID() {
 		return windowID;
@@ -77,6 +81,8 @@ public abstract class AGame implements IGame {
 		while (glfwWindowShouldClose( windowID ) != GL_TRUE
 				&& !windowShouldExit) {
 
+			assert !windowShouldExit;
+
 			timing.tick++;
 
 			// Update time
@@ -113,6 +119,14 @@ public abstract class AGame implements IGame {
 		try {
 
 			initHardware();
+
+			escapePressedEvent = new KeyInputEvent( windowID, GLFW_KEY_ESCAPE, true, false, false );
+			InputHandler.registerEvent( escapePressedEvent, "escapeEvent" );
+
+
+			InputHandler.bindAction( escapePressedEvent, eventTrigger -> {
+				windowShouldExit = true;
+			} );
 
 			BlockIDHandler.initialize( "dummy" );
 

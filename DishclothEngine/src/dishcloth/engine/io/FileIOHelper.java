@@ -19,7 +19,7 @@ import java.io.InputStreamReader;
 
 public class FileIOHelper {
 
-	public static final String RES_PATH = "/dishcloth_resources/";
+	public static final String RES_PATH = "/dishcloth/resources/";
 
 	public static InputStream createInputStream(String filename) {
 		return FileIOHelper.class.getResourceAsStream( RES_PATH + filename );
