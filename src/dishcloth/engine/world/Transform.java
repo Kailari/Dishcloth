@@ -80,8 +80,6 @@ public class Transform {
 		// however, we change THE instance and not just local instance.
 		child.setParent( this );
 		children.add( child );
-
-		child.addRotation( this.rotation );
 	}
 
 	/**

@@ -76,6 +76,7 @@ public class DishMath {
 	}
 
 	/**
+	 * NOTE: NOT THE SAME AS Math.signum, returns 1 even when value == 0
 	 * @return 1 if d >= 0, otherwise -1
 	 */
 	public static int sign(double d) {
