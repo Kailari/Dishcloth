@@ -32,11 +32,8 @@ public class FileIOHelper {
 			filename = filename.substring( 1 );
 		}
 
-
 		StringBuilder source = new StringBuilder();
-		try {
-			BufferedReader reader = new BufferedReader(
-					new InputStreamReader( createInputStream( filename ) ) );
+		try (BufferedReader reader = new BufferedReader( new InputStreamReader( createInputStream( filename ) ) )) {
 
 			String line;
 			while ((line = reader.readLine()) != null) {
