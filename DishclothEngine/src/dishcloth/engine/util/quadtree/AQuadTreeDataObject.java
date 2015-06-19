@@ -13,22 +13,33 @@ import dishcloth.engine.util.geom.Point;
  * Created by ASDSausage on 3.6.2015
  */
 
-public abstract class AQuadTreeDataObject implements IQuadTreeDataObject {
+public abstract class AQuadTreeDataObject {
 
 	private QuadTreeCell containerCell;
-	protected boolean dirty;
+	private Point position;
 
-	@Override
-	public void clearDirty() {
-		dirty = false;
+	public AQuadTreeDataObject(Point position) {
+		this.position = position;
 	}
 
-	@Override
+	public final Point getPosition() {
+		return position;
+	}
+
+	@SuppressWarnings( "unchecked" )
+	public final void setPosition(Point position) {
+
+		if (getContainer() != null) {
+			getContainer().getTree().addDirty( this );
+		}
+
+		this.position = position;
+	}
+
 	public QuadTreeCell getContainer() {
 		return containerCell;
 	}
 
-	@Override
 	public void setContainer(QuadTreeCell cell) {
 		this.containerCell = cell;
 	}

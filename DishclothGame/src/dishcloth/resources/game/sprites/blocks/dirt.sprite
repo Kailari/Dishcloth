@@ -1,0 +1,30 @@
+spriteInfo
+{
+	spriteData
+	{
+
+	}
+
+	textures
+	{
+		tex_dirt:"/textures/blocks/dirt.png"
+		{
+			flags:FULL,STATIC
+
+			# Flag 'STATIC' means that texture is not animated.
+			# Flag 'FULL' is effectively the same as defining:
+				# x:0
+				# y:0
+				# w:TEX_W
+				# h:TEX_H
+
+
+			# For animated texture:
+
+			# flags:FULL,ANIMATED
+			# rows:<nRows here>
+			# columns:<nColumns here>
+			# defaultFrame:<defaultFrameID here>
+		}
+	}
+}

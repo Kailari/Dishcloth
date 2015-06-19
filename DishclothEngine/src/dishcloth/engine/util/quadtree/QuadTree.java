@@ -3,6 +3,7 @@ package dishcloth.engine.util.quadtree;
 import dishcloth.engine.util.geom.Rectangle;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -16,97 +17,76 @@ import java.util.List;
  * Created by ASDSausage on 21.5.2015
  */
 
-public class QuadTree<T extends IQuadTreeDataObject> {
-
-	private QuadTreeCell<T> root;
-	private List<T> data;
-
-	public QuadTree(Rectangle bounds) {
-		data = new ArrayList<>();
-
-		root = new QuadTreeCell<>( bounds, this );
-	}
+public class QuadTree<T extends AQuadTreeDataObject> {
 
 	/**
-	 * Adds data to the QuadTree<br>
-	 * NOTE: WILL NOT OVERRIDE DATA ALREADY PRESENT. If cell where we are trying to add data is already at it's max
-	 * capacity, no data will be added and false is returned.
-	 *
-	 * @return true if operation is successful
+	 * How many DataObjects can one cell contain before being split
+	 * -1 means infinite
 	 */
-	public boolean addData(T element) {
+	private final int bucketSize;
+	/**
+	 * How many levels deep can QuadTree be before starting to special-case data. (Storing data ignoring bucket-size)
+	 * -1 means infinite
+	 */
+	private final int maxDepth;
+	private QuadTreeCell<T> root;
+	private List<T> data;
+	private List<T> dirty;
 
-		// TODO: Check if operation can be executed and actually add data to hierarchy
-		data.add( element );
-		return true;
+	public QuadTree(Rectangle bounds, int bucketSize, int maxDepth) {
+		this.root = new QuadTreeCell<>( bounds, bucketSize, maxDepth );
+		this.data = new ArrayList<>();
+		this.maxDepth = maxDepth;
+		this.bucketSize = bucketSize;
+	}
+
+	public QuadTree(float x, float y, float width, float height, int bucketSize, int maxDepth) {
+		this( new Rectangle( x, y, width, height ), bucketSize, maxDepth );
+	}
+
+	public QuadTree(Rectangle bounds) {
+		this( bounds, 1, -1 );
+	}
+
+	public QuadTree(float x, float y, float width, float height) {
+		this( x, y, width, height, 1, -1 );
+	}
+
+	public int getMaxDepth() {
+		return maxDepth;
+	}
+
+	public int getBucketSize() {
+		return bucketSize;
 	}
 
 
-	public void refresh() {
-		for (int i = 0; i < data.size(); i++) {
-			updateDataPosition( i );
+	public void addData(T d) {
+		root.addData( d );
+		this.data.add( d );
+	}
+
+	public void addDirty(T d) {
+		if (this.data.contains( d )) {
+			this.dirty.add( d );
 		}
+	}
+
+	@SuppressWarnings("unchecked")
+	public void removeData(T data) {
+		data.getContainer().removeData( data );
 	}
 
 	public void updateDirty() {
-		for (int i = 0; i < data.size(); i++) {
-			if (data.get( i ).isDirty()) {
-				updateDataPosition( i );
-			}
-		}
+		dirty.forEach( this::updateDirty );
+		dirty.clear();
 	}
 
-	/**
-	 * Updates data's positions. If data moves from cell to another, it is automatically transferred in hierarchy.
-	 */
-	public void updateDataPosition(int index) {
-		updateDataPosition( data.get( index ) );
-	}
-
-	/**
-	 * Updates data's positions. If data moves from cell to another, it is automatically transferred in hierarchy.
-	 */
-	public void updateDataPosition(T data) {
-
-		// Nothing to do.
-		if (data.getContainer() == root) {
-			return;
+	@SuppressWarnings( "unchecked" )
+	private void updateDirty(T d) {
+		QuadTreeCell<T> cell = root.getCellInLocation( d.getPosition() );
+		if (cell != d.getContainer()) {
+			d.getContainer().moveData( d, cell );
 		}
-
-		// Still in the same cell
-		if (data.getContainer().getBounds().containsPoint( data.getPosition() )) {
-			return;
-		}
-
-		// Find a new cell...
-
-		QuadTreeCell<T> oldCell = data.getContainer();
-		QuadTreeCell<T> newCell = root.findPhysicalContainerCellForPoint( data.getPosition() );
-
-		// ...and find a common parent for old cell and newly found cell
-
-		QuadTreeCell<T> oldCellParent = oldCell.getParent();
-		QuadTreeCell<T> newCellParent = newCell.getParent();
-
-		// Get depths to same level
-		if (oldCellParent != newCellParent && oldCellParent.getDepth() != newCellParent.getDepth()) {
-
-			for (int i = 0; i < Math.abs( oldCell.getDepth() - newCell.getDepth() ) - 1; i++) {
-				if (oldCellParent.getDepth() > newCellParent.getDepth()) {
-					oldCellParent = oldCellParent.getParent();
-				} else if (newCellParent.getDepth() > oldCellParent.getDepth()) {
-					newCellParent = newCellParent.getParent();
-				}
-			}
-		}
-
-		// Find a common parent
-		while (oldCellParent.getParent() != newCellParent.getParent()) {
-			oldCellParent = oldCellParent.getParent();
-			newCellParent = newCellParent.getParent();
-		}
-
-		newCellParent.addData(data);
-		oldCellParent.removeData(data);
 	}
 }
