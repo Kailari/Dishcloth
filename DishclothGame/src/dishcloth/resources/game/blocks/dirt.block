@@ -1,0 +1,19 @@
+block
+{
+	blockInfo
+	{
+
+	}
+
+	sounds
+	{
+		snd_footstep:null	# we don't have sound effects yet.
+		snd_dig:null		# just making placeholders to see how things turn out.
+		snd_break:null
+	}
+
+	sprites
+	{
+		default_sprite:string:"/sprites/blocks/dirt"	# name could be just about anything
+	}
+}
