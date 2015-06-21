@@ -25,8 +25,11 @@ public class Rectangle {
 		this.h = h;
 	}
 
-	public Rectangle(Location location, float x, float y, float w, float h) {
-		this( location.getX( x, w ), location.getY( y, h ), w, h );
+	public Rectangle(Rectangle source) {
+		this.x = source.x;
+		this.y = source.y;
+		this.w = source.w;
+		this.h = source.h;
 	}
 
 	private static boolean AOverlapB(Rectangle a, Rectangle b) {
@@ -63,12 +66,20 @@ public class Rectangle {
 				&& point.y < y + h;
 	}
 
-	public boolean overlap(Rectangle r) {
+	public boolean containsRectangle(Rectangle rectangle) {
+		// A bit hacky way of doing it, but who cares :P
+
+		// If rectangle overlaps other, but the other rectangle does not, it means that the other is completely
+		// inside the first rectangle.
+		return Rectangle.AOverlapB( this, rectangle ) && !Rectangle.AOverlapB( rectangle, this );
+	}
+
+	public boolean overlaps(Rectangle r) {
 		return Rectangle.AOverlapB( this, r ) || Rectangle.AOverlapB( r, this );
 	}
 
-	public Rectangle common(Rectangle r) {
-		if (!overlap( r )) return null;
+	public Rectangle commonArea(Rectangle r) {
+		if (!overlaps( r )) return null;
 
 		float top = Math.min( getLeftTop().y, r.getLeftTop().y );
 		float bottom = Math.max( getLeftBottom().y, r.getLeftBottom().y );
@@ -91,26 +102,4 @@ public class Rectangle {
 				"; h=" + h +
 				"]";
 	}
-
-	public enum Location {
-		LeftBot( 0, 0 ), LeftTop( 0, 1 ), RightBot( 1, 0 ), RightTop( 1, 1 );
-
-		private final int xm, ym; // X and Y factors. xm, ym = 0,1
-
-		Location(int xm, int ym) {
-			this.xm = xm;
-			this.ym = ym;
-		}
-
-		private float getX(float x, float w) {
-			return x - w * xm;
-		}
-
-		private float getY(float y, float h) {
-			return y - h * ym;
-		}
-
-	}
-
-
 }

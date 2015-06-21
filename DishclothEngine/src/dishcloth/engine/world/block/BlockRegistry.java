@@ -1,24 +1,16 @@
-package dishcloth.engine.world;
-
-import dishcloth.engine.util.geom.Rectangle;
+package dishcloth.engine.world.block;
 
 /**
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- * ITile.java
+ * BlockRegistry.java
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * <p>
- * TODO: Description
+ * Simplified registry for registering/storing/getting blocks by IDs or whatever you want to do with them.
  * <p>
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- * Created by ASDSausage on 21.5.2015
+ * Created by ASDSausage on 11.6.2015
  */
-public interface ITile {
-	int getWidth();
-	int getHeight();
-	int getX();
-	int getY();
 
-	Rectangle getBounds();
+public class BlockRegistry {
 
-	int getBlockID();
 }

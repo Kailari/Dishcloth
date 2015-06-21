@@ -2,7 +2,6 @@ package dishcloth.engine.world.block;
 
 import dishcloth.engine.io.save.datapaths.BlockIDHeaderDataPath;
 import dishcloth.engine.util.logger.Debug;
-import jdk.nashorn.internal.ir.Block;
 
 import java.util.HashMap;
 
@@ -22,8 +21,8 @@ public class BlockIDHandler {
 	private static BlockIDHeaderDataPath path;
 	private static HashMap<_BlockID, IBlock> blocks = new HashMap<>();
 	private static HashMap<String, HashMap<String, _BlockID>> idStrings = new HashMap<>();
-	private static HashMap<Integer, _BlockID> IDs = new HashMap<>();
-	private static int blockID_counter;
+	private static HashMap<Short, _BlockID> IDs = new HashMap<>();
+	private static short blockID_counter;
 	private BlockIDHandler() {}
 
 	public static BlockID getBlockID(int id) {
@@ -125,7 +124,7 @@ public class BlockIDHandler {
 	public static void loadBlockIDHeader() {
 		path.startRead();
 		int size = path.readInt();
-		int largest = 0;
+		short largest = 0;
 		for (int i = 0; i < size; i++) {
 			_BlockID id = (_BlockID) BlockID.saveHandler.readFromFile( path );
 			largest = (id.getID() > largest ? id.getID() : largest);
@@ -143,7 +142,7 @@ public class BlockIDHandler {
 	// This is done to prevent initializing BlockIDs from anywhere else than here
 	// (OFC, if somebody REALLY wants to initialize one, it is still possible to override the class elsewhere)
 	private static class _BlockID extends BlockID {
-		private _BlockID(String mod, String idString, int id) {
+		private _BlockID(String mod, String idString, short id) {
 			super( mod, idString, id );
 		}
 	}

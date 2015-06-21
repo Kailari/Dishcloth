@@ -1,6 +1,7 @@
 package dishcloth.engine.io.input;
 
 import dishcloth.engine.exception.EventException;
+import dishcloth.engine.io.input.events.KeyInputEvent;
 import dishcloth.engine.util.logger.Debug;
 
 import java.util.ArrayList;

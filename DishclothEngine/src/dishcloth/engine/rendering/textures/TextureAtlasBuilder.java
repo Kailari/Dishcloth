@@ -1,24 +1,19 @@
-package dishcloth.engine.world;
-
-import dishcloth.engine.util.geom.Rectangle;
+package dishcloth.engine.rendering.textures;
 
 /**
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- * ITile.java
+ * TextureAtlasBuilder.java
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * <p>
- * TODO: Description
+ * Creates texture atlases from multiple textures
  * <p>
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- * Created by ASDSausage on 21.5.2015
+ * Created by ASDSausage on 10.6.2015
  */
-public interface ITile {
-	int getWidth();
-	int getHeight();
-	int getX();
-	int getY();
 
-	Rectangle getBounds();
+public class TextureAtlasBuilder {
 
-	int getBlockID();
+	public void addTexture(Texture texture) {
+
+	}
 }

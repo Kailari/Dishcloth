@@ -23,9 +23,9 @@ public class BlockID {
 	private String idString;
 
 	// ID is dynamically assigned and may change depending on in which order the blocks are registered.
-	private int id;
+	private short id;
 
-	protected BlockID(String mod, String idString, int id) {
+	protected BlockID(String mod, String idString, short id) {
 		this.mod = mod;
 		this.idString = idString;
 		this.id = id;
@@ -39,14 +39,14 @@ public class BlockID {
 		return idString;
 	}
 
-	public int getID() {
+	public short getID() {
 		return id;
 	}
 
 	public static class SaveHandler implements ISaveWriter<BlockID, IDataPath>, ISaveReader<BlockID, IDataPath> {
 		@Override
 		public BlockID readFromFile(IDataPath path) {
-			return new BlockID( path.readString(), path.readString(), path.readInt() );
+			return new BlockID( path.readString(), path.readString(), path.readShort() );
 		}
 
 		@Override

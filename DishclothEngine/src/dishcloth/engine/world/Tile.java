@@ -1,10 +1,8 @@
 package dishcloth.engine.world;
 
-import dishcloth.engine.util.geom.IntPoint;
 import dishcloth.engine.util.geom.Point;
 import dishcloth.engine.util.geom.Rectangle;
 import dishcloth.engine.util.quadtree.AQuadTreeDataObject;
-import dishcloth.engine.util.quadtree.QuadTreeCell;
 
 /**
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -19,41 +17,48 @@ import dishcloth.engine.util.quadtree.QuadTreeCell;
 
 public class Tile extends AQuadTreeDataObject implements ITile {
 
-	private IntPoint position;
-	private int blockID;
+	private final int x;
+	private final int y;
+	private final int widthInTiles;
+	private final int heightInTiles;
+	private final int blockID;
 
-	@Override
-	public float getWidth() {
-		return 0;
+	public Tile(int x, int y, int w, int h, int blockID) {
+		super(new Point( x, y ));
+		this.x = x;
+		this.y = y;
+		this.widthInTiles = w;
+		this.heightInTiles = h;
+		this.blockID = blockID;
 	}
 
 	@Override
-	public float getHeight() {
-		return 0;
+	public int getWidth() {
+		return widthInTiles;
+	}
+
+	@Override
+	public int getHeight() {
+		return heightInTiles;
+	}
+
+	@Override
+	public int getX() {
+		return x;
+	}
+
+	@Override
+	public int getY() {
+		return y;
 	}
 
 	@Override
 	public Rectangle getBounds() {
-		return null;
+		return new Rectangle( x, y, widthInTiles, heightInTiles );
 	}
 
 	@Override
 	public int getBlockID() {
 		return blockID;
-	}
-
-	@Override
-	public Point getPosition() {
-		return null;
-	}
-
-	@Override
-	public boolean allowCollapse() {
-		return false;
-	}
-
-	@Override
-	public boolean isDirty() {
-		return false;
 	}
 }
