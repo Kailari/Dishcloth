@@ -19,10 +19,19 @@ import dishcloth.engine.world.Tile;
 
 public class Terrain implements IRenderable, IUpdatable {
 
-	private QuadTree<Tile> tiles;
+	private TerrainChunk[][] chunks;
+	private int w, h;
 
-	public Terrain() {
-		this.tiles = new QuadTree<>( 0, 0, 16, 16, 1, -1 );
+	public Terrain(int w, int h) {
+		this.chunks = new TerrainChunk[w][h];
+		this.w = w;
+		this.h = h;
+
+		for (int x = 0; x < w; x++) {
+			for (int y = 0; y < h; y++) {
+				this.chunks[x][y] = new TerrainChunk( x, y );
+			}
+		}
 	}
 
 	@Override
@@ -32,8 +41,6 @@ public class Terrain implements IRenderable, IUpdatable {
 
 	@Override
 	public void fixedUpdate() {
-		// TODO: Trigger this only after terrain update has occurred.
-		tiles.updateDirty();
 	}
 
 	@Override
@@ -48,11 +55,14 @@ public class Terrain implements IRenderable, IUpdatable {
 					- Every cell with the same blockID will be rendered with same UV-coordinates
 					  thus, for the optimization's sake, they tiles are rendered ordered by blockID
 
-			FUCK THAT! - Rendering is currently moved to blocks' tasks. This allows special blocks to render
+			FUCK THAT! - Rendering is currently moved to blocks' task. This allows special blocks to render
 			whatever they want on the screen. Keeps things nice and simple, though it puts a shitload of weight on the
 			SpriteBatch. Let's just hope it doesn't get too slow. (If it does, then some kind of block rendering
 			queries could be good idea. That kind of caching blocks' render states and reusing them for other blocks
 			might speed up things a lot.)
 		 */
+
+		// TODO: SpriteBatch sprite scaling (or at least something close to it.)
+		// TODO: Render the fucking terrain already.
 	}
 }
