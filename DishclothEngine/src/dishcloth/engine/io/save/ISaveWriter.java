@@ -11,5 +11,5 @@ package dishcloth.engine.io.save;
  * Created by ASDSausage on 7.6.2015
  */
 public interface ISaveWriter<T, T2 extends IDataPath> {
-	void writeToFile(T2 path, T data);
+	void writeToDataPath(T2 path, T data);
 }
