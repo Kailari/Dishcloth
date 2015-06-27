@@ -10,14 +10,13 @@ import dishcloth.engine.exception.GameInitializationException;
 import dishcloth.engine.io.input.InputEvent;
 import dishcloth.engine.io.input.InputHandler;
 import dishcloth.engine.io.input.events.KeyInputEvent;
-import dishcloth.engine.io.input.events.KeyInputRepeatEvent;
 import dishcloth.engine.rendering.ICamera;
 import dishcloth.engine.rendering.IRenderer;
 import dishcloth.engine.rendering.OrthographicCamera;
 import dishcloth.engine.rendering.Renderer;
 import dishcloth.engine.util.logger.Debug;
 import dishcloth.engine.util.time.Time;
-import dishcloth.engine.world.block.BlockIDHandler;
+import dishcloth.engine.world.block.BlockRegistry;
 import org.lwjgl.opengl.GLContext;
 
 /**
@@ -128,10 +127,11 @@ public abstract class AGame implements IGame {
 				windowShouldExit = true;
 			} );
 
-			BlockIDHandler.initialize( "dummy" );
 
 			// Call initialize
 			initialize();
+
+			BlockRegistry.doBlockRegistration( "dummy" );
 		} catch (GameInitializationException e) {
 
 			Debug.logException( e, this );

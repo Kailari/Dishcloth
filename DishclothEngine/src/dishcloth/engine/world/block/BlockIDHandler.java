@@ -1,149 +1,91 @@
 package dishcloth.engine.world.block;
 
-import dishcloth.engine.io.save.datapaths.BlockIDHeaderDataPath;
 import dishcloth.engine.util.logger.Debug;
 
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * BlockIDHandler.java
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * <p>
- * Ensures that block IDs are kept same, even if new blocks are registered
+ * Ensures that block IDs are kept same, even if new blocks are registered and/or some of old blocks are removed.
  * <p>
- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * No direct calls to this class should be necessary from game's code. All interaction should be done trough
+ * BlockRegistry. Therefor, this class is made package local to minimize it's exposure.
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * Created by ASDSausage on 7.6.2015
  */
 
-public class BlockIDHandler {
-
-	private static BlockIDHeaderDataPath path;
-	private static HashMap<_BlockID, IBlock> blocks = new HashMap<>();
-	private static HashMap<String, HashMap<String, _BlockID>> idStrings = new HashMap<>();
-	private static HashMap<Short, _BlockID> IDs = new HashMap<>();
+final class BlockIDHandler {
+	private static BlockIDList IDs = new BlockIDList();
+	private static List<Short> IDsWithForcedFallback = new ArrayList<>();
 	private static short blockID_counter;
+
 	private BlockIDHandler() {}
 
-	public static BlockID getBlockID(int id) {
-		return (IDs.containsKey( id ) ? IDs.get( id ) : null);
-	}
-
-	public static BlockID getBlockID(String s) {
-		String[] split = s.split( ":" );
-		if (split.length == 2) {
-			return getBlockID( split[0], split[1] );
-		}
-
-		return null;
-	}
-
-	public static BlockID getBlockID(String mod, String idString) {
-		return idStrings.get( mod ).get( idString );
-	}
-
-	public static IBlock getBlock(int id) {
-		return getBlock( getBlockID( id ) );
-	}
-
-	public static IBlock getBlock(BlockID blockID) {
-		return (blocks.containsKey( (_BlockID) blockID ) ? blocks.get( blockID ) : null);
-	}
-
-	public static IBlock getBlock(String mod, String idString) {
-		return getBlock( getBlockID( mod, idString ) );
-	}
-
-	public static IBlock getBlock(String s) {
-		return getBlock( getBlockID( s ) );
-	}
-
-	private static void putIDStringOfBlockID(_BlockID id) {
-		if (!idStrings.containsKey( id.getMod() )) {
-			idStrings.put( id.getMod(), new HashMap<>() );
-		}
-
-		HashMap<String, _BlockID> strings = idStrings.get( id.getMod() );
-
-		strings.put( id.getIDString(), id );
-
-		idStrings.put( id.getMod(), strings );
-	}
-
-	/**
-	 * MUST BE CALLED BEFORE ANY KIND OF BLOCK REGISTRATION IS DONE
-	 *
-	 * @param saveName name of the save-folder
-	 */
-	public static void initialize(String saveName) {
-		path = new BlockIDHeaderDataPath( "/saves/" + saveName + "/" );
-
-		if (!path.fileIsEmpty()) {
-			loadBlockIDHeader();
-		}
-	}
-
-	public static BlockID registerBlock(IBlock block, String blockID, String mod) {
-		assert block != null;
-
-		// Ensure that block hasn't been registered yet.
-		if (blocks.values().contains( block )) {
-			Debug.logWarn( "Tried to re-register block! MOD:ID = " + mod + ":" + blockID, "BlockIDHandler" );
+	protected static BlockID getBlockID(short id) {
+		// -1 is the default fallback ID
+		if (id == -1) {
+			// TODO: Return air or something like that.
 			return null;
 		}
 
-		_BlockID id;
-
-		// Check if given mod:id was loaded from header.
-		if (idStrings.containsKey( mod ) && idStrings.get( mod ).containsKey( blockID )) {
-			id = idStrings.get( mod ).get( blockID );
+		if (IDsWithForcedFallback.contains( id )) {
+			return getBlockID( IDs.get( id ).getFallbackID() );
 		} else {
-			id = new _BlockID( mod, blockID, blockID_counter++ );
-			IDs.put( id.getID(), id );
-
-			putIDStringOfBlockID( id );
+			return IDs.get( id );
 		}
-
-		blocks.put( id, block );
-
-		return id;
 	}
 
-
-	public static void saveBlockIDHeader() {
-		path.startWrite();
-		path.writeInt( blocks.size() );
-		blocks.keySet().forEach( dishcloth.engine.world.block.BlockIDHandler::writeBlockID );
-		path.endWrite();
-	}
-
-	private static void writeBlockID(_BlockID id) {
-		BlockID.saveHandler.writeToFile( path, id );
-	}
-
-	public static void loadBlockIDHeader() {
-		path.startRead();
-		int size = path.readInt();
-		short largest = 0;
-		for (int i = 0; i < size; i++) {
-			_BlockID id = (_BlockID) BlockID.saveHandler.readFromFile( path );
-			largest = (id.getID() > largest ? id.getID() : largest);
-
-			IDs.put( id.getID(), id );
-
-			putIDStringOfBlockID( id );
+	protected static BlockID getBlockID(String mod, String idString) {
+		BlockID blockID = IDs.get( mod, idString );
+		if (blockID != null) {
+			if (IDsWithForcedFallback.contains( blockID.getID() )) {
+				return getBlockID( blockID.getFallbackID() );
+			} else {
+				return blockID;
+			}
+		} else {
+			return null;
 		}
-		path.endRead();
-
-		blockID_counter = largest;
 	}
 
-	// Override for using protected constructor
-	// This is done to prevent initializing BlockIDs from anywhere else than here
-	// (OFC, if somebody REALLY wants to initialize one, it is still possible to override the class elsewhere)
-	private static class _BlockID extends BlockID {
-		private _BlockID(String mod, String idString, short id) {
-			super( mod, idString, id );
+	protected static void registerBlockID(BlockID id) {
+		IDs.add( id );
+	}
+
+	protected static BlockID createBlockID(String mod, String id) {
+		// Ensure that block hasn't been registered yet.
+		if (IDs.get( mod, id ) != null) {
+			Debug.logWarn( "Tried to re-register block! MOD:ID = " + mod + ":" + id, "BlockIDHandler" );
+			return null;
 		}
+		BlockID blockID = new BlockID( mod, id, blockID_counter++, (short) -1 );
+		registerBlockID( blockID );
+		return blockID;
+	}
+
+	protected static void registerFallbackID(BlockID target, String fallbackMod, String fallbackID) {
+		BlockID fallbackBlockID = IDs.get( fallbackMod, fallbackID );
+		target.setFallbackID( fallbackBlockID.getID() );
+		IDsWithForcedFallback.add( fallbackBlockID.getID() );
+	}
+
+	protected static void registerFallbackID(BlockID target, short fallback) {
+		target.setFallbackID( fallback );
+	}
+
+	protected static void forceFallback(BlockID target) {
+		IDsWithForcedFallback.add( target.getID() );
+	}
+
+	protected static List<BlockID> getBlockIDs() {
+		return IDs.asList();
+	}
+
+	protected static void setBlockIDCounter(short blockIDCounter) {
+		BlockIDHandler.blockID_counter = blockIDCounter;
 	}
 }

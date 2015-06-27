@@ -17,22 +17,20 @@ import java.util.List;
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * Created by Lassi on 20.5.2015.
  */
-class QuadTreeCell<T extends AQuadTreeDataObject> {
+public class QuadTreeCell<T extends AQuadTreeDataObject> {
 
-	// TODO: Bucket data handling and updating dirty DataObjects
-	// TODO: Splitting cells
+	protected final int maxDepth;
 
-	private final int maxDepth;
-	private int depth;
-	private int bucketSize;
-	private Rectangle bounds;
+	protected int depth;
+	protected int bucketSize;
+	protected Rectangle bounds;
 
-	private QuadTree<T> tree;
-	private QuadTreeCell<T> parent;
-	private QuadTreeCell<T>[] children;
-	private boolean isSplit;
+	protected QuadTree<T> tree;
+	protected QuadTreeCell<T> parent;
+	protected QuadTreeCell<T>[] children;
+	protected boolean isSplit;
 
-	private List<T> bucket;
+	protected List<T> bucket;
 
 	/**
 	 * Creates root-cell
@@ -41,7 +39,7 @@ class QuadTreeCell<T extends AQuadTreeDataObject> {
 	 * @param bucketSize bucket size
 	 * @param maxDepth   maximum depth
 	 */
-	public QuadTreeCell(Rectangle bounds, int bucketSize, int maxDepth) {
+	public QuadTreeCell(QuadTree tree, Rectangle bounds, int bucketSize, int maxDepth) {
 		this.bounds = new Rectangle( bounds );
 		this.bucketSize = bucketSize;
 		this.depth = 0;
@@ -49,6 +47,7 @@ class QuadTreeCell<T extends AQuadTreeDataObject> {
 
 		this.bucket = new ArrayList<>();
 		this.parent = null;
+		this.tree = tree;
 
 		this.initializeChildrenArray();
 	}
@@ -60,8 +59,9 @@ class QuadTreeCell<T extends AQuadTreeDataObject> {
 	 * @param top    Created cell should be one of the top children
 	 * @param left   Created cell should be one of the children on the left side
 	 */
-	private QuadTreeCell(QuadTreeCell<T> parent, boolean top, boolean left) {
+	protected QuadTreeCell(QuadTreeCell<T> parent, boolean top, boolean left) {
 		this.parent = parent;
+		this.tree = parent.getTree();
 
 		this.maxDepth = parent.maxDepth;
 		this.depth = parent.depth + 1;
@@ -79,8 +79,21 @@ class QuadTreeCell<T extends AQuadTreeDataObject> {
 		                             (top ? parent.bounds.y + h : parent.bounds.y), w, h );
 	}
 
+	// TODO: Bucket data handling and updating dirty DataObjects
+	public QuadTreeCell<T> getParent() {
+		return parent;
+	}
+
+	protected QuadTreeCell<T>[] getChildren() {
+		return this.children;
+	}
+
 	public QuadTree<T> getTree() {
 		return tree;
+	}
+
+	public void setTree(QuadTree<T> tree) {
+		this.tree = tree;
 	}
 
 	/**
@@ -97,7 +110,7 @@ class QuadTreeCell<T extends AQuadTreeDataObject> {
 		this.children = (QuadTreeCell<T>[]) tmp.toArray();
 	}
 
-	private void split() {
+	protected void split() {
 		if (this.depth == this.maxDepth) {
 			Debug.logErr( "TRIED TO SPLIT CELL WHICH ALREADY IS AT MAX DEPTH", this );
 			return;
@@ -113,8 +126,8 @@ class QuadTreeCell<T extends AQuadTreeDataObject> {
 		T data;
 		for (int i = 0; i < this.bucket.size(); i++) {
 			for (int j = 0; j < 4; j++) {
-				if (this.children[i].bounds.containsPoint( (data = this.bucket.get( i )).getPosition() )) {
-					this.children[i].addData( data );
+				if (this.children[j].bounds.containsPoint( (data = this.bucket.get( i )).getPosition() )) {
+					this.children[j].addData( data );
 					break;
 				}
 			}
@@ -125,15 +138,11 @@ class QuadTreeCell<T extends AQuadTreeDataObject> {
 		this.isSplit = true;
 	}
 
-	private void collapse() {
-		List<T> allData = getAllData();
+	public void collapse() {
+		if (canCollapse()) {
 
-		if (allData.size() <= this.bucketSize) {
-			// Nullify children
-			this.children[0] = null;
-			this.children[1] = null;
-			this.children[2] = null;
-			this.children[3] = null;
+			List<T> allData = getAllData();
+			clearChildren();
 
 			// Add data to self
 			this.bucket.addAll( allData );
@@ -143,7 +152,24 @@ class QuadTreeCell<T extends AQuadTreeDataObject> {
 
 			// Cell is no longer split
 			this.isSplit = false;
+
+			// Try to collapse parent if not null
+			if (this.parent != null) {
+				parent.collapse();
+			}
 		}
+	}
+
+	protected void clearChildren() {
+		// Nullify children
+		this.children[0] = null;
+		this.children[1] = null;
+		this.children[2] = null;
+		this.children[3] = null;
+	}
+
+	protected boolean canCollapse() {
+		return getAllData().size() <= this.bucketSize;
 	}
 
 	public QuadTreeCell<T> getCellInLocation(Point location) {
@@ -196,11 +222,11 @@ class QuadTreeCell<T extends AQuadTreeDataObject> {
 		return list;
 	}
 
-	private boolean isCompletelyInsideRectangle(Rectangle rectangle) {
+	protected boolean isCompletelyInsideRectangle(Rectangle rectangle) {
 		return rectangle.containsRectangle( rectangle );
 	}
 
-	private boolean overlapsRectangle(Rectangle rectangle) {
+	protected boolean overlapsRectangle(Rectangle rectangle) {
 		return this.bounds.overlaps( rectangle );
 	}
 
@@ -246,7 +272,7 @@ class QuadTreeCell<T extends AQuadTreeDataObject> {
 	@SuppressWarnings("unchecked")
 	public void addData(T data) {
 		if (!this.isSplit) {
-			if (this.bucket.size() < this.bucketSize) {
+			if (this.bucket.size() < this.bucketSize || this.depth == maxDepth) {
 				if (data.getContainer() != null) {
 					data.getContainer().moveData( data, this );
 				} else {
@@ -269,8 +295,16 @@ class QuadTreeCell<T extends AQuadTreeDataObject> {
 
 		Debug.logErr( "Data was not added. For some reason, addData() could not find suitable cell to add data to.",
 		              this );
+	}
 
-		return;
+	/**
+	 * !!! SKIPS ALL VALIDITY AND BUCKET/SPLIT/CHILD -CHECKS. UNSAFE, DO NOT USE UNLESS ABSOLUTELY SURE ABOUT WHAT
+	 * YOU ARE DOING !!!
+	 *
+	 * @param data data to add.
+	 */
+	protected void addDirect(T data) {
+		this.bucket.add( data );
 	}
 
 	public void removeData(T data) {
@@ -313,6 +347,10 @@ class QuadTreeCell<T extends AQuadTreeDataObject> {
 		commonParent.addData( data );
 	}
 
+	public List<T> getData() {
+		return this.bucket;
+	}
+
 	private QuadTreeCell<T> parentOnDepth(int depth) {
 		if (this.depth == depth) {
 			return parent;
@@ -324,5 +362,17 @@ class QuadTreeCell<T extends AQuadTreeDataObject> {
 		}
 
 		return p;
+	}
+
+	public boolean getIsSplit() {
+		return isSplit;
+	}
+
+	protected void setIsSplit(boolean isSplit) {
+		this.isSplit = isSplit;
+	}
+
+	public Rectangle getBounds() {
+		return bounds;
 	}
 }

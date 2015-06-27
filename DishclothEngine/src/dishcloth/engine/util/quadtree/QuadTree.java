@@ -1,5 +1,6 @@
 package dishcloth.engine.util.quadtree;
 
+import dishcloth.engine.util.geom.Point;
 import dishcloth.engine.util.geom.Rectangle;
 
 import java.util.ArrayList;
@@ -20,7 +21,7 @@ import java.util.List;
 public class QuadTree<T extends AQuadTreeDataObject> {
 
 	/**
-	 * How many DataObjects can one cell contain before being split
+	 * How many DataObjects can one cell contain before being automagically split
 	 * -1 means infinite
 	 */
 	private final int bucketSize;
@@ -33,9 +34,19 @@ public class QuadTree<T extends AQuadTreeDataObject> {
 	private List<T> data;
 	private List<T> dirty;
 
-	public QuadTree(Rectangle bounds, int bucketSize, int maxDepth) {
-		this.root = new QuadTreeCell<>( bounds, bucketSize, maxDepth );
+	public QuadTree(int bucketSize, int maxDepth, QuadTreeCell<T> cell) {
+		this.root = cell;
 		this.data = new ArrayList<>();
+		this.dirty = new ArrayList<>();
+		this.maxDepth = maxDepth;
+		this.bucketSize = bucketSize;
+		this.root.setTree( this );
+	}
+
+	public QuadTree(Rectangle bounds, int bucketSize, int maxDepth) {
+		this.root = new QuadTreeCell<>( this, bounds, bucketSize, maxDepth );
+		this.data = new ArrayList<>();
+		this.dirty = new ArrayList<>();
 		this.maxDepth = maxDepth;
 		this.bucketSize = bucketSize;
 	}
@@ -82,11 +93,15 @@ public class QuadTree<T extends AQuadTreeDataObject> {
 		dirty.clear();
 	}
 
-	@SuppressWarnings( "unchecked" )
+	@SuppressWarnings("unchecked")
 	private void updateDirty(T d) {
 		QuadTreeCell<T> cell = root.getCellInLocation( d.getPosition() );
 		if (cell != d.getContainer()) {
 			d.getContainer().moveData( d, cell );
 		}
+	}
+
+	public List<T> getDataAt(float x, float y) {
+		return root.getCellInLocation( new Point(x, y) ).getData();
 	}
 }
