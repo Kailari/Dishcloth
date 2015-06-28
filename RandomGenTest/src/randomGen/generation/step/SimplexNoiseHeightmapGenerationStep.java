@@ -21,11 +21,11 @@ public class SimplexNoiseHeightmapGenerationStep implements ITerrainGenerationSt
 	public SimplexNoiseHeightmapGenerationStep(long seed) {
 		this.seed = seed;
 		this.noise = new SimplexNoise( seed,    // Seed
-		                               8,       // n of octaves
-		                               0,       // lacunarity
+		                               16,      // n of octaves
+		                               0,     // lacunarity
 		                               0.5,     // gain
 		                               50.0,    // initial amplitude
-		                               0.004);  // initial frequency
+		                               0.008);  // initial frequency
 	}
 
 	@Override

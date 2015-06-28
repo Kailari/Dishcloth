@@ -70,13 +70,13 @@ public class NoisePanel extends JPanel {
 
 		@Override
 		public void keyPressed(KeyEvent e) {
-			if (e.getKeyCode() == KeyEvent.VK_SPACE) {
-				panel.createNoiseImage();
-			}
 		}
 
 		@Override
 		public void keyReleased(KeyEvent e) {
+			if (e.getKeyCode() == KeyEvent.VK_SPACE) {
+				panel.createNoiseImage();
+			}
 		}
 	}
 }

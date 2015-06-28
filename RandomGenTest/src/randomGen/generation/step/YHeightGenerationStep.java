@@ -32,12 +32,15 @@ public class YHeightGenerationStep implements ITerrainGenerationStep {
 	public float[] onGenerateValues(float[] values, long seed, int chunkX, int chunkY) {
 		int size = Math.round( (float) Math.sqrt( values.length ) );
 
+		float[] tmp = new float[size];
+		System.arraycopy( values, 0, tmp, 0, size );
+
 		for (int x = 0; x < size; x++) {
 			for (int y = 0; y < size; y++) {
 				float value = values[x + y * size];
 				value = (lessThan
-						? (y < yLimit ? 0f : value)
-						: (y > yLimit ? 0f : value));
+						? (y < tmp[x] * yLimit ? 0f : value)
+						: (y > tmp[x] * yLimit ? 0f : value));
 				values[x + y * size] = value;
 			}
 		}
