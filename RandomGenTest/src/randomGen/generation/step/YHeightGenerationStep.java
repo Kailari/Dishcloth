@@ -33,7 +33,11 @@ public class YHeightGenerationStep implements ITerrainGenerationStep {
 		int size = Math.round( (float) Math.sqrt( values.length ) );
 
 		float[] tmp = new float[size];
-		System.arraycopy( values, 0, tmp, 0, size );
+		for (int i = 0; i < size / 4; i++) {
+			for (int j = 0; j < 4; j++) {
+				tmp[(i * 4) + j] = values[i];
+			}
+		}
 
 		for (int x = 0; x < size; x++) {
 			for (int y = 0; y < size; y++) {

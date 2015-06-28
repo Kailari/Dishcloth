@@ -14,10 +14,9 @@ public class DefaultTerrainGenerator extends ATerrainGenerator {
 		//randomGen.progress = new TerrainGenProgress( true, width, height );
 
 		this.steps.add( new SimplexNoiseHeightmapGenerationStep( seed ) );
-		this.steps.add( new RangeFilterGenerationStep( 0.2f, true ) );
-		//this.steps.add( new RangeFilterGenerationStep( 0.9f, false, 1f ) );
 		this.steps.add( new YHeightGenerationStep( 128, true ) );
-
+		this.steps.add( new RangeFilterGenerationStep( 0.3f, true ) );
+		//this.steps.add( new RangeFilterGenerationStep( 0.9f, false, 1f ) );
 	}
 
 	public DefaultTerrainGenerator() {
