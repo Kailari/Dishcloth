@@ -1,4 +1,4 @@
-package progress;
+package randomGen.progress;
 
 /**
  * Created by Lassi on 25.6.2015.
@@ -6,7 +6,7 @@ package progress;
 public class TerrainGenProgress extends AProgress {
 	/**
 	 *
-	 * @param printAlways Always print progress (debugging)
+	 * @param printAlways Always print randomGen.progress (debugging)
 	 * @param width width of the level
 	 * @param height height of the level
 	 */

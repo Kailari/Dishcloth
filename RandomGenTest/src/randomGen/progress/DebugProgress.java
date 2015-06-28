@@ -1,4 +1,4 @@
-package progress;
+package randomGen.progress;
 
 /**
  * Only used to test AProgress class...

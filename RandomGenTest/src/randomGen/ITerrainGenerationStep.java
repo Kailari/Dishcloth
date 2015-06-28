@@ -1,8 +1,10 @@
+package randomGen;
+
 import dishcloth.engine.world.level.TerrainChunk;
 
 /**
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- * ITerrainGenerationStep.java
+ * randomGen.ITerrainGenerationStep.java
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * <p>
  * TODO: Description

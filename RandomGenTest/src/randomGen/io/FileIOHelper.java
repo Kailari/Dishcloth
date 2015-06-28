@@ -1,11 +1,10 @@
-package io;
+package randomGen.io;
 
 import dishcloth.engine.util.logger.Debug;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 
@@ -28,8 +27,6 @@ public class FileIOHelper {
 	 * @param values   Height-values
 	 */
 	public static void SaveHeightmapToFile(String filename, float[] values) {
-		int size = (int) Math.sqrt( values.length );
-
 		Color[] colors = new Color[values.length];
 
 		for (int i = 0; i < values.length; i++) {
@@ -66,5 +63,27 @@ public class FileIOHelper {
 		catch (IOException e) {
 			Debug.logException( e, "FileIOHelper" );
 		}
+	}
+
+	public static Image valuesToImage(float[] values) {
+		Color[] colors = new Color[values.length];
+
+		for (int i = 0; i < values.length; i++) {
+			colors[i] = new Color( values[i], values[i], values[i], 1.0f );
+		}
+
+		int size = (int) Math.sqrt( colors.length );
+
+		// Create BufferedImage
+		BufferedImage tmpImage = new BufferedImage( size, size, BufferedImage.TYPE_INT_ARGB );
+
+		// Set pixels' colors
+		for (int x = 0; x < size; x++) {
+			for (int y = 0; y < size; y++) {
+				tmpImage.setRGB( x, y, colors[x + y * size].getRGB() );
+			}
+		}
+
+		return tmpImage;
 	}
 }

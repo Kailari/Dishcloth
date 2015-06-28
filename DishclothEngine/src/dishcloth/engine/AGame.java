@@ -141,7 +141,7 @@ public abstract class AGame implements IGame {
 	}
 
 	private void initHardware() throws GameInitializationException {
-		// Initialize window
+		// Initialize randomGen.window
 		initWindow();
 
 		// Create renderer
@@ -166,12 +166,12 @@ public abstract class AGame implements IGame {
 		screenWidth = 800;
 		screenHeight = 600;
 
-		// Initialize window
+		// Initialize randomGen.window
 
 		// Set hint flags
 		glfwWindowHint( GLFW_RESIZABLE, GL_FALSE );
 
-		// Create window handle
+		// Create randomGen.window handle
 		windowID = glfwCreateWindow( screenWidth, screenHeight, "Dishcloth", NULL, NULL );
 
 		// Validate windowID
@@ -179,7 +179,7 @@ public abstract class AGame implements IGame {
 			throw new GameInitializationException( "glfwCreateWindow() failed!" );
 		}
 
-		// Make created window active
+		// Make created randomGen.window active
 
 		glfwMakeContextCurrent( windowID );
 		GLContext.createFromCurrent();
@@ -250,7 +250,7 @@ public abstract class AGame implements IGame {
 		shutdown();
 
 
-		// Destroy window
+		// Destroy randomGen.window
 		glfwDestroyWindow( windowID );
 
 		// Terminate glfw

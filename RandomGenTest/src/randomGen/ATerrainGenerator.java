@@ -1,10 +1,10 @@
-import dishcloth.engine.world.level.TerrainChunk;
-import progress.AProgress;
+package randomGen;
 
-import java.awt.*;
+import dishcloth.engine.world.level.TerrainChunk;
+import randomGen.progress.AProgress;
+
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 /**
  * Created by Lassi on 25.6.2015.

@@ -1,4 +1,4 @@
-package progress;
+package randomGen.progress;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -77,17 +77,17 @@ public abstract class AProgress {
 
 
 	/**
-	 * Returns the progress, this number will be multiplied by 100. <br>
+	 * Returns the randomGen.progress, this number will be multiplied by 100. <br>
 	 * Will return for example 20 instead of 0.20.
 	 */
 	public float getProgress() {
 		/* To clarify:
 		* Progress p (this) has components c1,c2,c3. Each of them weight = 1
-		* c1 is 100% completed  (c1 progress = 100%, total progress = 33%)
-		* c2 is 50% completed   (c2 progress = 50%,  total progress = 33%+33%*50% = 50%)
-		* c3 is 0% completed    (c3 progress = 0%,   total progress = 50%)
+		* c1 is 100% completed  (c1 randomGen.progress = 100%, total randomGen.progress = 33%)
+		* c2 is 50% completed   (c2 randomGen.progress = 50%,  total randomGen.progress = 33%+33%*50% = 50%)
+		* c3 is 0% completed    (c3 randomGen.progress = 0%,   total randomGen.progress = 50%)
 		*
-		* Total progress = sum(completed.weight) + current.weight * current.percent
+		* Total randomGen.progress = sum(completed.weight) + current.weight * current.percent
 		* */
 
 		if (finished) return 1F;
@@ -113,7 +113,7 @@ public abstract class AProgress {
 	}
 
 	public String getProgressText() {
-		if (finished) return "Completed!   100%" + "   Total progress: 100%";
+		if (finished) return "Completed!   100%" + "   Total randomGen.progress: 100%";
 
 		if (currentIndex >= components.size()) {
 			// Debug.errLog("Error! Index > components size!", "Progress");
@@ -123,10 +123,10 @@ public abstract class AProgress {
 
 		PrgComponent c = components.get( currentIndex );
 
-		if (c.full()) return c.done + "   Total progress: " + getProgress() + "%";
+		if (c.full()) return c.done + "   Total randomGen.progress: " + getProgress() + "%";
 
 
-		return c.status + "   " + c.getPercent() + "%" + "   Total progress: " + getProgress() + "%";
+		return c.status + "   " + c.getPercent() + "%" + "   Total randomGen.progress: " + getProgress() + "%";
 	}
 
 	public void print() {

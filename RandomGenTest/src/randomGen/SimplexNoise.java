@@ -1,10 +1,12 @@
+package randomGen;
+
 import dishcloth.engine.util.math.DishMath;
 
 import java.util.Random;
 
 /**
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- * SimplexNoise.java
+ * randomGen.SimplexNoise.java
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * <p>
  * Simplex noise.
@@ -20,7 +22,7 @@ import java.util.Random;
 
 public class SimplexNoise {
 
-	private static final int N_GRADIENTS = 16;
+	private static final int N_GRADIENTS = 12;
 	private static final double GRADIENT_STEP = 360f / N_GRADIENTS;
 	private static final double SKEWING_FACTOR = (double) ((Math.sqrt( 3.0 ) - 1.0) / 2.0);
 	private static final double UNSKEWING_FACTOR = (double) ((1.0 / Math.sqrt( 3.0 ) - 1.0) / -2.0);
@@ -60,7 +62,7 @@ public class SimplexNoise {
 		this.amplitude = amplitude;
 		this.frequency = frequency;
 
-		prepareGradientTable( seed, false );
+		prepareGradientTable();
 		preparePermutationTable( seed );
 	}
 
@@ -92,13 +94,11 @@ public class SimplexNoise {
 		}
 	}
 
-	private void prepareGradientTable(long seed, boolean randomGradients) {
-		Random random = new Random( seed );
-
+	private void prepareGradientTable() {
 		double angle;
 		for (int i = 0; i < gradientTable.length; i++) {
-			angle = (double) Math.toRadians( randomGradients ? random.nextFloat() * 360f : i * GRADIENT_STEP );
-			gradientTable[i] = new Gradient( (double) Math.cos( angle ), (double) Math.sin( angle ) );
+			angle = Math.toRadians( i * GRADIENT_STEP );
+			gradientTable[i] = new Gradient( Math.cos( angle ), Math.sin( angle ) );
 		}
 	}
 
@@ -114,7 +114,7 @@ public class SimplexNoise {
 			ampl *= gain;
 		}
 
-		return value / octaves;
+		return value;
 	}
 
 	private double simplexNoise(double x, double y) {
@@ -154,11 +154,13 @@ public class SimplexNoise {
 
 
 		// Calculate contributions from the three corners.
-		// XXX: I have no idea how this thing can work. (almost direct copypaste from other implementation)
-		//      There have probably been some major adjustments in the algorithms so I haven't quite figured out yet
-		//      which is which.
+		// XXX: I have no idea how this thing can work.
+		//      (From here on code is almost directly copied from other implementation. There have probably been some
+		//      major adjustments in the algorithms so I haven't quite figured out yet which is which.)
 
 		double firstCornerContribution, middleCornerContribution, lastCornerContribution;
+
+		// XXX: t0 might be radius of the circle around the simplex on first corner?
 		double t0 = 0.5f - x0 * x0 - y0 * y0;
 		if (t0 < 0f) {
 			firstCornerContribution = 0.0f;

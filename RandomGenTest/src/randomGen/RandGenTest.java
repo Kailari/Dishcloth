@@ -1,19 +1,33 @@
-import io.FileIOHelper;
-import progress.DebugProgress;
-import progress.PrgComponent;
+package randomGen;
+
+import randomGen.progress.DebugProgress;
+import randomGen.progress.PrgComponent;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 
 /**
  * Created by Lassi on 21.6.2015.
  */
 public class RandGenTest {
 
+	public static final int HEIGHTMAP_SIZE = 512;
 
 	public static void main(String[] args) {
 		//howToUse();
-		DefaultTerrainGenerator generator = new DefaultTerrainGenerator();
 
-		FileIOHelper.SaveHeightmapToFile( "heightmap", generator.generateValues( 0, 0, 512 ) );
-		System.out.println("Saved to file!");
+		JFrame frame = new JFrame( "SimplexNoise" );
+		frame.setVisible( true );
+		frame.setSize( HEIGHTMAP_SIZE, HEIGHTMAP_SIZE );
+		frame.setDefaultCloseOperation( WindowConstants.EXIT_ON_CLOSE );
+		frame.setLocationRelativeTo( null );
+		NoisePanel panel = new NoisePanel();
+		frame.add( panel );
+		frame.addKeyListener( new NoisePanel.NoisePanelKeyListener( panel ) );
+
+		EventQueue.invokeLater( panel::createNoiseImage );
 	}
 
 	private static void howToUse() {
@@ -24,7 +38,7 @@ public class RandGenTest {
 		// DebugProgress on vaan debuggaamiseen. Se printtaa kaikki muutokset
 		DebugProgress example = new DebugProgress();
 
-		/* Eli siis tuohon progress instanceen pistet‰‰n componentteja.
+		/* Eli siis tuohon randomGen.progress instanceen pistet‰‰n componentteja.
 		 * Componenteilla on constructorissa argumentit:
 		 *      int weight      componentin painoarvo
 		 *      String status   viesti joka printataan kun generointi on kesken (esim. "Luodaan maastoa")
