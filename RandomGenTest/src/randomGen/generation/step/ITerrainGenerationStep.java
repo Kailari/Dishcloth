@@ -23,7 +23,7 @@ public interface ITerrainGenerationStep {
 	 * @param chunkY      Position of the chunk on y-axis. (in chunks)
 	 * @return The modified chunk
 	 */
-	TerrainChunk onGenerateChunk(TerrainChunk targetChunk, long seed, int chunkX, int chunkY);
+	TerrainChunk onGenerateChunk(TerrainChunk targetChunk, float[] values, long seed, int chunkX, int chunkY);
 
 	/**
 	 * Temporary. There is no idea in debugging terrain generation directly with TerrainChunks.

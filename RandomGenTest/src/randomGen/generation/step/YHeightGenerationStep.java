@@ -24,7 +24,7 @@ public class YHeightGenerationStep implements ITerrainGenerationStep {
 	}
 
 	@Override
-	public TerrainChunk onGenerateChunk(TerrainChunk targetChunk, long seed, int chunkX, int chunkY) {
+	public TerrainChunk onGenerateChunk(TerrainChunk targetChunk, float[] values, long seed, int chunkX, int chunkY) {
 		return targetChunk;
 	}
 
