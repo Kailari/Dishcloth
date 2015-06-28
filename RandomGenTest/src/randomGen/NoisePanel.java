@@ -1,5 +1,6 @@
 package randomGen;
 
+import randomGen.generation.generator.DefaultTerrainGenerator;
 import randomGen.io.FileIOHelper;
 
 import javax.swing.*;

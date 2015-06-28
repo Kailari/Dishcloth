@@ -1,10 +1,11 @@
-package randomGen;
+package randomGen.generation.step;
 
 import dishcloth.engine.world.level.TerrainChunk;
+import randomGen.util.SimplexNoise;
 
 /**
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- * randomGen.SimplexNoiseHeightmapGenerationStep.java
+ * randomGen.generation.step.SimplexNoiseHeightmapGenerationStep.java
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * <p>
  * TODO: Description
@@ -21,19 +22,19 @@ public class SimplexNoiseHeightmapGenerationStep implements ITerrainGenerationSt
 		this.seed = seed;
 		this.noise = new SimplexNoise( seed,    // Seed
 		                               8,       // n of octaves
-		                               2.0,     // lacunarity
+		                               0,       // lacunarity
 		                               0.5,     // gain
 		                               50.0,    // initial amplitude
 		                               0.004);  // initial frequency
 	}
 
 	@Override
-	public TerrainChunk doGeneration(TerrainChunk targetChunk, long seed, int chunkX, int chunkY) {
+	public TerrainChunk onGenerateChunk(TerrainChunk targetChunk, long seed, int chunkX, int chunkY) {
 		return null;
 	}
 
 	@Override
-	public float[] doGeneration(float[] values, long seed, int chunkX, int chunkY) {
+	public float[] onGenerateValues(float[] values, long seed, int chunkX, int chunkY) {
 		int size = (int) Math.sqrt( values.length );
 
 		float min = Float.MAX_VALUE;

@@ -1,10 +1,10 @@
-package randomGen;
+package randomGen.generation.step;
 
 import dishcloth.engine.world.level.TerrainChunk;
 
 /**
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- * randomGen.ITerrainGenerationStep.java
+ * randomGen.generation.step.ITerrainGenerationStep.java
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * <p>
  * TODO: Description
@@ -23,12 +23,12 @@ public interface ITerrainGenerationStep {
 	 * @param chunkY      Position of the chunk on y-axis. (in chunks)
 	 * @return The modified chunk
 	 */
-	TerrainChunk doGeneration(TerrainChunk targetChunk, long seed, int chunkX, int chunkY);
+	TerrainChunk onGenerateChunk(TerrainChunk targetChunk, long seed, int chunkX, int chunkY);
 
 	/**
 	 * Temporary. There is no idea in debugging terrain generation directly with TerrainChunks.
 	 * Assume values to be float[256 * 256]
 	 * (Also, terrain renderer is still WIP and doesn't work yet; thus, its better use heightmaps saved to file for now)
 	 */
-	float[] doGeneration(float[] values, long seed, int chunkX, int chunkY);
+	float[] onGenerateValues(float[] values, long seed, int chunkX, int chunkY);
 }
