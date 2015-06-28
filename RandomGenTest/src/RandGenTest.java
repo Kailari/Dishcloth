@@ -1,3 +1,4 @@
+import io.FileIOHelper;
 import progress.DebugProgress;
 import progress.PrgComponent;
 
@@ -8,8 +9,11 @@ public class RandGenTest {
 
 
 	public static void main(String[] args) {
-		howToUse();
+		//howToUse();
+		DefaultTerrainGenerator generator = new DefaultTerrainGenerator();
 
+		FileIOHelper.SaveHeightmapToFile( "heightmap", generator.generateValues( 0, 0, 512 ) );
+		System.out.println("Saved to file!");
 	}
 
 	private static void howToUse() {

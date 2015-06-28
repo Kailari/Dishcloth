@@ -1,5 +1,9 @@
+import dishcloth.engine.world.level.TerrainChunk;
 import progress.AProgress;
 
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -7,44 +11,36 @@ import java.util.Random;
  */
 public abstract class ATerrainGenerator {
 
-	protected final Random random;
 	private final long seed;
-	protected int width, height;
-	protected int dirtMin, dirtMax; // Min and max levels for dirt layer
-
-
-	protected int[] blocks; // to be replaced with 'protected Block[] blocks;' or something
-
+	protected List<ITerrainGenerationStep> steps;
 
 	protected AProgress progress;
 
 
-	public ATerrainGenerator(long seed, int width, int height, int dirtMin, int dirtMax) {
+	public ATerrainGenerator(long seed) {
 		this.seed = seed;
-		random = new Random( seed );
-
-		this.width = width;
-		this.height = height;
-
-		this.dirtMin = dirtMin;
-		this.dirtMax = dirtMax;
-
-		blocks = new int[width * height];
+		this.steps = new ArrayList<>();
 	}
 
-	private final void doGeneration() {
-		generateTerrain();
-		generateCaves();
-		generateWater();
-		generateGoodies();
+	public final TerrainChunk generateChunk(int chunkX, int chunkY) {
+		TerrainChunk newChunk = new TerrainChunk( chunkX, chunkY );
+		for (ITerrainGenerationStep step : this.steps) {
+			newChunk = step.doGeneration( newChunk, this.seed, chunkX, chunkY );
+		}
+		return newChunk;
 	}
 
-	protected abstract void generateTerrain();
-
-	protected abstract void generateCaves();
-
-	protected abstract void generateWater();
-
-	protected abstract void generateGoodies();
-
+	/**
+	 * TEMPORARY
+	 */
+	public final float[] generateValues(int chunkX, int chunkY, int size) {
+		float[] values = new float[size * size];
+		for (ITerrainGenerationStep step : this.steps) {
+			long startTime = System.currentTimeMillis();
+			values = step.doGeneration( values, this.seed, chunkX, chunkY );
+			System.out.println("Step \"" + step.getClass().getSimpleName() +"\" took "
+					                   + ((double)(System.currentTimeMillis() - startTime) / 1000.0) + " seconds.");
+		}
+		return values;
+	}
 }

@@ -46,11 +46,11 @@ public class TerrainChunk {
 		return y * 256;
 	}
 
-	public float getWorldX() {
+	public float getRenderX() {
 		return getTileX() * BLOCK_SIZE;
 	}
 
-	public float getWorldY() {
+	public float getRenderY() {
 		return getTileY() * BLOCK_SIZE;
 	}
 

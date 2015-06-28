@@ -77,6 +77,7 @@ public class DishMath {
 
 	/**
 	 * NOTE: NOT THE SAME AS Math.signum, returns 1 even when value == 0
+	 *
 	 * @return 1 if d >= 0, otherwise -1
 	 */
 	public static int sign(double d) {
@@ -86,14 +87,30 @@ public class DishMath {
 
 	/**
 	 * Linear interpolation between values
-	 * @param a    starting value
-	 * @param b    target value
-	 * @param t    interpolation "time". 0f means result is a, 1f means result is b.
-	 *                0.5f is the midpoint between the values.
+	 *
+	 * @param a starting value
+	 * @param b target value
+	 * @param t interpolation "time". 0f means result is a, 1f means result is b.
+	 *          0.5f is the midpoint between the values.
 	 */
-	public static float lerp(float a, float b, float t)
-	{
+	public static float lerp(float a, float b, float t) {
 		return a + t * (b - a);
+	}
+
+	/**
+	 * Essentially the same as Math.floor, but a lot faster.
+	 */
+	public static int fastFloor(double f) {
+		int i = (int) f;
+		return f < i ? i - 1 : i;
+	}
+
+	/**
+	 * Essentially the same as Math.floor, but a lot faster.
+	 */
+	public static int fastFloor(float f) {
+		int i = (int) f;
+		return f < i ? i - 1 : i;
 	}
 
 

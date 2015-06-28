@@ -2,9 +2,13 @@ package dishcloth.engine.world.level;
 
 import dishcloth.engine.rendering.IRenderable;
 import dishcloth.engine.rendering.IRenderer;
+import dishcloth.engine.rendering.render2d.SpriteBatch;
 import dishcloth.engine.util.quadtree.QuadTree;
 import dishcloth.engine.world.IUpdatable;
 import dishcloth.engine.world.Tile;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -17,19 +21,19 @@ import dishcloth.engine.world.Tile;
  * Created by ASDSausage on 3.6.2015
  */
 
-public class Terrain implements IRenderable, IUpdatable {
+public class Terrain implements IUpdatable {
 
-	private TerrainChunk[][] chunks;
+	private TerrainChunk[] chunks;
 	private int w, h;
 
 	public Terrain(int w, int h) {
-		this.chunks = new TerrainChunk[w][h];
+		this.chunks = new TerrainChunk[w * h];
 		this.w = w;
 		this.h = h;
 
 		for (int x = 0; x < w; x++) {
 			for (int y = 0; y < h; y++) {
-				this.chunks[x][y] = new TerrainChunk( x, y );
+				this.chunks[x + y * w] = new TerrainChunk( x, y );
 			}
 		}
 	}
@@ -43,8 +47,7 @@ public class Terrain implements IRenderable, IUpdatable {
 	public void fixedUpdate() {
 	}
 
-	@Override
-	public void render(IRenderer renderer) {
+	public void render(IRenderer renderer, SpriteBatch spriteBatch) {
 		/*
 			Rendering the terrain happens as follows:
 				1. Calculate camera view-rectangle
@@ -64,5 +67,21 @@ public class Terrain implements IRenderable, IUpdatable {
 
 		// TODO: SpriteBatch sprite scaling (or at least something close to it.)
 		// TODO: Render the fucking terrain already.
+
+		// 1. Find Chunks on screen
+		List<TerrainChunk> onScreenChunks = new ArrayList<>();
+		for (int x = 0; x < w; x++) {
+			for (int y = 0; y < h; y++) {
+				// TODO: Test if chunk is on-screen
+				onScreenChunks.add( this.chunks[x + y * w] );
+			}
+		}
+
+		// 2. Find Tiles on screen
+		for (TerrainChunk chunk : onScreenChunks) {
+
+		}
+
+		// 3. Render tiles
 	}
 }

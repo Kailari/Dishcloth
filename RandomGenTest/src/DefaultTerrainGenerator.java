@@ -1,3 +1,4 @@
+import dishcloth.engine.world.level.TerrainChunk;
 import progress.TerrainGenProgress;
 
 /**
@@ -5,48 +6,14 @@ import progress.TerrainGenProgress;
  */
 public class DefaultTerrainGenerator extends ATerrainGenerator {
 
-	// All floats are [0,1]
-	protected float terrainRoughness, caveAbundance, waterAbundance, goodies;
+	public DefaultTerrainGenerator(long seed) {
+		super( seed );
+		//progress = new TerrainGenProgress( true, width, height );
 
-	public DefaultTerrainGenerator(long seed, int width, int height) {
-		super( seed, width, height, getDirtMin( height ), getDirtMax( height ) );
-
-		progress = new TerrainGenProgress( true, width, height );
-
-		terrainRoughness = 0.20F;
+		this.steps.add( new SimplexNoiseHeightmapGenerationStep( seed ) );
 	}
 
-	public DefaultTerrainGenerator(int width, int height) {
-		this( System.currentTimeMillis(), width, height );
+	public DefaultTerrainGenerator() {
+		this( System.currentTimeMillis() );
 	}
-
-
-	private static int getDirtMin(int height) {
-		return height * 5 / 10;
-	}
-
-	private static int getDirtMax(int height) {
-		return height * 7 / 10;
-	}
-
-	@Override
-	protected void generateTerrain() {
-
-	}
-
-	@Override
-	protected void generateCaves() {
-
-	}
-
-	@Override
-	protected void generateWater() {
-
-	}
-
-	@Override
-	protected void generateGoodies() {
-
-	}
-
 }
