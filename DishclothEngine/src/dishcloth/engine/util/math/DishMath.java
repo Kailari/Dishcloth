@@ -94,7 +94,8 @@ public class DishMath {
 	 *          0.5f is the midpoint between the values.
 	 */
 	public static float lerp(float a, float b, float t) {
-		return a + t * (b - a);
+		return (1f - t) * a + t * b;    // More precise. No risk of floating point errors.
+		//return a + t * (b - a);
 	}
 
 	/**

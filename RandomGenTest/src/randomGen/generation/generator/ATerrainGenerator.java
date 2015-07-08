@@ -23,20 +23,21 @@ public abstract class ATerrainGenerator {
 		this.steps = new ArrayList<>();
 	}
 
+	// TODO: Design the actor/entity -storage. This function should return both TerrainChunk and populator results.
 	public TerrainChunk generate(int chunkX, int chunkY) {
 		// TODO: Replace magic number '256' with engine-level constant
-		float[] values = generateValues( chunkX, chunkY, 256 );
-		TerrainChunk chunk = generateChunk( chunkX, chunkY );
+		float[] values = generateValues( chunkX, chunkY );
+		TerrainChunk chunk = generateChunk( chunkX, chunkY, values );
 
 		// TODO: Run populator or sth.
 
 		return chunk;
 	}
 
-	private TerrainChunk generateChunk(int chunkX, int chunkY) {
+	private TerrainChunk generateChunk(int chunkX, int chunkY, float[] values) {
 		TerrainChunk newChunk = new TerrainChunk( chunkX, chunkY );
 		for (ITerrainGenerationStep step : this.steps) {
-			newChunk = step.onGenerateChunk( newChunk, this.seed, chunkX, chunkY );
+			newChunk = step.onGenerateChunk( newChunk, values, this.seed, chunkX, chunkY );
 		}
 		return newChunk;
 	}
@@ -44,13 +45,13 @@ public abstract class ATerrainGenerator {
 	/**
 	 * TEMPORARILY PUBLIC
 	 */
-	public final float[] generateValues(int chunkX, int chunkY, int size) {
-		float[] values = new float[size * size];
+	public final float[] generateValues(int chunkX, int chunkY) {
+		float[] values = new float[TerrainChunk.CHUNK_SIZE * TerrainChunk.CHUNK_SIZE];
 		for (ITerrainGenerationStep step : this.steps) {
 			long startTime = System.currentTimeMillis();
 			values = step.onGenerateValues( values, this.seed, chunkX, chunkY );
 			System.out.println("Step \"" + step.getClass().getSimpleName() +"\" took "
-					                   + ((double)(System.currentTimeMillis() - startTime) / 1000.0) + " seconds.");
+					                   + (double)(System.currentTimeMillis() - startTime) + " ms");
 		}
 		return values;
 	}

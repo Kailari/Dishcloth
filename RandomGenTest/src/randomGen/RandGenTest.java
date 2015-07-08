@@ -1,5 +1,6 @@
 package randomGen;
 
+import dishcloth.engine.world.level.TerrainChunk;
 import randomGen.progress.DebugProgress;
 import randomGen.progress.PrgComponent;
 
@@ -11,14 +12,15 @@ import java.awt.*;
  */
 public class RandGenTest {
 
-	public static final int HEIGHTMAP_SIZE = 512;
+	public static final int HEIGHTMAP_SIZE = 8; // * CHUNK_SIZE
+	public static final int NOISE_PANEL_SIZE = 600;//HEIGHTMAP_SIZE * TerrainChunk.CHUNK_SIZE / 2;
 
 	public static void main(String[] args) {
 		//howToUse();
 
 		JFrame frame = new JFrame( "SimplexNoise" );
 		frame.setVisible( true );
-		frame.setSize( HEIGHTMAP_SIZE, HEIGHTMAP_SIZE );
+		frame.setSize( NOISE_PANEL_SIZE, NOISE_PANEL_SIZE );
 		frame.setDefaultCloseOperation( WindowConstants.EXIT_ON_CLOSE );
 		frame.setLocationRelativeTo( null );
 		NoisePanel panel = new NoisePanel();

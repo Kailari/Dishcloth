@@ -14,6 +14,7 @@ import dishcloth.engine.world.level.TerrainChunk;
  */
 
 public interface ITerrainGenerationStep {
+
 	/**
 	 * Takes in a terrainChunk and applies a terrain generation operation on it.
 	 *

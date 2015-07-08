@@ -30,10 +30,15 @@ public class FileIOHelper {
 		Color[] colors = new Color[values.length];
 
 		for (int i = 0; i < values.length; i++) {
-			colors[i] = new Color( values[i], values[i], values[i], 1.0f );
+			if (values[i] <= 0f) {
+				colors[i] = Color.cyan;
+			}
+			else {
+				colors[i] = new Color( 1.0f - values[i], 1.0f - values[i], 1.0f - values[i], 1.0f );
+			}
 		}
 
-		SaveColormapToFile( filename, colors);
+		SaveColormapToFile( filename, colors );
 	}
 
 	/**
@@ -51,16 +56,20 @@ public class FileIOHelper {
 		// Set pixels' colors
 		for (int x = 0; x < size; x++) {
 			for (int y = 0; y < size; y++) {
-				tmpImage.setRGB( x, y, colors[x + y * size].getRGB() );
+				if (x % 256 == 0 || y % 256 == 0) {
+					tmpImage.setRGB( x, y, Color.RED.getRGB() );
+				}
+				else {
+					tmpImage.setRGB( x, y, colors[x + y * size].getRGB() );
+				}
 			}
 		}
 
 		// Try write to file
 		try {
 			File file = new File( "./" + filename + ".png" );
-			ImageIO.write(tmpImage, "PNG", file);
-		}
-		catch (IOException e) {
+			ImageIO.write( tmpImage, "PNG", file );
+		} catch (IOException e) {
 			Debug.logException( e, "FileIOHelper" );
 		}
 	}
@@ -69,7 +78,12 @@ public class FileIOHelper {
 		Color[] colors = new Color[values.length];
 
 		for (int i = 0; i < values.length; i++) {
-			colors[i] = new Color( values[i], values[i], values[i], 1.0f );
+			if (values[i] <= 0f) {
+				colors[i] = Color.cyan;
+			}
+			else {
+				colors[i] = new Color( 1.0f - values[i], 1.0f - values[i], 1.0f - values[i], 1.0f );
+			}
 		}
 
 		int size = (int) Math.sqrt( colors.length );
@@ -80,7 +94,12 @@ public class FileIOHelper {
 		// Set pixels' colors
 		for (int x = 0; x < size; x++) {
 			for (int y = 0; y < size; y++) {
-				tmpImage.setRGB( x, y, colors[x + y * size].getRGB() );
+				if (x % 256 == 0 || y % 256 == 0) {
+					tmpImage.setRGB( x, y, Color.RED.getRGB() );
+				}
+				else {
+					tmpImage.setRGB( x, y, colors[x + y * size].getRGB() );
+				}
 			}
 		}
 

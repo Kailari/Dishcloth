@@ -23,41 +23,42 @@ import java.util.Random;
 public class SimplexNoise {
 
 	private static final int N_GRADIENTS = 12;
-	private static final double GRADIENT_STEP = 360f / N_GRADIENTS;
-	private static final double SKEWING_FACTOR = (double) ((Math.sqrt( 3.0 ) - 1.0) / 2.0);
-	private static final double UNSKEWING_FACTOR = (double) ((1.0 / Math.sqrt( 3.0 ) - 1.0) / -2.0);
+	private static final float GRADIENT_STEP = 360f / N_GRADIENTS;
+	private static final float SKEWING_FACTOR = (float) ((Math.sqrt( 3.0 ) - 1.0) / 2.0);
+	private static final float UNSKEWING_FACTOR = (float) ((1.0 / Math.sqrt( 3.0 ) - 1.0) / -2.0);
 
 	private short[] permutationTable;
 	private Gradient[] gradientTable = new Gradient[N_GRADIENTS];
 
-	private double amplitude;
+	private float amplitude;
 	/**
 	 * Octave modifier for amplitude
 	 * <p>
 	 * amplitude for n:th octave is calculated as 'amplitude * gain^n'
 	 */
-	private double gain;
-	private double frequency;
+	private float gain;
+	private float frequency;
 	/**
 	 * Octave modifier for frequency
 	 * <p>
-	 * frequency for n:th octave is calculated as 'frequency * lacunarity^n'
+	 * frequency for n:th octave is calculated as 'frequency * persistence^n'
 	 */
-	private double lacunarity;
+	private float persistence;
 
 	private int octaves;
+	private float NOctaves;
 
 	public SimplexNoise(long seed, int octaves) {
-		this( seed, octaves, 0.2, 0.65 );
+		this( seed, octaves, 0.2f, 0.65f );
 	}
 
-	public SimplexNoise(long seed, int octaves, double lacunarity, double gain) {
-		this( seed, octaves, lacunarity, gain, 50.0, 0.002 );
+	public SimplexNoise(long seed, int octaves, float persistence, float gain) {
+		this( seed, octaves, persistence, gain, 50.0f, 0.002f );
 	}
 
-	public SimplexNoise(long seed, int octaves, double lacunarity, double gain, double amplitude, double frequency) {
+	public SimplexNoise(long seed, int octaves, float persistence, float gain, float amplitude, float frequency) {
 		this.octaves = octaves;
-		this.lacunarity = lacunarity;
+		this.persistence = persistence;
 		this.gain = gain;
 		this.amplitude = amplitude;
 		this.frequency = frequency;
@@ -66,7 +67,7 @@ public class SimplexNoise {
 		preparePermutationTable( seed );
 	}
 
-	private static double dot(Gradient g, double x, double y) {
+	private static float dot(Gradient g, float x, float y) {
 		return g.x * x + g.y * y;
 	}
 
@@ -95,53 +96,61 @@ public class SimplexNoise {
 	}
 
 	private void prepareGradientTable() {
-		double angle;
+		float angle;
 		for (int i = 0; i < gradientTable.length; i++) {
-			angle = Math.toRadians( i * GRADIENT_STEP );
-			gradientTable[i] = new Gradient( Math.cos( angle ), Math.sin( angle ) );
+			angle = (float)Math.toRadians( i * GRADIENT_STEP );
+			gradientTable[i] = new Gradient( (float)Math.cos( angle ), (float)Math.sin( angle ) );
 		}
 	}
 
-	public double generate(double x, double y) {
-		double freq = frequency;
-		double ampl = amplitude;
-		double value = 0.0;
+	public float generate(float x, float y) {
+		float octaveFrequency = frequency;
+		float octaveAmplitude = amplitude;
+		float value = 0.0f;
+
+		float maxValue = 0.0f;
 
 		for (int octave = 0; octave < octaves; octave++) {
-			value += ampl * simplexNoise( x * freq, y * freq );
+			maxValue += octaveAmplitude;
+			value += octaveAmplitude * simplexNoise( x * octaveFrequency, y * octaveFrequency );
 
-			freq *= lacunarity;
-			ampl *= gain;
+			if (value > maxValue || value < -maxValue) {
+				System.out.println("value out of bounds!");
+			}
+
+			octaveFrequency *= persistence;
+			octaveAmplitude *= gain;
 		}
 
-		return value;
+		// Return result as [-1.0, 1.0]
+		return value / maxValue;
 	}
 
-	private double simplexNoise(double x, double y) {
-		double skew = (x + y) * SKEWING_FACTOR;
+	private float simplexNoise(float x, float y) {
+		float skew = (x + y) * SKEWING_FACTOR;
 
 		// Simplex cell coordinates
 		int i = DishMath.fastFloor( x + skew );
 		int j = DishMath.fastFloor( y + skew );
 
-		double unskew = (i + j) * UNSKEWING_FACTOR;
+		float unskew = (i + j) * UNSKEWING_FACTOR;
 
 		// Unskewed cell origin x/y
-		double ox = i - unskew;
-		double oy = j - unskew;
+		float ox = i - unskew;
+		float oy = j - unskew;
 
 		// x/y distances from the cell origin
-		double x0 = x - ox;
-		double y0 = y - oy;
+		float x0 = x - ox;
+		float y0 = y - oy;
 
 		// middle corner offsets
 		int i1 = x0 > y0 ? 1 : 0;
 		int j1 = x0 > y0 ? 0 : 1;
 
-		double x1 = x0 - i1 + UNSKEWING_FACTOR;
-		double y1 = y0 - j1 + UNSKEWING_FACTOR;
-		double x2 = x0 - 1.0f + 2.0f * UNSKEWING_FACTOR;
-		double y2 = y0 - 1.0f + 2.0f * UNSKEWING_FACTOR;
+		float x1 = x0 - i1 + UNSKEWING_FACTOR;
+		float y1 = y0 - j1 + UNSKEWING_FACTOR;
+		float x2 = x0 - 1.0f + 2.0f * UNSKEWING_FACTOR;
+		float y2 = y0 - 1.0f + 2.0f * UNSKEWING_FACTOR;
 
 		// Some weird hashing
 		// TODO: Find out if this is necessary and simplify the hell out of it if possible
@@ -158,10 +167,10 @@ public class SimplexNoise {
 		//      (From here on code is almost directly copied from other implementation. There have probably been some
 		//      major adjustments in the algorithms so I haven't quite figured out yet which is which.)
 
-		double firstCornerContribution, middleCornerContribution, lastCornerContribution;
+		float firstCornerContribution, middleCornerContribution, lastCornerContribution;
 
 		// XXX: t0 might be radius of the circle around the simplex on first corner?
-		double t0 = 0.5f - x0 * x0 - y0 * y0;
+		float t0 = 0.5f - x0 * x0 - y0 * y0;
 		if (t0 < 0f) {
 			firstCornerContribution = 0.0f;
 		} else {
@@ -169,7 +178,7 @@ public class SimplexNoise {
 			firstCornerContribution = t0 * t0 * dot( gradientTable[firstCornerGradientIndex], x0, y0 );
 		}
 
-		double t1 = 0.5f - (x1 * x1) - (y1 * y1);
+		float t1 = 0.5f - (x1 * x1) - (y1 * y1);
 		if (t1 < 0f) {
 			middleCornerContribution = 0.0f;
 		} else {
@@ -177,7 +186,7 @@ public class SimplexNoise {
 			middleCornerContribution = t1 * t1 * dot( gradientTable[middleCornerGradientIndex], x1, y1 );
 		}
 
-		double t2 = 0.5f - (x2 * x2) - (y2 * y2);
+		float t2 = 0.5f - (x2 * x2) - (y2 * y2);
 		if (t2 < 0f) {
 			lastCornerContribution = 0.0f;
 		} else {
@@ -187,13 +196,21 @@ public class SimplexNoise {
 
 		// Calculate the sum and scale the result to be [-1.0, 1.0]
 		// XXX: Where the fuck does that 70.0 come from!?
-		return 70.0 * (firstCornerContribution + middleCornerContribution + lastCornerContribution);
+		float result = 70.0f * (firstCornerContribution + middleCornerContribution + lastCornerContribution);
+		if (result < -1.0f || result > 1.0f) {
+			System.out.println("Out of bounds!");
+		}
+		return result;
+	}
+
+	public float getOctaves() {
+		return NOctaves;
 	}
 
 	private static class Gradient {
-		private double x, y;
+		private float x, y;
 
-		private Gradient(double x, double y) {
+		private Gradient(float x, float y) {
 			this.x = x;
 			this.y = y;
 		}

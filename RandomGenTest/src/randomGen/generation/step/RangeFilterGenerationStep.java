@@ -1,7 +1,5 @@
 package randomGen.generation.step;
 
-import dishcloth.engine.world.level.TerrainChunk;
-
 /**
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * RangeFilterGenerationStep.java
@@ -13,7 +11,7 @@ import dishcloth.engine.world.level.TerrainChunk;
  * Created by ASDSausage on 28.6.2015
  */
 
-public class RangeFilterGenerationStep implements ITerrainGenerationStep {
+public class RangeFilterGenerationStep extends ATerrainGenerationStep {
 	private float limit;
 	private float defaultValue;
 	private boolean lessThan;
@@ -26,12 +24,6 @@ public class RangeFilterGenerationStep implements ITerrainGenerationStep {
 		this.limit = limit;
 		this.lessThan = lessThan;
 		this.defaultValue = defaultValue;
-	}
-
-	@Override
-	public TerrainChunk onGenerateChunk(TerrainChunk targetChunk, float[] values, long seed, int chunkX, int chunkY) {
-		// Just pass trough
-		return targetChunk;
 	}
 
 	@Override

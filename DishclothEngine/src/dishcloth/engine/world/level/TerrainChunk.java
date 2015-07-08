@@ -20,6 +20,7 @@ public class TerrainChunk {
 
 	// XXX: EXTREMELY TEMPORARY
 	public static final float BLOCK_SIZE = 1f;
+	public static final int CHUNK_SIZE = 256;
 
 	private int x;
 	private int y;
@@ -27,7 +28,9 @@ public class TerrainChunk {
 	private QuadTree<Tile> tiles;
 
 	public TerrainChunk(int x, int y) {
-		this.tiles = new QuadTree<>( 1, -1, new TerrainQuadTreeCell( null, new Rectangle( 0f, 0f, 256f, 256f ), -1 ) );
+		this.tiles = new QuadTree<>( 1, -1, new TerrainQuadTreeCell( null, new Rectangle( x, y, CHUNK_SIZE, CHUNK_SIZE ), -1 ) );
+		this.x = x;
+		this.y = y;
 	}
 
 	public int getChunkX() {
@@ -39,11 +42,11 @@ public class TerrainChunk {
 	}
 
 	public int getTileX() {
-		return x * 256;
+		return x * CHUNK_SIZE;
 	}
 
 	public int getTileY() {
-		return y * 256;
+		return y * CHUNK_SIZE;
 	}
 
 	public float getRenderX() {
@@ -60,6 +63,6 @@ public class TerrainChunk {
 	}
 
 	public Tile getTile(int x, int y) {
-		return this.tiles.getDataAt(x, y).get( 0 );
+		return this.tiles.getDataAt( x, y ).get( 0 );
 	}
 }
