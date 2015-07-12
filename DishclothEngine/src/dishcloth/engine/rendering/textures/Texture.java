@@ -36,6 +36,7 @@ public class Texture {
 	private int width, height;
 	private int textureID;
 
+	// TODO: Move this stuff to content pipeline. Texture-class should not have to handle its own disk I/O and hw.
 	public Texture(String filename) {
 
 		int[] pixelData = processPixelData( readRawPixelData( filename ) );
@@ -59,6 +60,18 @@ public class Texture {
 		glBindTexture( GL_TEXTURE_2D, 0 );
 
 		textureCache.put( textureID, this );
+	}
+
+	/**
+	 * ASSUMES THAT TEXID IS GENERATED MANUALLY
+	 * @param openGLTexID
+	 * @param width
+	 * @param height
+	 */
+	public Texture(int openGLTexID, int width, int height) {
+		this.textureID = openGLTexID;
+		this.width = width;
+		this.height = height;
 	}
 
 	private int[] readRawPixelData(String filename) {

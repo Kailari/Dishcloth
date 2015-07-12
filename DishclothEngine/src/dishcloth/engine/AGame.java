@@ -17,6 +17,8 @@ import dishcloth.engine.rendering.Renderer;
 import dishcloth.engine.util.logger.Debug;
 import dishcloth.engine.util.time.Time;
 import dishcloth.engine.world.block.BlockRegistry;
+import dishcloth.engine.world.level.Terrain;
+import dishcloth.engine.world.level.TerrainRenderer;
 import org.lwjgl.opengl.GLContext;
 
 /**
@@ -35,13 +37,12 @@ public abstract class AGame implements IGame {
 
 	protected int screenWidth, screenHeight;
 	protected boolean doUpdateTime = true;
+	protected InputEvent escapePressedEvent;
 	private long windowID;
 	private boolean windowShouldExit;
 	private IRenderer renderer;
 	private ICamera viewportCamera;
 	private Timing timing;
-
-	protected InputEvent escapePressedEvent;
 
 	public long getWindowID() {
 		return windowID;
@@ -70,6 +71,11 @@ public abstract class AGame implements IGame {
 		Debug.log( "Loading content...", this );
 		doLoadContent();
 		Debug.logOK( "Content loading successful!", this );
+
+		// TODO: Figure out where these should be kept
+		BlockRegistry.doBlockRegistration( "dummy" );
+		TerrainRenderer.initialize( this );
+
 
 		timing = new Timing();
 
@@ -131,7 +137,6 @@ public abstract class AGame implements IGame {
 			// Call initialize
 			initialize();
 
-			BlockRegistry.doBlockRegistration( "dummy" );
 		} catch (GameInitializationException e) {
 
 			Debug.logException( e, this );
@@ -141,7 +146,7 @@ public abstract class AGame implements IGame {
 	}
 
 	private void initHardware() throws GameInitializationException {
-		// Initialize randomGen.window
+		// Initialize window
 		initWindow();
 
 		// Create renderer
@@ -153,10 +158,14 @@ public abstract class AGame implements IGame {
 		viewportCamera = new OrthographicCamera( -halfW, halfW,
 		                                         -halfH, halfH,
 		                                         -1.0f, 1.0f );
+
+		/*viewportCamera = new OrthographicCamera( 0f, screenWidth,
+		                                         0f, screenHeight,
+		                                         -1.0f, 1.0f );*/
 	}
 
 
-	private final void initWindow() throws GameInitializationException {
+	private void initWindow() throws GameInitializationException {
 
 		// Init GLFW - if glfwInit succeeds, it returns GL_TRUE
 		if (glfwInit() != GL_TRUE) {
@@ -166,7 +175,7 @@ public abstract class AGame implements IGame {
 		screenWidth = 800;
 		screenHeight = 600;
 
-		// Initialize randomGen.window
+		// Initialize window
 
 		// Set hint flags
 		glfwWindowHint( GLFW_RESIZABLE, GL_FALSE );
@@ -179,7 +188,7 @@ public abstract class AGame implements IGame {
 			throw new GameInitializationException( "glfwCreateWindow() failed!" );
 		}
 
-		// Make created randomGen.window active
+		// Make created window active
 
 		glfwMakeContextCurrent( windowID );
 		GLContext.createFromCurrent();
@@ -250,7 +259,7 @@ public abstract class AGame implements IGame {
 		shutdown();
 
 
-		// Destroy randomGen.window
+		// Destroy window
 		glfwDestroyWindow( windowID );
 
 		// Terminate glfw

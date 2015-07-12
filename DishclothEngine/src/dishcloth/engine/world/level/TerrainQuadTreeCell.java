@@ -2,10 +2,13 @@ package dishcloth.engine.world.level;
 
 import dishcloth.engine.util.geom.Rectangle;
 import dishcloth.engine.util.logger.Debug;
+import dishcloth.engine.util.math.DishMath;
 import dishcloth.engine.util.quadtree.QuadTree;
 import dishcloth.engine.util.quadtree.QuadTreeCell;
 import dishcloth.engine.world.Tile;
 import dishcloth.engine.world.block.BlockID;
+
+import java.util.List;
 
 /**
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -29,7 +32,8 @@ public class TerrainQuadTreeCell extends QuadTreeCell<Tile> {
 
 	@Override
 	public void addData(Tile data) {
-		super.addData( data );
+		int size = Math.round( (float) Math.pow( 2f, (float) (this.maxDepth - this.depth) ) );
+		super.addData( new Tile( data.getX(), data.getY(), size, data.getBlockID() ) );
 
 		// If we are on the deepest level and there already was a tile in this cell,
 		// then bucket now contains two tiles
@@ -52,25 +56,9 @@ public class TerrainQuadTreeCell extends QuadTreeCell<Tile> {
 		}
 
 		// Try to collapse (if not root)
-		if (this.getParent() != null && this.isSplit) {
-			this.collapse();
+		if (this.parent != null) {
+			this.parent.collapse();
 		}
-	}
-
-	/**
-	 * Terrain cells can collapse if there is only one type of block in its children.
-	 */
-	@Override
-	protected boolean canCollapse() {
-		BlockID firstBlockID = children[0].getData().get( 0 ).getBlockID();
-		for (int i = 1; i < 4; i++) {
-			if (children[i].getIsSplit()
-					|| children[i].getData().get( 0 ).getBlockID() != firstBlockID) {
-				return false;
-			}
-		}
-
-		return true;
 	}
 
 	@Override
@@ -81,17 +69,21 @@ public class TerrainQuadTreeCell extends QuadTreeCell<Tile> {
 		}
 
 		// Create children
-		this.children[0] = new TerrainQuadTreeCell( this, true, true );
-		this.children[1] = new TerrainQuadTreeCell( this, true, false );
-		this.children[2] = new TerrainQuadTreeCell( this, false, true );
-		this.children[3] = new TerrainQuadTreeCell( this, false, false );
+		this.children.add( new TerrainQuadTreeCell( this, true, true ) );
+		this.children.add( new TerrainQuadTreeCell( this, true, false ) );
+		this.children.add( new TerrainQuadTreeCell( this, false, true ) );
+		this.children.add( new TerrainQuadTreeCell( this, false, false ) );
 
 		// All children receive the same blockID that this cell currently has
-		// ...or if data is null, we'll just
-		Tile data = this.bucket.get( 0 );
-		for (int j = 0; j < 4; j++) {
-			if (data != null) {
-				this.children[j].addData( new Tile( this.children[j].getBounds(), data.getBlockID() ) );
+		// ...or if data is null, we'll just leave everything be
+		Tile data = (this.bucket.size() != 0 ? this.bucket.get( 0 ) : null);
+		if (data != null) {
+			for (int j = 0; j < 4; j++) {
+				Rectangle bounds = this.children.get( j ).getBounds();
+				this.children.get( j ).addData( new Tile( Math.round( bounds.x ),
+				                                          Math.round( bounds.y ),
+				                                          Math.round( bounds.w ),
+				                                          data.getBlockID() ) );
 			}
 		}
 
@@ -100,12 +92,50 @@ public class TerrainQuadTreeCell extends QuadTreeCell<Tile> {
 		this.isSplit = true;
 	}
 
+	/**
+	 * Terrain cells can collapse if there is only one type of block in its children.
+	 */
+	@Override
+	public boolean canCollapse() {
+		if (this.isSplit) {
+			BlockID firstBlockID = findBlockIDFromChildren( 0 );
+
+			for (int i = 0; i < 4; i++) {
+				if (children.get( i ).getIsSplit()) {
+					if (children.get( i ).canCollapse()) {
+						children.get( i ).collapse();
+					} else if (children.get( i ).getIsSplit()) {
+						return false;
+					}
+				}
+
+				if (findBlockIDFromChildren( i ) != firstBlockID) {
+					return false;
+				}
+			}
+		} else {
+			//Debug.logErr( "Why on earth are we trying to collapse non-split cell?", this );
+			return false;
+		}
+
+		return true;
+	}
+
+	private BlockID findBlockIDFromChildren(int index) {
+		List<Tile> tileInCellZero = children.get( index ).getData();
+		return (tileInCellZero.size() != 0 ? tileInCellZero.get( 0 ).getBlockID() : null);
+	}
+
 	@Override
 	public void collapse() {
+
 		if (canCollapse()) {
 
 			// Create new tile
-			Tile data = new Tile( this.getBounds(), children[0].getData().get( 0 ).getBlockID() );
+			Tile data = new Tile( Math.round( bounds.x ),
+			                      Math.round( bounds.y ),
+			                      Math.round( bounds.w ),
+			                      findBlockIDFromChildren( 0 ) );
 
 			// Nullify children
 			clearChildren();

@@ -20,31 +20,20 @@ public class Tile extends AQuadTreeDataObject implements ITile {
 	
 	private final int x;
 	private final int y;
-	private final int widthInTiles;
-	private final int heightInTiles;
+	private final int size;
 	private final BlockID blockID;
 	
-	public Tile(int x, int y, int w, int h, BlockID blockID) {
+	public Tile(int x, int y, int size, BlockID blockID) {
 		super( new Point( x, y ) );
 		this.x = x;
 		this.y = y;
-		this.widthInTiles = w;
-		this.heightInTiles = h;
+		this.size = size;
 		this.blockID = blockID;
 	}
 	
-	public Tile(Rectangle bounds, BlockID blockID) {
-		this( Math.round( bounds.x ), Math.round( bounds.y ), Math.round( bounds.w ), Math.round( bounds.h ), blockID );
-	}
-	
 	@Override
-	public int getWidth() {
-		return widthInTiles;
-	}
-	
-	@Override
-	public int getHeight() {
-		return heightInTiles;
+	public int getSize() {
+		return size;
 	}
 	
 	@Override
@@ -59,7 +48,7 @@ public class Tile extends AQuadTreeDataObject implements ITile {
 	
 	@Override
 	public Rectangle getBounds() {
-		return new Rectangle( x, y, widthInTiles, heightInTiles );
+		return new Rectangle( x, y, size, size );
 	}
 	
 	@Override

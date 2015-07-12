@@ -14,6 +14,11 @@ import dishcloth.engine.rendering.shaders.ShaderProgram;
 import dishcloth.engine.rendering.textures.Texture;
 import dishcloth.engine.util.Color;
 import dishcloth.engine.util.geom.Point;
+import dishcloth.engine.util.logger.Debug;
+import dishcloth.engine.world.block.ABlock;
+import dishcloth.engine.world.block.BlockRegistry;
+import dishcloth.engine.world.level.Terrain;
+import dishcloth.game.world.blocks.BlockDirt;
 import org.lwjgl.glfw.GLFW;
 
 /**
@@ -32,13 +37,15 @@ public class DishclothGame extends AGame {
 	SpriteBatch spriteBatch;
 	Sprite sprite, sprite2, overlay;
 
+	Terrain terrain;
+
 	KeyInputEvent leftArrowRepeatEvent;
 	KeyInputEvent rightArrowRepeatEvent;
 	KeyInputEvent upArrowRepeatEvent;
 	KeyInputEvent downArrowRepeatEvent;
 
 	Point position;
-	float t, angle;
+	float t, angle, cameraVelocityX, cameraVelocityY;
 
 	@Override
 	public void initialize() {
@@ -59,7 +66,7 @@ public class DishclothGame extends AGame {
 			@Override
 			public void trigger(InputEvent eventTrigger) {
 				Point p = getViewportCamera().getPosition();
-				getViewportCamera().setPosition( new Point( p.x - 1f, p.y ) );
+				getViewportCamera().setPosition( new Point( p.x + 10f, p.y ) );
 			}
 		} );
 
@@ -67,17 +74,17 @@ public class DishclothGame extends AGame {
 		// (You can just write it the old way and press alt+enter when it highlights a warning)
 		InputHandler.bindAction( rightArrowRepeatEvent, eventTrigger -> {
 			Point p = getViewportCamera().getPosition();
-			getViewportCamera().setPosition( new Point( p.x + 1f, p.y ) );
+			getViewportCamera().setPosition( new Point( p.x - 10f, p.y ) );
 		} );
 
 		InputHandler.bindAction( upArrowRepeatEvent, eventTrigger -> {
 			Point p = getViewportCamera().getPosition();
-			getViewportCamera().setPosition( new Point( p.x, p.y + 1f ) );
+			getViewportCamera().setPosition( new Point( p.x, p.y - 10f ) );
 		} );
 
 		InputHandler.bindAction( downArrowRepeatEvent, eventTrigger -> {
 			Point p = getViewportCamera().getPosition();
-			getViewportCamera().setPosition( new Point( p.x, p.y - 1f ) );
+			getViewportCamera().setPosition( new Point( p.x, p.y + 10f ) );
 		} );
 	}
 
@@ -91,10 +98,21 @@ public class DishclothGame extends AGame {
 		sprite2 = new Sprite( uvGrid, 1, 1, 0 );
 
 		overlay = new Sprite( new Texture( "engine/textures/debug/800x600.png" ), 1, 1, 0 );
+
+		BlockRegistry.registerBlock( new BlockDirt(), "dishcloth", "dirt" );
+		/*BlockRegistry.registerBlock( new BlockDirt(), "dishcloth", "dirt2" );
+		BlockRegistry.registerBlock( new BlockDirt(), "dishcloth", "dirt3" );
+		BlockRegistry.registerBlock( new BlockDirt(), "dishcloth", "dirt4" );
+		BlockRegistry.registerBlock( new BlockDirt(), "dishcloth", "dirt5" );*/
 	}
 
 	@Override
 	public void update(float delta) {
+		if (terrain == null) {
+			terrain = new Terrain( 1, 1 );
+			Debug.log( "Terrain generated successfully!", this );
+		}
+
 		t += delta;
 
 		sprite.setFrame( Math.round( t ) );
@@ -125,6 +143,8 @@ public class DishclothGame extends AGame {
 		overlay.render( spriteBatch, new Point( -400f, 300 ), 0f, Color.WHITE, new Point( 400, -300 ) );
 
 		spriteBatch.render( renderer );
+
+		terrain.render( renderer );
 	}
 
 	@Override

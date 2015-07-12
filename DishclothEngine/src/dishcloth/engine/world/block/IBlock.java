@@ -36,32 +36,12 @@ import dishcloth.engine.rendering.render2d.SpriteBatch;
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * Created by ASDSausage on 7.6.2015
  */
-public interface IBlock {
+interface IBlock {
 
 	/**
 	 * @return block's BlockID
 	 */
 	BlockID getBlockID();
-
-	/**
-	 * @return x-coordinate relative to the current chunk
-	 */
-	byte getLocalX();
-
-	/**
-	 * @return y-coordinate relative to the current chunk
-	 */
-	byte getLocalY();
-
-	/**
-	 * @return global x-coordinate
-	 */
-	int getX();
-
-	/**
-	 * @return global y-coordinate
-	 */
-	int getY();
 
 	/**
 	 * @return ID of the frame on the block tileset to render.

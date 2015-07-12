@@ -16,4 +16,24 @@ import dishcloth.engine.rendering.render2d.SpriteBatch;
 
 public abstract class ABlock implements IBlock {
 
+	private BlockID blockID;
+
+	final void setBlockID(BlockID id) {
+		this.blockID = id;
+	}
+
+	@Override
+	public BlockID getBlockID() {
+		return blockID;
+	}
+
+	@Override
+	public int getFrameID() {
+		return 0;
+	}
+
+	@Override
+	public void render(IRenderer renderer, SpriteBatch spriteBatch) {
+
+	}
 }

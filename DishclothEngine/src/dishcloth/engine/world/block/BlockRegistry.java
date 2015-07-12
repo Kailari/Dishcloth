@@ -2,11 +2,11 @@ package dishcloth.engine.world.block;
 
 import dishcloth.engine.io.save.datapaths.AFileDataPath;
 import dishcloth.engine.io.save.datapaths.BlockIDHeaderDataPath;
+import dishcloth.engine.util.logger.Debug;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -29,9 +29,9 @@ public final class BlockRegistry {
 	 * to be compatible even if new blocks are registered.
 	 */
 	private static List<TemporaryRegistryEntry> temporaryRegistryEntries = new ArrayList<>();
-	private static HashMap<BlockID, IBlock> registryEntries = new HashMap<>();
+	private static HashMap<BlockID, ABlock> registryEntries = new HashMap<>();
 
-	public static IBlock getBlock(BlockID blockID) {
+	public static ABlock getBlock(BlockID blockID) {
 		return registryEntries.get( blockID );
 	}
 
@@ -49,8 +49,6 @@ public final class BlockRegistry {
 			BlockIDHeaderSaveHandler.loadBlockIDHeader( path );
 		}
 
-		List<BlockID> loadedIDs = BlockIDHandler.getBlockIDs();
-
 		// Register all queued blocks
 		// 'forEach' and method references <3
 		temporaryRegistryEntries.forEach( BlockRegistry::registerBlock );
@@ -62,6 +60,10 @@ public final class BlockRegistry {
 							&& entry.id.equals( blockID.getIDString() ) )
 					.forEach( blockID -> applyFallbackID( blockID, entry.fallbackModID, entry.fallbackID ) );
 		}
+
+		registryEntries.keySet().forEach( key -> {
+			Debug.log(key.toString(), "BlocRegistry");
+		} );
 	}
 
 	private static void applyFallbackID(BlockID blockID, String fallbackMod, String fallbackID) {
@@ -85,12 +87,12 @@ public final class BlockRegistry {
 		}
 	}
 
-	public static void registerBlock(IBlock block, String blockID, String modID) {
+	public static void registerBlock(ABlock block, String blockID, String modID) {
 		// TODO: Blocks are registered one mod at a time. This allows us to auto-detect modID
 		registerBlock( block, blockID, modID, null, null );
 	}
 
-	public static void registerBlock(IBlock block,
+	public static void registerBlock(ABlock block,
 	                                 String blockID, String modID,
 	                                 String fallbackBlockID, String fallbackModID) {
 		temporaryRegistryEntries.add( new TemporaryRegistryEntry( block, blockID, modID, fallbackBlockID, fallbackModID ) );
@@ -98,17 +100,18 @@ public final class BlockRegistry {
 
 	private static void registerBlock(TemporaryRegistryEntry entry) {
 		BlockID blockID = BlockIDHandler.createBlockID( entry.id, entry.mod );
+		entry.block.setBlockID( blockID );
 		registryEntries.put( blockID, entry.block );
 	}
 
 	private static class TemporaryRegistryEntry {
-		private final IBlock block;
+		private final ABlock block;
 		private final String id;
 		private final String mod;
 		private final String fallbackID;
 		private final String fallbackModID;
 
-		public TemporaryRegistryEntry(IBlock block, String id, String mod, String fallbackID, String fallbackModID) {
+		public TemporaryRegistryEntry(ABlock block, String id, String mod, String fallbackID, String fallbackModID) {
 			this.block = block;
 			this.id = id;
 			this.mod = mod;

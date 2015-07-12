@@ -27,9 +27,10 @@ public class DefaultTerrainGenerator extends ATerrainGenerator {
 		//this.steps.add( new RangeFilterGenerationStep( 0.35f, true, 0.5f ) );
 		//this.steps.add( new RangeFilterGenerationStep( 0.1f, false, 1f ) );
 
-		ATerrainGenerationStep surfaceStep = new GroundSurfaceGenerationStep( 512.0f, 16.0f, 512, 128 );
+		ATerrainGenerationStep surfaceStep = new GroundSurfaceGenerationStep( 512.0f, 16.0f, 64, 128 );
 		this.steps.add( surfaceStep );
 
+		this.steps.add( new BlockSelectionGenerationStep() );
 	}
 
 	public DefaultTerrainGenerator() {

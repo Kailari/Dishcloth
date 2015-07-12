@@ -16,7 +16,7 @@ public class Rectangle {
 	public float x, y, w, h;
 
 	/**
-	 * Point (x,y) is the <b>bottom left</b> corner.
+	 * Point (x,y) is the <b>top left</b> corner.
 	 */
 	public Rectangle(float x, float y, float w, float h) {
 		this.x = x;
@@ -44,19 +44,19 @@ public class Rectangle {
 	}
 
 	public Point getLeftBottom() {
-		return new Point( x, y );
-	}
-
-	public Point getLeftTop() {
 		return new Point( x, y + h );
 	}
 
+	public Point getLeftTop() {
+		return new Point( x, y );
+	}
+
 	public Point getRightBottom() {
-		return new Point( x + w, y );
+		return new Point( x + w, y + h );
 	}
 
 	public Point getRightTop() {
-		return new Point( x + w, y + h );
+		return new Point( x + w, y );
 	}
 
 	public boolean containsPoint(Point point) {

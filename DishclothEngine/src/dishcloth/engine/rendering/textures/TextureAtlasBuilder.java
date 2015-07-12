@@ -16,4 +16,9 @@ public class TextureAtlasBuilder {
 	public void addTexture(Texture texture) {
 
 	}
+
+	public Texture build() {
+		//Texture texture = new Texture(  );
+		return null;
+	}
 }

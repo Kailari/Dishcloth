@@ -1,6 +1,7 @@
 package dishcloth.engine.rendering;
 
 import dishcloth.engine.util.geom.Point;
+import dishcloth.engine.util.geom.Rectangle;
 import dishcloth.engine.util.math.Matrix4;
 import dishcloth.engine.util.math.MatrixUtility;
 
@@ -17,8 +18,12 @@ import dishcloth.engine.util.math.MatrixUtility;
 
 public class OrthographicCamera implements ICamera {
 
+	public static OrthographicCamera instance;
+
 	private Point position;
 	private float angle;
+	private float viewportW;
+	private float viewportH;
 
 	private Matrix4 projectionMatrix;
 	private Matrix4 viewMatrix;
@@ -29,7 +34,22 @@ public class OrthographicCamera implements ICamera {
 		position = new Point( 0f, 0f );
 		angle = 0f;
 
+		viewportW = Math.abs( left - right );
+		viewportH = Math.abs( top - bottom );
+
 		refreshViewMatrix();
+
+		// XXX: Find a better way to do this.
+		if (instance == null) {
+			instance = this;
+		}
+	}
+
+	public Rectangle getViewportBounds() {
+		return new Rectangle( -position.x - viewportW / 2f,
+		                      position.y - viewportH / 2f,
+		                      viewportW,
+		                      viewportH );
 	}
 
 	private void refreshViewMatrix() {

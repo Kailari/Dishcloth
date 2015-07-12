@@ -12,7 +12,7 @@ import java.awt.*;
  */
 public class RandGenTest {
 
-	public static final int HEIGHTMAP_SIZE = 8; // * CHUNK_SIZE
+	public static final int HEIGHTMAP_SIZE = 4; // * CHUNK_SIZE
 	public static final int NOISE_PANEL_SIZE = 600;//HEIGHTMAP_SIZE * TerrainChunk.CHUNK_SIZE / 2;
 
 	public static void main(String[] args) {

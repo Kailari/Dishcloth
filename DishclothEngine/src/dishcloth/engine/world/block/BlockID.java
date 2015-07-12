@@ -54,6 +54,15 @@ public class BlockID {
 		this.fallbackID = newFallback;
 	}
 
+	@Override
+	public String toString() {
+		return "BlockID{" +
+				"mod='" + mod + '\'' +
+				", idString='" + idString + '\'' +
+				", id=" + id +
+				'}';
+	}
+
 	public static class SaveHandler implements ISaveHandler<BlockID, IDataPath> {
 		@Override
 		public BlockID readFromDataPath(IDataPath path) {

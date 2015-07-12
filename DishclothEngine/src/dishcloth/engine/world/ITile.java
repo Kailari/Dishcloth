@@ -14,8 +14,7 @@ import dishcloth.engine.world.block.BlockID;
  * Created by ASDSausage on 21.5.2015
  */
 public interface ITile {
-	int getWidth();
-	int getHeight();
+	int getSize();
 	int getX();
 	int getY();
 

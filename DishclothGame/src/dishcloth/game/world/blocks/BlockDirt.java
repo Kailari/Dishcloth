@@ -1,5 +1,7 @@
 package dishcloth.game.world.blocks;
 
+import dishcloth.engine.world.block.ABlock;
+
 /**
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * BlockDirt.java
@@ -11,5 +13,6 @@ package dishcloth.game.world.blocks;
  * Created by ASDSausage on 11.6.2015
  */
 
-public class BlockDirt {
+public class BlockDirt extends ABlock {
+
 }

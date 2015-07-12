@@ -24,7 +24,7 @@ public abstract class ATerrainGenerator {
 	}
 
 	// TODO: Design the actor/entity -storage. This function should return both TerrainChunk and populator results.
-	public TerrainChunk generate(int chunkX, int chunkY) {
+	public final TerrainChunk generate(int chunkX, int chunkY) {
 		// TODO: Replace magic number '256' with engine-level constant
 		float[] values = generateValues( chunkX, chunkY );
 		TerrainChunk chunk = generateChunk( chunkX, chunkY, values );
@@ -45,7 +45,7 @@ public abstract class ATerrainGenerator {
 	/**
 	 * TEMPORARILY PUBLIC
 	 */
-	public final float[] generateValues(int chunkX, int chunkY) {
+	public float[] generateValues(int chunkX, int chunkY) {
 		float[] values = new float[TerrainChunk.CHUNK_SIZE * TerrainChunk.CHUNK_SIZE];
 		for (ITerrainGenerationStep step : this.steps) {
 			long startTime = System.currentTimeMillis();
