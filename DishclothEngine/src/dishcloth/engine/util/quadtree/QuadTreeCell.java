@@ -76,7 +76,7 @@ public class QuadTreeCell<T extends AQuadTreeDataObject> {
 		float w = parent.bounds.w / 2f;
 		float h = parent.bounds.h / 2f;
 		this.bounds = new Rectangle( (left ? parent.bounds.x : parent.bounds.x + w),
-		                             (top ? parent.bounds.y : parent.bounds.y + h), w, h );
+		                             (top ? parent.bounds.y + h : parent.bounds.y), w, h );
 	}
 
 	// TODO: Bucket data handling and updating dirty DataObjects

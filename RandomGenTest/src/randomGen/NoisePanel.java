@@ -28,7 +28,7 @@ public class NoisePanel extends JPanel {
 	public void createNoiseImage() {
 
 		Thread thread = new Thread( () -> {
-			DefaultTerrainGenerator generator = new DefaultTerrainGenerator(1L);
+			DefaultTerrainGenerator generator = new DefaultTerrainGenerator();
 
 			int chunkSize = RandGenTest.HEIGHTMAP_SIZE * TerrainChunk.CHUNK_SIZE;
 			float[] values = new float[chunkSize * chunkSize];
@@ -37,7 +37,7 @@ public class NoisePanel extends JPanel {
 					System.out.println("Generating chunk: " + chunkX + "," + chunkY);
 					long startTime = System.currentTimeMillis();
 
-					float[] generated = generator.generateValues( chunkX - RandGenTest.HEIGHTMAP_SIZE / 2, chunkY);
+					float[] generated = generator.generateValues( chunkX, chunkY);
 
 					for (int x = 0; x < TerrainChunk.CHUNK_SIZE; x++) {
 						for (int y = 0; y < TerrainChunk.CHUNK_SIZE; y++) {

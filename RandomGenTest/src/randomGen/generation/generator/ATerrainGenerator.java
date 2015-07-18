@@ -23,7 +23,7 @@ public abstract class ATerrainGenerator {
 		this.steps = new ArrayList<>();
 	}
 
-	// TODO: Design the actor/entity -storage. This function should return both TerrainChunk and populator results.
+	// TODO: Design the objects/entity -storage. This function should return both TerrainChunk and populator results.
 	public final TerrainChunk generate(int chunkX, int chunkY) {
 		// TODO: Replace magic number '256' with engine-level constant
 		float[] values = generateValues( chunkX, chunkY );

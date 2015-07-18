@@ -6,10 +6,11 @@ import static org.lwjgl.opengl.GL11.*;
 // For NULL constant
 import static org.lwjgl.system.MemoryUtil.*;
 
+import dishcloth.engine.events.events.KeyEvent;
 import dishcloth.engine.exception.GameInitializationException;
-import dishcloth.engine.io.input.InputEvent;
+import dishcloth.engine.events.EventHandler;
+import dishcloth.engine.events.EventAction;
 import dishcloth.engine.io.input.InputHandler;
-import dishcloth.engine.io.input.events.KeyInputEvent;
 import dishcloth.engine.rendering.ICamera;
 import dishcloth.engine.rendering.IRenderer;
 import dishcloth.engine.rendering.OrthographicCamera;
@@ -17,7 +18,6 @@ import dishcloth.engine.rendering.Renderer;
 import dishcloth.engine.util.logger.Debug;
 import dishcloth.engine.util.time.Time;
 import dishcloth.engine.world.block.BlockRegistry;
-import dishcloth.engine.world.level.Terrain;
 import dishcloth.engine.world.level.TerrainRenderer;
 import org.lwjgl.opengl.GLContext;
 
@@ -37,12 +37,13 @@ public abstract class AGame implements IGame {
 
 	protected int screenWidth, screenHeight;
 	protected boolean doUpdateTime = true;
-	protected InputEvent escapePressedEvent;
 	private long windowID;
 	private boolean windowShouldExit;
 	private IRenderer renderer;
 	private ICamera viewportCamera;
 	private Timing timing;
+
+	private EventAction<KeyEvent> forceExitAction = eventTrigger -> windowShouldExit = eventTrigger.wasPressed();
 
 	public long getWindowID() {
 		return windowID;
@@ -125,13 +126,14 @@ public abstract class AGame implements IGame {
 
 			initHardware();
 
-			escapePressedEvent = new KeyInputEvent( windowID, GLFW_KEY_ESCAPE, true, false, false );
-			InputHandler.registerEvent( escapePressedEvent, "escapeEvent" );
+			// Attach inputHandler
+			InputHandler.attachToWindow( windowID );
 
+			// Register events
+			EventHandler.registerEvents( AGameEvents.class );
 
-			InputHandler.bindAction( escapePressedEvent, eventTrigger -> {
-				windowShouldExit = true;
-			} );
+			// Bind actions
+			EventHandler.bindAction( AGameEvents.forceExitEvent, forceExitAction );
 
 
 			// Call initialize
@@ -157,7 +159,7 @@ public abstract class AGame implements IGame {
 		float halfH = screenHeight / 2f;
 		viewportCamera = new OrthographicCamera( -halfW, halfW,
 		                                         -halfH, halfH,
-		                                         -1.0f, 1.0f );
+		                                         1.0f, -1.0f );
 
 		/*viewportCamera = new OrthographicCamera( 0f, screenWidth,
 		                                         0f, screenHeight,
@@ -207,8 +209,8 @@ public abstract class AGame implements IGame {
 		// Poll glfw events (input etc.)
 		glfwPollEvents();
 
-		// Update InputHandler
-		InputHandler.updateEvents();
+		// Update EventHandler
+		EventHandler.updateEvents();
 
 		// Call update
 		update( timing.delta );
@@ -220,7 +222,6 @@ public abstract class AGame implements IGame {
 		timing.simulationTimePool += timing.delta;
 
 		while (timing.simulationTimePool >= timing.timestep) {
-			// TODO: Store old state
 
 			timing.fixedTick++;
 			timing.simulationTimePool -= timing.timestep;

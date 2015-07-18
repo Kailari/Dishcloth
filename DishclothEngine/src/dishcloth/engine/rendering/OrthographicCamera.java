@@ -46,15 +46,17 @@ public class OrthographicCamera implements ICamera {
 	}
 
 	public Rectangle getViewportBounds() {
-		return new Rectangle( -position.x - viewportW / 2f,
+		return new Rectangle( position.x - viewportW / 2f,
 		                      position.y - viewportH / 2f,
 		                      viewportW,
 		                      viewportH );
 	}
 
 	private void refreshViewMatrix() {
-		viewMatrix = MatrixUtility.createRotationZ( angle )
-				.multiply( MatrixUtility.createTranslation( position.x, position.y, 0f ) );
+		viewMatrix =
+				MatrixUtility.inverse(
+						MatrixUtility.createRotationZ( angle )
+								.multiply( MatrixUtility.createTranslation( position.x, position.y, 0f ) ) );
 	}
 
 	@Override

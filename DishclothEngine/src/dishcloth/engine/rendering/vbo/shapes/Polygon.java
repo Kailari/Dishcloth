@@ -48,8 +48,4 @@ public class Polygon {
 	public int[] getIndices() {
 		return indices;
 	}
-
-	public void setVertexUV(int index, float u, float v) {
-		vertices[index].setUV( u, v );
-	}
 }

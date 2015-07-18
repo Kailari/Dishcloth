@@ -49,7 +49,6 @@ public class GroundSurfaceGenerationStep extends ATerrainGenerationStep {
 		int chunkBotY = chunkTopY + TerrainChunk.CHUNK_SIZE;
 		
 		for (int i = 0; i < size; i++) {
-
 			int index = (chunkX * size) + i;
 			float value = tmp[i] = noise.generate( index * hScalingFactor, 1.0f ) * vScalingFactor;
 			if (groundYLevel + value >= chunkTopY - shallowDepth && groundYLevel + value <= chunkBotY + shallowDepth) {
@@ -60,7 +59,7 @@ public class GroundSurfaceGenerationStep extends ATerrainGenerationStep {
 		// Chunk contains one or more blocks that need to be modified
 		if (skip) {
 			// All above, turn everything into air. (assuming 0.0f is air.)
-			if (groundYLevel + tmp[0] > chunkTopY) {
+			if (groundYLevel + tmp[0] < chunkTopY) {
 				// Nullify all values
 				Arrays.fill( values, EMPTINESS_VALUE );
 				//values = new float[values.length];
@@ -74,7 +73,7 @@ public class GroundSurfaceGenerationStep extends ATerrainGenerationStep {
 
 		for (int x = 0; x < size; x++) {
 			for (int y = 0; y < size; y++) {
-				if (chunkTopY + y < groundYLevel + tmp[x]) {
+				if (chunkTopY + y > groundYLevel + tmp[x]) {
 					values[x + y * size] = EMPTINESS_VALUE;
 				} else {
 					int distanceToSurface = Math.abs( (chunkTopY + y) - (groundYLevel + Math.round( tmp[x] )) );

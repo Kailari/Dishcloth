@@ -138,4 +138,7 @@ public class DishMath {
 	}
 
 
+	public static int nearestPowerOfTwo(int number) {
+		return 32 - Integer.numberOfLeadingZeros( number - 1 );
+	}
 }

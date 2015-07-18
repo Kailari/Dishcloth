@@ -1,8 +1,8 @@
-package dishcloth.engine.io.input;
+package dishcloth.engine.events;
 
 /**
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- * InputAction.java
+ * Event.java
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * <p>
  * TODO: Description
@@ -10,11 +10,10 @@ package dishcloth.engine.io.input;
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * Created by ASDSausage on 1.6.2015
  */
-
-public interface InputAction<T extends InputEvent> {
+public interface Event {
 	/**
-	 * This method is ran after the bound event triggers.
-	 * @param eventTrigger    event that triggered this action
+	 * Checks if trigger conditions are met.
+	 * @return true if trigger conditions are met.
 	 */
-	void trigger(T eventTrigger);
+	boolean triggerCondition();
 }

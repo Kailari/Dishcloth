@@ -13,6 +13,7 @@ import dishcloth.engine.rendering.vbo.shapes.Quad;
 import dishcloth.engine.util.Color;
 import dishcloth.engine.util.geom.Rectangle;
 import dishcloth.engine.util.logger.Debug;
+import dishcloth.engine.util.math.DishMath;
 import dishcloth.engine.util.math.MatrixUtility;
 import dishcloth.engine.world.ITile;
 import dishcloth.engine.world.block.BlockID;
@@ -35,7 +36,10 @@ import java.util.Queue;
  */
 
 public class TerrainRenderer {
-	private static VertexBufferObject[] VBOs = new VertexBufferObject[9]; // log2( CHUNK_SIZE=256 ) = 8
+	// VBOs for all sizes from 1 to chunkSize
+	// Number of different sizes is 1 + 2^n, where n=[0, log2(CHUNK_SIZE)]
+	private static VertexBufferObject[] VBOs
+			= new VertexBufferObject[DishMath.nearestPowerOfTwo( TerrainChunk.CHUNK_SIZE ) + 1];
 	private static List<ITile> renderQueue = new ArrayList<>();
 	// <size, VBO-index>
 	private static HashMap<Integer, Integer> sizeLookup = new HashMap<>();
@@ -64,13 +68,6 @@ public class TerrainRenderer {
 	private static void prepareVBOs() {
 		for (int i = 0; i < VBOs.length; i++) {
 			float size = (float) Math.pow( 2, i );
-			/*VBOs[i] = new VertexBufferObject(
-					new Vertex[]{
-							new Vertex( 0f, 0f, 0f, 0f ),
-							new Vertex( 0f, size, 0f, size ),
-							new Vertex( size, size, size, size ),
-							new Vertex( size, 0f, size, 0f )},
-					new int[]{2, 1, 0, 0, 2, 3} );*/
 			VBOs[i] = new VertexBufferObject( new Quad( new Rectangle( 0f,
 			                                                           0f,
 			                                                           size * TerrainChunk.BLOCK_SIZE,
@@ -126,7 +123,7 @@ public class TerrainRenderer {
 
 			shader.setUniformMat4( "mat_modelview",
 			                       MatrixUtility.createTranslation( tile.getX() * TerrainChunk.BLOCK_SIZE,
-			                                                        -tile.getY() * TerrainChunk.BLOCK_SIZE,
+			                                                        tile.getY() * TerrainChunk.BLOCK_SIZE,
 			                                                        0f ) );
 
 			shader.setUniformVec4f( "color_tint",

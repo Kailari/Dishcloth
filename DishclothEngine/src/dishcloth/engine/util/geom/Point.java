@@ -7,7 +7,6 @@ import dishcloth.engine.util.math.DishMath;
  */
 public class Point {
 
-
 	public float x, y;
 
 	public Point(Point point) {

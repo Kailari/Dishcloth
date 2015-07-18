@@ -1,11 +1,9 @@
 package dishcloth.game;
 
 import dishcloth.engine.AGame;
-import dishcloth.engine.io.input.InputAction;
-import dishcloth.engine.io.input.InputEvent;
-import dishcloth.engine.io.input.InputHandler;
-import dishcloth.engine.io.input.events.KeyInputEvent;
-import dishcloth.engine.io.input.events.KeyInputRepeatEvent;
+import dishcloth.engine.events.EventAction;
+import dishcloth.engine.events.EventHandler;
+import dishcloth.engine.events.events.KeyEvent;
 import dishcloth.engine.rendering.IRenderer;
 import dishcloth.engine.rendering.render2d.Anchor;
 import dishcloth.engine.rendering.render2d.Sprite;
@@ -15,11 +13,10 @@ import dishcloth.engine.rendering.textures.Texture;
 import dishcloth.engine.util.Color;
 import dishcloth.engine.util.geom.Point;
 import dishcloth.engine.util.logger.Debug;
-import dishcloth.engine.world.block.ABlock;
 import dishcloth.engine.world.block.BlockRegistry;
 import dishcloth.engine.world.level.Terrain;
+import dishcloth.game.world.DishclothGameEvents;
 import dishcloth.game.world.blocks.BlockDirt;
-import org.lwjgl.glfw.GLFW;
 
 /**
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -34,15 +31,24 @@ import org.lwjgl.glfw.GLFW;
 
 public class DishclothGame extends AGame {
 
+	private static final float CAMERA_SPEED = 10f;
+
 	SpriteBatch spriteBatch;
 	Sprite sprite, sprite2, overlay;
 
 	Terrain terrain;
 
-	KeyInputEvent leftArrowRepeatEvent;
-	KeyInputEvent rightArrowRepeatEvent;
-	KeyInputEvent upArrowRepeatEvent;
-	KeyInputEvent downArrowRepeatEvent;
+	EventAction<KeyEvent> moveCameraLeft = eventTrigger ->
+			cameraVelocityX = -CAMERA_SPEED * (eventTrigger.wasRepeat() ? 1f : 0f);
+
+	EventAction<KeyEvent> moveCameraRight = eventTrigger ->
+			cameraVelocityX = CAMERA_SPEED * (eventTrigger.wasRepeat() ? 1f : 0f);
+
+	EventAction<KeyEvent> moveCameraUp = eventTrigger ->
+			cameraVelocityY = CAMERA_SPEED * (eventTrigger.wasRepeat() ? 1f : 0f);
+
+	EventAction<KeyEvent> moveCameraDown = eventTrigger ->
+			cameraVelocityY = -CAMERA_SPEED * (eventTrigger.wasRepeat() ? 1f : 0f);
 
 	Point position;
 	float t, angle, cameraVelocityX, cameraVelocityY;
@@ -51,53 +57,24 @@ public class DishclothGame extends AGame {
 	public void initialize() {
 		position = new Point( 0, 0 );
 
-		leftArrowRepeatEvent = new KeyInputRepeatEvent( getWindowID(), GLFW.GLFW_KEY_LEFT );
-		rightArrowRepeatEvent = new KeyInputRepeatEvent( getWindowID(), GLFW.GLFW_KEY_RIGHT );
-		upArrowRepeatEvent = new KeyInputRepeatEvent( getWindowID(), GLFW.GLFW_KEY_UP );
-		downArrowRepeatEvent = new KeyInputRepeatEvent( getWindowID(), GLFW.GLFW_KEY_DOWN );
+		EventHandler.registerEvents( DishclothGameEvents.class );
 
-		InputHandler.registerEvent( leftArrowRepeatEvent, "leftEvent" );
-		InputHandler.registerEvent( rightArrowRepeatEvent, "rightEvent" );
-		InputHandler.registerEvent( upArrowRepeatEvent, "upEvent" );
-		InputHandler.registerEvent( downArrowRepeatEvent, "downEvent" );
-
-		// YE OLDE WAY OF DOING IT
-		InputHandler.bindAction( leftArrowRepeatEvent, new InputAction() {
-			@Override
-			public void trigger(InputEvent eventTrigger) {
-				Point p = getViewportCamera().getPosition();
-				getViewportCamera().setPosition( new Point( p.x + 10f, p.y ) );
-			}
-		} );
-
-		// THE _NEW_ WAY. Lambdas. yay!
-		// (You can just write it the old way and press alt+enter when it highlights a warning)
-		InputHandler.bindAction( rightArrowRepeatEvent, eventTrigger -> {
-			Point p = getViewportCamera().getPosition();
-			getViewportCamera().setPosition( new Point( p.x - 10f, p.y ) );
-		} );
-
-		InputHandler.bindAction( upArrowRepeatEvent, eventTrigger -> {
-			Point p = getViewportCamera().getPosition();
-			getViewportCamera().setPosition( new Point( p.x, p.y - 10f ) );
-		} );
-
-		InputHandler.bindAction( downArrowRepeatEvent, eventTrigger -> {
-			Point p = getViewportCamera().getPosition();
-			getViewportCamera().setPosition( new Point( p.x, p.y + 10f ) );
-		} );
+		EventHandler.bindAction( DishclothGameEvents.leftArrowKeyEvent, moveCameraLeft );
+		EventHandler.bindAction( DishclothGameEvents.rightArrowKeyEvent, moveCameraRight );
+		EventHandler.bindAction( DishclothGameEvents.upArrowKeyEvent, moveCameraUp );
+		EventHandler.bindAction( DishclothGameEvents.downArrowKeyEvent, moveCameraDown );
 	}
 
 	@Override
 	public void loadContent() {
 		spriteBatch = new SpriteBatch( new ShaderProgram( "engine/shaders/sprite", "engine/shaders/default" ),
-		                               getViewportCamera() );
+		                               this );
 
 		Texture uvGrid = new Texture( "engine/textures/debug/uv_checker.png" );
 		sprite = new Sprite( uvGrid, 8, 8, 0, Anchor.CENTER );
-		sprite2 = new Sprite( uvGrid, 1, 1, 0 );
+		sprite2 = new Sprite( uvGrid, 1, 1, 0, Anchor.CENTER );
 
-		overlay = new Sprite( new Texture( "engine/textures/debug/800x600.png" ), 1, 1, 0 );
+		overlay = new Sprite( new Texture( "engine/textures/debug/800x600.png" ), 1, 1, 0, Anchor.CENTER );
 
 		BlockRegistry.registerBlock( new BlockDirt(), "dishcloth", "dirt" );
 		/*BlockRegistry.registerBlock( new BlockDirt(), "dishcloth", "dirt2" );
@@ -109,7 +86,7 @@ public class DishclothGame extends AGame {
 	@Override
 	public void update(float delta) {
 		if (terrain == null) {
-			terrain = new Terrain( 1, 1 );
+			terrain = new Terrain( 2, 10, 3 );
 			Debug.log( "Terrain generated successfully!", this );
 		}
 
@@ -125,22 +102,24 @@ public class DishclothGame extends AGame {
 
 	@Override
 	public void fixedUpdate() {
+		Point cameraPosition = getViewportCamera().getPosition();
+		cameraPosition.x += cameraVelocityX;
+		cameraPosition.y += cameraVelocityY;
 
+		getViewportCamera().setPosition( cameraPosition );
 	}
 
 	@Override
 	public void render(IRenderer renderer) {
 
-		sprite2.render( spriteBatch, new Point( -512f, 512f ), -angle, Color.WHITE, new Point( 512f, -512f ) );
+		sprite2.render( spriteBatch, new Point( 0f, 0f ), -angle, Color.WHITE );
 
-		// "sprite" uses default origin set as "Anchor.CENTER", thus no pivot parameter is needed
-		sprite.render( spriteBatch, new Point( -64 + position.x, 64 + position.y ), 0f, Color.CYAN );
-		sprite.render( spriteBatch, new Point( -64 - position.x, 64 - position.y ), -angle, Color.GREEN );
+		sprite.render( spriteBatch, new Point( position.x, position.y ), 0f, Color.CYAN );
+		sprite.render( spriteBatch, new Point( -position.x, -position.y ), -angle, Color.GREEN );
 
-		sprite.render( spriteBatch, new Point( -64f, 64f ), angle );
+		sprite.render( spriteBatch, new Point( 0f, 0f ), angle );
 
-		// "overlay" has default pivot "TOPLEFT" and uses manual pivot (400, -300)
-		overlay.render( spriteBatch, new Point( -400f, 300 ), 0f, Color.WHITE, new Point( 400, -300 ) );
+		overlay.render( spriteBatch, new Point( 0f, 0f ), 0f, Color.WHITE );
 
 		spriteBatch.render( renderer );
 

@@ -25,7 +25,7 @@ public class Sprite {
 
 	private float frameW, frameH;
 
-	private Point defaultOrigin;
+	private Point origin;
 
 	public Sprite(Texture texture, int nColumns, int nRows, int frame, float defaultOriginX, float defaultOriginY) {
 		this.texture = texture;
@@ -36,11 +36,11 @@ public class Sprite {
 		this.frameW = (float) texture.getWidth() / this.nColumns;
 		this.frameH = (float) texture.getHeight() / this.nRows;
 
-		this.defaultOrigin = new Point( defaultOriginX, defaultOriginY );
+		this.origin = new Point( defaultOriginX, defaultOriginY );
 	}
 
-	public Sprite(Texture texture, int nColumns, int nRows, int frame, Point defaultOrigin) {
-		this( texture, nColumns, nRows, frame, defaultOrigin.x, defaultOrigin.y );
+	public Sprite(Texture texture, int nColumns, int nRows, int frame, Point origin) {
+		this( texture, nColumns, nRows, frame, origin.x, origin.y );
 	}
 
 	public Sprite(Texture texture, int nColumns, int nRows, int frame, Anchor anchor) {
@@ -73,18 +73,18 @@ public class Sprite {
 		this.frame = frame;
 	}
 
-	public void render(SpriteBatch spriteBatch, Point position, float angle, Color tint, Point origin) {
+	public void render(SpriteBatch spriteBatch, Point position, float angle, Color tint, Point customOrigin) {
 		int row = (int) Math.floor( (float) frame / (float) nColumns );
 		int column = frame % nColumns;
 
 		Rectangle sourceRectangle = new Rectangle( frameW * column, frameH * row, frameW, frameH );
 		Rectangle destinationRectangle = new Rectangle( position.x, position.y, frameW, frameH );
 
-		spriteBatch.queue( texture, destinationRectangle, sourceRectangle, angle, tint, origin );
+		spriteBatch.queue( texture, destinationRectangle, sourceRectangle, angle, tint, customOrigin );
 	}
 
 	public void render(SpriteBatch spriteBatch, Point position, float angle, Color tint) {
-		render( spriteBatch, position, angle, tint, defaultOrigin );
+		render( spriteBatch, position, angle, tint, origin );
 	}
 
 	public void render(SpriteBatch spriteBatch, Point position, float angle) {

@@ -44,19 +44,19 @@ public class Rectangle {
 	}
 
 	public Point getLeftBottom() {
-		return new Point( x, y + h );
-	}
-
-	public Point getLeftTop() {
 		return new Point( x, y );
 	}
 
+	public Point getLeftTop() {
+		return new Point( x, y + h );
+	}
+
 	public Point getRightBottom() {
-		return new Point( x + w, y + h );
+		return new Point( x + w, y );
 	}
 
 	public Point getRightTop() {
-		return new Point( x + w, y );
+		return new Point( x + w, y + h );
 	}
 
 	public boolean containsPoint(Point point) {
@@ -78,6 +78,7 @@ public class Rectangle {
 		return Rectangle.AOverlapB( this, r ) || Rectangle.AOverlapB( r, this );
 	}
 
+	// TODO: Check if coordinates are correct
 	public Rectangle commonArea(Rectangle r) {
 		if (!overlaps( r )) return null;
 

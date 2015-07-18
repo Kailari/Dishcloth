@@ -1,10 +1,12 @@
-package dishcloth.engine.io.input;
+package dishcloth.engine;
 
+import dishcloth.engine.events.IEventStorage;
+import dishcloth.engine.events.events.KeyEvent;
 import org.lwjgl.glfw.GLFW;
 
 /**
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- * InputHandler.java
+ * AGameEvents.java
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * <p>
  * TODO: Description
@@ -12,17 +14,6 @@ import org.lwjgl.glfw.GLFW;
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * Created by ASDSausage on 13.7.2015
  */
-
-public class InputHandler {
-	private InputHandler() {}
-
-	private static long activeWindow;
-
-	public static void attachToWindow(long windowID) {
-		activeWindow = windowID;
-	}
-
-	public static int getKey(int keyCode) {
-		return GLFW.glfwGetKey(activeWindow, keyCode);
-	}
+public class AGameEvents implements IEventStorage {
+	public static final KeyEvent forceExitEvent = new KeyEvent( GLFW.GLFW_KEY_ESCAPE );
 }

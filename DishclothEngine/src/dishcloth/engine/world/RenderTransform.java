@@ -19,24 +19,42 @@ public class RenderTransform {
 
 	private Transform target;
 
-	private TransformState currentState, oldState;
+	private TransformState currentState, oldState, interpolatedState;
 
-	public void updateState() {
+	public RenderTransform(Transform target) {
+		this.target = target;
+
+		this.currentState = new TransformState();
+		this.interpolatedState = new TransformState();
+	}
+
+	public float getAngle() {
+		return interpolatedState.angle;
+	}
+
+	public Point getPosition() {
+		return interpolatedState.location;
+	}
+
+	public void updateState(float t) {
 
 		oldState = currentState;
 
 		currentState = new TransformState();
 		currentState.angle = target.getGlobalRotation();
 		currentState.location = target.getGlobalPosition( false );
+
+		interpolatedState.angle = getAngle( t );
+		interpolatedState.location = getPosition( t );
 	}
 
-	public float getAngle(float t) {
+	private float getAngle(float t) {
 		if (oldState == null) return currentState.angle;
 
 		return DishMath.lerp( oldState.angle, currentState.angle, t );
 	}
 
-	public Point getPosition(float t) {
+	private Point getPosition(float t) {
 		if (oldState == null) return currentState.location;
 
 		return Vector2.lerp( (Vector2) oldState.location, (Vector2) currentState.location, t );
