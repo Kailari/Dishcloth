@@ -1,6 +1,6 @@
-package randomGen.generation.generator;
+package dishcloth.engine.world.generation.generator;
 
-import randomGen.generation.step.*;
+import dishcloth.engine.world.generation.step.*;
 
 /**
  * Created by Lassi on 25.6.2015.
@@ -9,7 +9,7 @@ public class DefaultTerrainGenerator extends ATerrainGenerator {
 
 	public DefaultTerrainGenerator(long seed) {
 		super( seed );
-		//randomGen.progress = new TerrainGenProgress( true, width, height );
+		//dishcloth.progress = new TerrainGenProgress( true, width, height );
 
 		this.steps.add( new SimplexNoiseHeightmapGenerationStep( seed,      // Seed
 		                                                         8,         // n of octaves

@@ -16,6 +16,6 @@
         <SOURCES />
       </library>
     </orderEntry>
-    <orderEntry type="module" module-name="RandomGenTest" />
+    <orderEntry type="module" module-name="DishclothUtility" />
   </component>
 </module>

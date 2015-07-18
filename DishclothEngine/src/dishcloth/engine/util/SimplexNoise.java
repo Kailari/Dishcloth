@@ -1,4 +1,4 @@
-package randomGen.util;
+package dishcloth.engine.util;
 
 import dishcloth.engine.util.math.DishMath;
 
@@ -6,7 +6,7 @@ import java.util.Random;
 
 /**
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- * randomGen.util.SimplexNoise.java
+ * dishcloth.engine.util.SimplexNoise.java
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * <p>
  * Simplex noise.

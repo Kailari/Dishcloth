@@ -1,11 +1,10 @@
-package randomGen.generation.step;
+package dishcloth.engine.world.generation.step;
 
-import dishcloth.engine.world.level.TerrainChunk;
-import randomGen.util.SimplexNoise;
+import dishcloth.engine.util.SimplexNoise;
 
 /**
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- * randomGen.generation.step.SimplexNoiseHeightmapGenerationStep.java
+ * dishcloth.engine.world.generation.step.SimplexNoiseHeightmapGenerationStep.java
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * <p>
  * TODO: Description

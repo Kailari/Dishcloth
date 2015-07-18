@@ -1,4 +1,4 @@
-package randomGen.generation.step;
+package dishcloth.engine.world.generation.step;
 
 import dishcloth.engine.util.math.DishMath;
 import dishcloth.engine.world.level.TerrainChunk;

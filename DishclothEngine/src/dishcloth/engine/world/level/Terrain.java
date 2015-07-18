@@ -2,18 +2,10 @@ package dishcloth.engine.world.level;
 
 import dishcloth.engine.rendering.IRenderable;
 import dishcloth.engine.rendering.IRenderer;
-import dishcloth.engine.rendering.OrthographicCamera;
-import dishcloth.engine.rendering.render2d.SpriteBatch;
 import dishcloth.engine.util.geom.Rectangle;
 import dishcloth.engine.util.logger.Debug;
-import dishcloth.engine.util.quadtree.QuadTree;
 import dishcloth.engine.world.IUpdatable;
-import dishcloth.engine.world.Tile;
-import javafx.scene.Camera;
-import randomGen.generation.generator.DefaultTerrainGenerator;
-
-import java.util.ArrayList;
-import java.util.List;
+import dishcloth.engine.world.generation.generator.DefaultTerrainGenerator;
 
 /**
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *

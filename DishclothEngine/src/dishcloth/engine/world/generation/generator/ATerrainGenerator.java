@@ -1,8 +1,8 @@
-package randomGen.generation.generator;
+package dishcloth.engine.world.generation.generator;
 
 import dishcloth.engine.world.level.TerrainChunk;
-import randomGen.generation.step.ITerrainGenerationStep;
-import randomGen.progress.AProgress;
+import dishcloth.engine.world.generation.step.ITerrainGenerationStep;
+import dishcloth.progress.AProgress;
 
 import java.util.ArrayList;
 import java.util.List;

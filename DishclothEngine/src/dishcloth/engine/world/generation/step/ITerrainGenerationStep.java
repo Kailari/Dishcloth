@@ -1,10 +1,10 @@
-package randomGen.generation.step;
+package dishcloth.engine.world.generation.step;
 
 import dishcloth.engine.world.level.TerrainChunk;
 
 /**
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- * randomGen.generation.step.ITerrainGenerationStep.java
+ * dishcloth.engine.world.generation.step.ITerrainGenerationStep.java
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * <p>
  * TODO: Description

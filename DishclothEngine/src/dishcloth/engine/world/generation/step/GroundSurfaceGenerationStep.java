@@ -1,7 +1,7 @@
-package randomGen.generation.step;
+package dishcloth.engine.world.generation.step;
 
 import dishcloth.engine.world.level.TerrainChunk;
-import randomGen.util.SimplexNoise;
+import dishcloth.engine.util.SimplexNoise;
 
 import java.util.Arrays;
 

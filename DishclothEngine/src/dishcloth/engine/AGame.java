@@ -182,7 +182,7 @@ public abstract class AGame implements IGame {
 		// Set hint flags
 		glfwWindowHint( GLFW_RESIZABLE, GL_FALSE );
 
-		// Create randomGen.window handle
+		// Create dishcloth.window handle
 		windowID = glfwCreateWindow( screenWidth, screenHeight, "Dishcloth", NULL, NULL );
 
 		// Validate windowID
