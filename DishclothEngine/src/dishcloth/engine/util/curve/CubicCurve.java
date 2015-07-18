@@ -15,35 +15,35 @@ public class CubicCurve extends ACurve {
 	}
 	
 	public CubicCurve(List<Point> points) {
-		super(points);
+		super( points );
 	}
 	
 	@Override
 	public float valueAt(float f) {
-		int index = getPositionIndex(f);
+		int index = getPositionIndex( f );
 		
 		if (index == POINTS_SIZE_ZERO) return 0F;
 //		if (index == X_LESS_THAN_SMALLEST) throw new IllegalArgumentException("f < smallest x");
 //		if (index == X_GREATER_THAN_GREATEST) throw new IllegalArgumentException("f > greatest x");
 		
-		if (index == getListSize() - 1) return getPoint(getListSize() - 1).y;
+		if (index == getListSize() - 1) return getPoint( getListSize() - 1 ).y;
 		
-		float n = convertToNormalized(f); // normalized float
+		float n = getNormalizedBetween( f, getPoint( index ).x, getPoint( index + 1 ).x );
 		
-		float v1 = getPoint(index).y; // the point a
-		float v2 = getPoint(index + 1).y; // the point b
+		float v1 = getPoint( index ).y; // the point a
+		float v2 = getPoint( index + 1 ).y; // the point b
 		
-		float v0 = getPoint(index).y; // the point before a
-		float v3 = getPoint(index + 1).y; // the point after b
-		if (index > 0) v0 = getPoint(index - 1).y;
-		if (index < getListSize() - 2) v3 = getPoint(index + 2).y;
+		float v0 = getPoint( index ).y; // the point before a
+		float v3 = getPoint( index + 1 ).y; // the point after b
+		if (index > 0) v0 = getPoint( index - 1 ).y;
+		if (index < getListSize() - 2) v3 = getPoint( index + 2 ).y;
 		
 		float p = (v3 - v2) - (v0 - v1);
 		float q = (v0 - v1) - p;
 		float r = v2 - v0;
 		//float s = v1;
 
-		return (float) (p * Math.pow(n, 3) + q * Math.pow(n, 2) + r * n + v1);
+		return (float) (p * Math.pow( n, 3 ) + q * Math.pow( n, 2 ) + r * n + v1);
 	}
 	/**
 	 * v0 = the point before a <br>

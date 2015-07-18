@@ -27,7 +27,7 @@ public class LinearCurve extends ACurve {
 
 		if (index == getListSize() - 1) return getPoint( getListSize() - 1 ).y;
 
-		float n = convertToNormalized( f ); // normalized float
+		float n = getNormalizedBetween( f, getPoint( index ).x, getPoint( index + 1 ).x );
 
 		return getPoint( index ).y * (1 - n) + getPoint( index + 1 ).y * n;
 	}

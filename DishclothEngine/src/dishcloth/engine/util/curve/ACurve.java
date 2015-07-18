@@ -38,6 +38,7 @@ public abstract class ACurve {
 	}
 	
 	protected final Point getPoint(int index) {
+		// TODO: return new Point(points.get(index));
 		return points.get( index );
 	}
 	
@@ -249,6 +250,21 @@ public abstract class ACurve {
 		float total = points.get( points.size() - 1 ).x - points.get( 0 ).x;
 		float delta = f - points.get( 0 ).x;
 		
+		return delta / total;
+	}
+
+	/**
+	 * Normalizes the value f between points x1 and x2
+	 *
+	 * @param f  the x-value to be normalized
+	 * @param x1 the first point's x-value
+	 * @param x2 the second point's x-value
+	 * @return
+	 */
+	protected float getNormalizedBetween(float f, float x1, float x2) {
+		float delta = x1 - f;
+		float total = x1 - x2;
+
 		return delta / total;
 	}
 	
