@@ -1,28 +1,21 @@
-package dishcloth.engine.io.input;
+package dishcloth.game.world.blocks;
 
-import org.lwjgl.glfw.GLFW;
+import dishcloth.engine.world.block.ABlock;
 
 /**
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- * InputHandler.java
+ * BlockDirt.java
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * <p>
  * TODO: Description
  * <p>
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- * Created by ASDSausage on 13.7.2015
+ * Created by ASDSausage on 11.6.2015
  */
 
-public class InputHandler {
-	private InputHandler() {}
-
-	private static long activeWindow;
-
-	public static void attachToWindow(long windowID) {
-		activeWindow = windowID;
-	}
-
-	public static int getKey(int keyCode) {
-		return GLFW.glfwGetKey(activeWindow, keyCode);
+public class BlockStone extends ABlock {
+	@Override
+	public String getBlockTextureFilename() {
+		return "game/textures/blocks/stone.png";
 	}
 }

@@ -3,9 +3,9 @@ package dishcloth.engine.world.level;
 import dishcloth.engine.AGame;
 import dishcloth.engine.AGameEvents;
 import dishcloth.engine.events.EventHandler;
-import dishcloth.engine.events.EventRegistry;
 import dishcloth.engine.exception.ShaderUniformException;
-import dishcloth.engine.rendering.ICamera;
+import dishcloth.engine.input.InputHandler;
+import dishcloth.engine.input.KeyCode;
 import dishcloth.engine.rendering.IRenderer;
 import dishcloth.engine.rendering.OrthographicCamera;
 import dishcloth.engine.rendering.shaders.ShaderProgram;
@@ -14,21 +14,17 @@ import dishcloth.engine.rendering.textures.TextureAtlasBuilder;
 import dishcloth.engine.rendering.vbo.Vertex;
 import dishcloth.engine.rendering.vbo.VertexBufferObject;
 import dishcloth.engine.rendering.vbo.shapes.Polygon;
-import dishcloth.engine.rendering.vbo.shapes.Quad;
 import dishcloth.engine.util.Color;
-import dishcloth.engine.util.geom.Rectangle;
 import dishcloth.engine.util.logger.Debug;
 import dishcloth.engine.util.math.DishMath;
 import dishcloth.engine.util.math.MatrixUtility;
-import dishcloth.engine.world.ITile;
-import dishcloth.engine.world.block.BlockID;
-import dishcloth.engine.world.block.BlockIDHelper;
 import dishcloth.engine.world.block.BlockRegistry;
+import dishcloth.engine.world.block.BlockTextureAtlas;
+import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Queue;
 
 /**
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -49,31 +45,37 @@ public class TerrainRenderer {
 	private static List<ITile> renderQueue = new ArrayList<>();
 	// <size, VBO-index>
 	private static HashMap<Integer, Integer> sizeLookup = new HashMap<>();
-	private static Texture blockAtlas;
 	private static ShaderProgram shader;
+	private static ShaderProgram shader2;
 	private static AGame activeGame;
+	private static Texture tmpAtlas;
+	private static boolean lastSpaceState = false;
 
 	private TerrainRenderer() {}
 
 	@EventHandler
-	public static void onGamePostInitializeEvent(AGameEvents.GamePostInitializationEvent event) {
+	public static void onGameContentInitializationEvent(AGameEvents.GameContentInitializationEvent event) {
 		prepareShader();
-		prepareTexture();
+
+		// TextureAtlas cannot be built yet because it relies on BlockRegistry which does BlockRegistration in
+		// GamePostInitializationEvent
+	}
+
+	@EventHandler
+	public static void onGamePostInitializationEvent(AGameEvents.GamePostInitializationEvent event) {
 		prepareVBOs();
 		activeGame = event.getGame();
 	}
 
-	private static void prepareShader() {
-		shader = new ShaderProgram( "/engine/shaders/terrain", "/engine/shaders/terrain" );
+	@EventHandler
+	public static void onGameContentDisposingEvent(AGameEvents.GameContentDisposingEvent event) {
+		shader.dispose();
 	}
 
-	private static void prepareTexture() {
-		// TODO: Generate blockAtlas from registered blocks
-		//blockAtlas = new Texture( "game/textures/blocks/dirt.png" );
-
-		TextureAtlasBuilder builder = new TextureAtlasBuilder( Math.round( TerrainChunk.BLOCK_SIZE ) );
-		BlockRegistry.getRegisteredBlocks().forEach( aBlock -> builder.addTexture( aBlock.getBlockTextureFilename() ) );
-		blockAtlas = builder.build();
+	private static void prepareShader() {
+		shader = new ShaderProgram( "/engine/shaders/terrain", "/engine/shaders/terrain" );
+		// Uncomment this to disable texture tiling. (Useful for debugging tileset generation)
+		shader2 = new ShaderProgram( "/engine/shaders/terrain", "/engine/shaders/default" );
 	}
 
 	private static void prepareVBOs() {
@@ -97,7 +99,19 @@ public class TerrainRenderer {
 	}
 
 	public static void render(IRenderer renderer) {
-		renderer.bindTexture( blockAtlas );
+		tmpAtlas = BlockTextureAtlas.getTexture();
+
+		if (InputHandler.getKey( KeyCode.KEY_SPACE ) == GLFW.GLFW_PRESS && !lastSpaceState) {
+			ShaderProgram tmp = shader;
+			shader = shader2;
+			shader2 = tmp;
+			lastSpaceState = true;
+		}
+		if (InputHandler.getKey( KeyCode.KEY_SPACE ) == GLFW.GLFW_RELEASE) {
+			lastSpaceState = false;
+		}
+
+		renderer.bindTexture( tmpAtlas );
 		renderer.bindShader( shader );
 
 		try {
@@ -108,37 +122,33 @@ public class TerrainRenderer {
 			return;
 		}
 
-		renderQueue.forEach( TerrainRenderer::render );
+		renderQueue.forEach( tile -> BlockRegistry.getBlock( tile.getBlockID() ).render( tile ) );
 
 		renderer.bindShader( 0 );
 		renderer.bindTexture( 0 );
 
 		renderQueue.clear();
+
+		tmpAtlas = null;
 	}
 
-	// TODO: Move this shit over to the block or add some way for block to influence its rendering
-	private static void render(ITile tile) {
+	public static void renderTile(int frameID, ITile tile) {
 		// Air tiles' blockIDs are null and they do not need to be rendered
 		if (tile.getBlockID() == null) {
 			return;
 		}
 
-		int atlasSize =
-				Math.round(
-						(float) Math.pow( 2f,
-						                  DishMath.nearestPowerOfTwo(
-								                  Math.round( blockAtlas.getWidth() / TerrainChunk.BLOCK_SIZE ) ) ) );
-		int index = BlockRegistry.getBlock( tile.getBlockID() ).getFrameID();
+		int atlasSize = (int) Math.floor( tmpAtlas.getWidth() / TerrainChunk.BLOCK_SIZE );
 
-		int row = (int) Math.floor( (float) index / (float) atlasSize );
-		int column = index % atlasSize;
+		int row = (int) Math.floor( (float) frameID / (float) atlasSize );
+		int column = frameID % atlasSize;
 
 		try {
 			shader.setUniformVec4f( "subtexture",
 			                        (float) column / (float) atlasSize,
 			                        (float) row / (float) atlasSize,
-			                        TerrainChunk.BLOCK_SIZE / blockAtlas.getWidth(),
-			                        TerrainChunk.BLOCK_SIZE / blockAtlas.getWidth() );
+			                        TerrainChunk.BLOCK_SIZE / tmpAtlas.getWidth(),
+			                        TerrainChunk.BLOCK_SIZE / tmpAtlas.getWidth() );
 
 			shader.setUniformMat4( "mat_modelview",
 			                       MatrixUtility.createTranslation( tile.getX() * TerrainChunk.BLOCK_SIZE,
@@ -154,11 +164,6 @@ public class TerrainRenderer {
 		}
 
 		VBOs[sizeLookup.get( tile.getSize() )].render();
-	}
-
-	public static void dispose() {
-		blockAtlas.dispose();
-		shader.dispose();
 	}
 
 	public static OrthographicCamera getCamera() {

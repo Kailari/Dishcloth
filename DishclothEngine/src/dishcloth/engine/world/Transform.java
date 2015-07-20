@@ -3,6 +3,7 @@ package dishcloth.engine.world;
 import dishcloth.engine.util.geom.Point;
 import dishcloth.engine.util.logger.Debug;
 import dishcloth.engine.util.math.DishMath;
+import dishcloth.engine.util.math.Vector2;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,6 +18,10 @@ public class Transform {
 	private Point location;
 	private float rotation; // in deg
 
+	public Transform() {
+		this( 0f, 0f, 0f );
+	}
+
 	public Transform(float x, float y, float rotation) {
 		this( new Point( x, y ), rotation );
 	}
@@ -28,9 +33,9 @@ public class Transform {
 		addRotation( rotation );
 	}
 
-
+	
 	/**
-	 * Use only while calling addChild() method.
+	 * Used only while calling addChild() method.
 	 */
 	private Transform(Transform parent, float x, float y, float rotation) {
 		this( x, y, rotation );
@@ -40,19 +45,17 @@ public class Transform {
 	/**
 	 * Move the location <b>by</b> values given in parameters.
 	 *
-	 * @param xa x-amount
-	 * @param ya y-amount
+	 * @param xAmount x-amount
+	 * @param yAmount y-amount
 	 */
-	public void addLocation(float xa, float ya) {
-		location.add( xa, ya );
+	public void translate(float xAmount, float yAmount) {
+		location.add( xAmount, yAmount );
 	}
 
 	public void addRotation(float deg) {
 		rotation += deg;
+		// TODO: Test if clampAngle really works
 		rotation = DishMath.clampAngle( rotation );
-
-		// TODO: Clamp angle to [ 0, 359 ]. Might be a good idea to make DishMath method for it.
-		// TODO: done, test if it works...
 	}
 
 	public void addRotationRad(float rad) {
@@ -242,9 +245,7 @@ public class Transform {
 
 	@Override
 	public String toString() {
-		String pr = "yes";
-		if (parent == null) pr = "no";
-		return "Transform:{parent:" + pr +
+		return "Transform:{parent:" + (parent == null ? "no" : "yes") +
 				", children=" + children.size() +
 				", location=" + location +
 				", rotation=" + DishMath.cutDecimals( rotation ) +

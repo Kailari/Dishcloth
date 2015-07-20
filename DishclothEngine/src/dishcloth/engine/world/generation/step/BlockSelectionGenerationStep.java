@@ -20,12 +20,18 @@ public class BlockSelectionGenerationStep extends ATerrainGenerationStep {
 	public TerrainChunk onGenerateChunk(TerrainChunk targetChunk, float[] values, long seed, int chunkX, int chunkY) {
 		for (int x = 0; x < TerrainChunk.CHUNK_SIZE; x++) {
 			for (int y = 0; y < TerrainChunk.CHUNK_SIZE; y++) {
-				// TODO: Use BlockRegistry *a tiny bit* more extensively
- 				if (values[x + y * TerrainChunk.CHUNK_SIZE] != 0f) {
+				if (values[x + y * TerrainChunk.CHUNK_SIZE] == 1.1f) {
 					targetChunk.setBlock( chunkX * TerrainChunk.CHUNK_SIZE + x,
 					                      chunkY * TerrainChunk.CHUNK_SIZE + y,
-					                      BlockRegistry.getBlock( BlockIDHelper.getBlockID( (short) 0 ) ) );
+					                      BlockRegistry.getBlock( BlockIDHelper.getBlockID( "dishcloth:grass" ) ) );
 				}
+				else if (values[x + y * TerrainChunk.CHUNK_SIZE] != 0f) {
+					targetChunk.setBlock( chunkX * TerrainChunk.CHUNK_SIZE + x,
+					                      chunkY * TerrainChunk.CHUNK_SIZE + y,
+					                      BlockRegistry.getBlock( BlockIDHelper.getBlockID( "dishcloth:dirt"  ) ) );
+				}
+
+
 			}
 		}
 

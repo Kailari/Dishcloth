@@ -2,7 +2,6 @@ package dishcloth.engine.world.level;
 
 import dishcloth.engine.util.geom.Rectangle;
 import dishcloth.engine.util.quadtree.QuadTree;
-import dishcloth.engine.world.Tile;
 import dishcloth.engine.world.block.ABlock;
 
 /**

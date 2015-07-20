@@ -209,7 +209,7 @@ public final class EventRegistry {
 			Debug.logNote( "Event: "
 					               + ANSIColor.CYAN + "\""
 					               + parseEventNameFromClass( eventClass )
-					               + ANSIColor.YELLOW + "\" (" + eventClass.getSimpleName()
+					               + "\"" + ANSIColor.YELLOW + " (" + eventClass.getSimpleName()
 					               + ")" + ANSIColor.RESET, "EventRegistry" );
 			return;
 		}
@@ -248,6 +248,15 @@ public final class EventRegistry {
 
 	private static void fireEvent(IEvent event, Object instance, Method handler) {
 		try {
+			Debug.log( "Calling EventHandler "
+					           + ANSIColor.CYAN + "\""
+					           + parseEventNameFromClass( event.getClass() )
+					           + "\"" + ANSIColor.RESET
+					           + " in class "
+					           + ANSIColor.YELLOW + "\""
+					           + handler.getDeclaringClass().getSimpleName()
+					           + "\"" + ANSIColor.RESET, "EventRegistry" );
+
 			handler.invoke( instance, event );
 		} catch (IllegalAccessException e) {
 			Debug.logErr( "EVENT HANDLER WAS INACCESSIBLE!", "EventRegistry" );
@@ -258,6 +267,16 @@ public final class EventRegistry {
 			Debug.logException( e, "EventRegistry" );
 		} catch (InvocationTargetException e) {
 			Debug.logErr( "EXCEPTION IN EVENT HANDLER!", "EventRegistry" );
+			Debug.logErr( "Exception was thrown in method "
+					              + ANSIColor.YELLOW + "\""
+					              + handler.getName()
+					              + "\"" + ANSIColor.RESET
+					              + " in class "
+					              + ANSIColor.YELLOW + "\""
+					              + instance.getClass().getSimpleName()
+					              + "\"" + ANSIColor.RESET, "EventRegistry" );
+			Debug.logException( e, "EventRegistry" );
+		} catch (Exception e) {
 			Debug.logException( e, "EventRegistry" );
 		}
 	}

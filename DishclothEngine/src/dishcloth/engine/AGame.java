@@ -9,7 +9,7 @@ import static org.lwjgl.system.MemoryUtil.*;
 import dishcloth.engine.events.EventHandler;
 import dishcloth.engine.events.EventRegistry;
 import dishcloth.engine.exception.GameInitializationException;
-import dishcloth.engine.io.input.InputHandler;
+import dishcloth.engine.input.InputHandler;
 import dishcloth.engine.rendering.ICamera;
 import dishcloth.engine.rendering.IRenderer;
 import dishcloth.engine.rendering.OrthographicCamera;
@@ -17,6 +17,7 @@ import dishcloth.engine.rendering.Renderer;
 import dishcloth.engine.util.logger.Debug;
 import dishcloth.engine.util.time.Time;
 import dishcloth.engine.world.block.BlockRegistry;
+import dishcloth.engine.world.block.BlockTextureAtlas;
 import dishcloth.engine.world.level.TerrainRenderer;
 import org.lwjgl.opengl.GLContext;
 
@@ -41,6 +42,7 @@ public abstract class AGame extends ADishclothObject implements IGame {
 	private IRenderer renderer;
 	private ICamera viewportCamera;
 	private Timing timing;
+
 	protected AGame() {
 		super( true );
 	}
@@ -53,6 +55,7 @@ public abstract class AGame extends ADishclothObject implements IGame {
 		// Note how IDE says that "method onPreInitializeEvent is never used", yet when you start up
 		// the game, it is quite obvious that these two lines below this comment are getting called.
 
+		EventRegistry.registerEventListener( BlockTextureAtlas.class );
 		EventRegistry.registerEventListener( BlockRegistry.class );
 		EventRegistry.registerEventListener( TerrainRenderer.class );
 	}
@@ -127,7 +130,6 @@ public abstract class AGame extends ADishclothObject implements IGame {
 		Debug.logWarn( "Unloading content...", this );
 
 		doUnloadContent();
-		TerrainRenderer.dispose();
 
 		Debug.logWarn( "Shutting down...", this );
 		doShutdown();
@@ -210,7 +212,7 @@ public abstract class AGame extends ADishclothObject implements IGame {
 		// Call loadContent()
 		loadContent();
 
-		Debug.log("Triggering content-initialization events", this);
+		Debug.log( "Triggering content-initialization events", this );
 		EventRegistry.fireEvent( new AGameEvents.GameContentInitializationEvent( this ) );
 	}
 

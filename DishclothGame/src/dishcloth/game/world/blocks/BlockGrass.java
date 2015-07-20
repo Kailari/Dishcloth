@@ -1,15 +1,21 @@
-package dishcloth.game;
+package dishcloth.game.world.blocks;
+
+import dishcloth.engine.world.block.ABlock;
 
 /**
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- * DishclothGameEvents.java
+ * BlockDirt.java
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * <p>
  * TODO: Description
  * <p>
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- * Created by ASDSausage on 13.7.2015
+ * Created by ASDSausage on 11.6.2015
  */
 
-public class DishclothGameEvents {
+public class BlockGrass extends ABlock {
+	@Override
+	public String getBlockTextureFilename() {
+		return "game/textures/blocks/grass.png";
+	}
 }

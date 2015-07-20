@@ -5,6 +5,7 @@ import dishcloth.engine.events.EventHandler;
 import dishcloth.engine.events.EventRegistry;
 import dishcloth.engine.io.save.datapaths.AFileDataPath;
 import dishcloth.engine.io.save.datapaths.BlockIDHeaderDataPath;
+import dishcloth.engine.util.logger.ANSIColor;
 import dishcloth.engine.util.logger.Debug;
 
 import java.util.ArrayList;
@@ -24,11 +25,6 @@ import java.util.List;
 
 public final class BlockRegistry {
 
-	@EventHandler
-	public static void onGamePostInitializeEvent(AGameEvents.GamePostInitializationEvent event) {
-		doBlockRegistration( "dummy" );
-	}
-
 	/**
 	 * List for storing blocks loaded from disk until they are ready to be registered. To finally register blocks,
 	 * AGame calls 'BlockRegistry.doBlockRegistration(...)'.
@@ -38,6 +34,12 @@ public final class BlockRegistry {
 	 */
 	private static List<TemporaryRegistryEntry> temporaryRegistryEntries = new ArrayList<>();
 	private static HashMap<BlockID, ABlock> registryEntries = new HashMap<>();
+
+	@EventHandler
+	//public static void onGamePostInitializeEvent(AGameEvents.GamePostInitializationEvent event) {
+	public static void onGameContentInitializationEvent(AGameEvents.GameContentInitializationEvent event) {
+		doBlockRegistration( "dummy" );
+	}
 
 	public static ABlock getBlock(BlockID blockID) {
 		return registryEntries.get( blockID );
@@ -69,9 +71,10 @@ public final class BlockRegistry {
 					.forEach( blockID -> applyFallbackID( blockID, entry.fallbackModID, entry.fallbackID ) );
 		}
 
-		registryEntries.keySet().forEach( key -> {
-			Debug.log( key.toString(), "BlocRegistry" );
-		} );
+		registryEntries.keySet().forEach( key -> Debug.logNote( "Registered block: "
+				                                                        + ANSIColor.MAGENTA
+				                                                        + key.toString()
+				                                                        + ANSIColor.RESET, "BlocRegistry" ) );
 	}
 
 	private static void applyFallbackID(BlockID blockID, String fallbackMod, String fallbackID) {
@@ -110,6 +113,10 @@ public final class BlockRegistry {
 		BlockID blockID = BlockIDHandler.createBlockID( entry.id, entry.mod );
 		entry.block.setBlockID( blockID );
 		registryEntries.put( blockID, entry.block );
+
+		BlockTextureAtlas.addBlock( entry.block );
+
+		//EventRegistry.fireEvent( new BlockEvents.OnBlockRegistrationEvent( blockID, entry.block ) );
 	}
 
 	public static List<ABlock> getRegisteredBlocks() {

@@ -1,24 +1,19 @@
-package dishcloth.engine.world;
+package dishcloth.engine.world.objects.actor;
 
-import dishcloth.engine.util.geom.Rectangle;
-import dishcloth.engine.world.block.BlockID;
+import dishcloth.engine.world.objects.AWorldObject;
 
 /**
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- * ITile.java
+ * AActor.java
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * <p>
- * Basic part of terrain. Comes in multitude of different sizes!
+ * TODO: Description
+ * TODO: I still quite haven't figured out what common logic actors should share
  * <p>
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- * Created by ASDSausage on 21.5.2015
+ * Created by ASDSausage on 19.7.2015
  */
-public interface ITile {
-	int getSize();
-	int getX();
-	int getY();
 
-	Rectangle getBounds();
+public class AActor extends AWorldObject {
 
-	BlockID getBlockID();
 }

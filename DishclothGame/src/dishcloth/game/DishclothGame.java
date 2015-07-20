@@ -3,12 +3,15 @@ package dishcloth.game;
 import dishcloth.engine.AGame;
 import dishcloth.engine.AGameEvents;
 import dishcloth.engine.events.EventHandler;
+import dishcloth.engine.input.controllers.CameraController;
 import dishcloth.engine.rendering.IRenderer;
 import dishcloth.engine.util.logger.ANSIColor;
 import dishcloth.engine.util.logger.Debug;
 import dishcloth.engine.world.block.BlockRegistry;
 import dishcloth.engine.world.level.Terrain;
+import dishcloth.engine.world.objects.actor.CameraActor;
 import dishcloth.game.world.blocks.BlockDirt;
+import dishcloth.game.world.blocks.DishclothBlocks;
 
 /**
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -22,6 +25,10 @@ import dishcloth.game.world.blocks.BlockDirt;
  */
 
 public class DishclothGame extends AGame {
+	public static final String DEFAULT_MOD_ID = "dishcloth";
+
+	CameraActor cameraActor;
+	CameraController cameraController;
 	Terrain terrain;
 
 	@EventHandler
@@ -37,7 +44,16 @@ public class DishclothGame extends AGame {
 				           + ANSIColor.YELLOW
 				           + "DishclothGame"
 				           + ANSIColor.RESET, this );
-		BlockRegistry.registerBlock( new BlockDirt(), "dishcloth", "dirt" );
+
+		BlockRegistry.registerBlock( DishclothBlocks.DIRT, DEFAULT_MOD_ID, "dirt" );
+		BlockRegistry.registerBlock( DishclothBlocks.GRASS, DEFAULT_MOD_ID, "grass" );
+		BlockRegistry.registerBlock( DishclothBlocks.CLAY, DEFAULT_MOD_ID, "clay" );
+		BlockRegistry.registerBlock( DishclothBlocks.STONE, DEFAULT_MOD_ID, "stone" );
+		BlockRegistry.registerBlock( DishclothBlocks.BRICKS, DEFAULT_MOD_ID, "bricks" );
+
+		cameraActor = new CameraActor( getViewportCamera() );
+		cameraController = new CameraController();
+		cameraController.setActiveCamera( cameraActor );
 	}
 
 	@Override
@@ -46,11 +62,14 @@ public class DishclothGame extends AGame {
 
 	@Override
 	public void update(float delta) {
-
+		cameraController.update();
+		cameraActor.update();
 	}
 
 	@Override
 	public void fixedUpdate() {
+		cameraController.fixedUpdate();
+		cameraActor.fixedUpdate();
 	}
 
 	@Override

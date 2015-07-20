@@ -76,9 +76,11 @@ public class GroundSurfaceGenerationStep extends ATerrainGenerationStep {
 				if (chunkTopY + y > groundYLevel + tmp[x]) {
 					values[x + y * size] = EMPTINESS_VALUE;
 				} else {
-					int distanceToSurface = Math.abs( (chunkTopY + y) - (groundYLevel + Math.round( tmp[x] )) );
+					int distanceToSurface = Math.abs( (chunkTopY + y) - (groundYLevel + (int)Math.floor( tmp[x] )) );
 
-					if (distanceToSurface < shallowDepth) {
+					if (distanceToSurface < 1f) {
+						values[x + y * size] = 1.1f;
+					} else if (distanceToSurface < shallowDepth) {
 						values[x + y * size] = values[x + y * size] * (distanceToSurface / (float) shallowDepth);
 					}
 				}
