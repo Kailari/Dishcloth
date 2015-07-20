@@ -53,6 +53,7 @@ public class BlockTextureAtlas {
 	private static void build() {
 		dispose();
 		texture = builder.build();
+		isBuilt = true;
 	}
 
 	public static void dispose() {

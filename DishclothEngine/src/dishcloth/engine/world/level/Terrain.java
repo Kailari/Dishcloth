@@ -73,10 +73,14 @@ public class Terrain implements IUpdatable, IRenderable {
 				viewport.y / TerrainChunk.BLOCK_SIZE,
 				viewport.w / TerrainChunk.BLOCK_SIZE,
 				viewport.h / TerrainChunk.BLOCK_SIZE );
+
 		for (TerrainChunk chunk : this.chunks) {
-			if (chunk.getRenderBounds().overlaps( viewport )) {
+			if (chunk.getRenderBounds().overlaps( viewportChunkBounds )) {
 				chunk.getTiles()
-						.getDataInRectangle( viewportChunkBounds ).forEach( TerrainRenderer::queueTileForRendering );
+						//.getAllData()
+						.getDataInRectangle( viewportChunkBounds )
+						.forEach( TerrainRenderer::queueTileForRendering );
+
 			}
 		}
 

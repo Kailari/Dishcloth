@@ -35,6 +35,7 @@ import java.util.Map;
  * Created by ASDSausage on 22.5.2015
  */
 
+// TODO: Rewrite the whole thing to use dynamic VBO/IBO (Current implementation is just sprite renderer, not batch)
 public class SpriteBatch implements IRenderable {
 
 	private HashMap<Integer, List<TextureRenderInfo>> renderQueue;

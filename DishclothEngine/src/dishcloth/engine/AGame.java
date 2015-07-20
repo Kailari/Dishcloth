@@ -100,10 +100,10 @@ public abstract class AGame extends ADishclothObject implements IGame {
 
 		Debug.log( "", this );
 		Debug.logNote( "Entering main loop...", this );
+		int nFrames = 0;
+		float fpsRecordStart = (float) glfwGetTime();
 		while (glfwWindowShouldClose( windowID ) != GL_TRUE
 				&& !windowShouldExit) {
-
-			assert !windowShouldExit;
 
 			timing.tick++;
 
@@ -119,6 +119,17 @@ public abstract class AGame extends ADishclothObject implements IGame {
 			doFixedUpdate();
 
 			doRender();
+
+			// Calculate FPS
+			nFrames++;
+			if (timing.currentTime - fpsRecordStart >= 1.0f) {
+				// Show fps in title
+				int timeToRender = Math.round( 1000f / (float) nFrames );
+				glfwSetWindowTitle( windowID, "Dishcloth - FPS: " + nFrames + ", Average ms/frame: " + timeToRender + " ms" );
+
+				fpsRecordStart += 1.0f;
+				nFrames = 0;
+			}
 
 			if (doUpdateTime) {
 				Time.update( timing );
@@ -204,7 +215,7 @@ public abstract class AGame extends ADishclothObject implements IGame {
 
 		glfwMakeContextCurrent( windowID );
 		GLContext.createFromCurrent();
-		glfwSwapInterval( 1 );
+		glfwSwapInterval( 0 );
 	}
 
 	@Override
@@ -221,9 +232,6 @@ public abstract class AGame extends ADishclothObject implements IGame {
 
 		// Poll glfw events (input etc.)
 		glfwPollEvents();
-
-		// Update EventRegistry
-		//EventRegistry.updateEvents();
 
 		// Call update
 		update( timing.delta );
