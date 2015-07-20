@@ -99,13 +99,17 @@ public class Debug {
 			first = false;
 		}
 
-		log( "\n" + e.getClass().getSimpleName() + " was thrown!"
+		log( ANSIColor.RED + "\n" + e.getClass().getSimpleName() + " was thrown!"
 				     + "\n    Message:    " + e.getMessage()
 				     + "\n    Cause:      " + (e.getCause() == null ? "Not specified" : e.getCause())
-				     + "\n+----------------------------------------------------------------------------+"
-				     + "\n|   Stacktrace:                                                              |"
-				     + "\n+----------------------------------------------------------------------------+"
-				     + stacktrace,
+				     + "\n" + ANSIColor.RED_BACKGROUND + ANSIColor.BLACK
+				     + "+----------------------------------------------------------------------------+"
+				     + ANSIColor.RESET + "\n" + ANSIColor.BLACK + ANSIColor.RED_BACKGROUND + "|" + ANSIColor.RESET
+				     + ANSIColor.RED + "   Stacktrace:                                                              "
+				     + ANSIColor.RED_BACKGROUND + ANSIColor.BLACK + "|" + ANSIColor.RESET + "\n"
+				     + ANSIColor.RED_BACKGROUND + ANSIColor.BLACK
+				     + "+----------------------------------------------------------------------------+"
+				     + ANSIColor.RESET + ANSIColor.RED + stacktrace + ANSIColor.RESET,
 		     context, DebugLevel.EXCEPTION );
 	}
 
