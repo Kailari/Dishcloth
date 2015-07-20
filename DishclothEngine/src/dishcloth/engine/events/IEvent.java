@@ -2,7 +2,7 @@ package dishcloth.engine.events;
 
 /**
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- * Event.java
+ * IEvent.java
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * <p>
  * TODO: Description
@@ -10,10 +10,5 @@ package dishcloth.engine.events;
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * Created by ASDSausage on 1.6.2015
  */
-public interface Event {
-	/**
-	 * Checks if trigger conditions are met.
-	 * @return true if trigger conditions are met.
-	 */
-	boolean triggerCondition();
+public interface IEvent {
 }
