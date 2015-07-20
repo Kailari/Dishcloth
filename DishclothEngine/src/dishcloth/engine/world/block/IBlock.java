@@ -48,5 +48,7 @@ interface IBlock {
 	 */
 	int getFrameID(); // Not stored on disk, can be used for "animating" blocks
 
+	String getBlockTextureFilename();
+
 	void render(IRenderer renderer, SpriteBatch spriteBatch);
 }

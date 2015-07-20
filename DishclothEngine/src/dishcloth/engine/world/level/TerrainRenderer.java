@@ -1,14 +1,19 @@
 package dishcloth.engine.world.level;
 
 import dishcloth.engine.AGame;
+import dishcloth.engine.AGameEvents;
+import dishcloth.engine.events.EventHandler;
+import dishcloth.engine.events.EventRegistry;
 import dishcloth.engine.exception.ShaderUniformException;
 import dishcloth.engine.rendering.ICamera;
 import dishcloth.engine.rendering.IRenderer;
 import dishcloth.engine.rendering.OrthographicCamera;
 import dishcloth.engine.rendering.shaders.ShaderProgram;
 import dishcloth.engine.rendering.textures.Texture;
+import dishcloth.engine.rendering.textures.TextureAtlasBuilder;
 import dishcloth.engine.rendering.vbo.Vertex;
 import dishcloth.engine.rendering.vbo.VertexBufferObject;
+import dishcloth.engine.rendering.vbo.shapes.Polygon;
 import dishcloth.engine.rendering.vbo.shapes.Quad;
 import dishcloth.engine.util.Color;
 import dishcloth.engine.util.geom.Rectangle;
@@ -17,6 +22,7 @@ import dishcloth.engine.util.math.DishMath;
 import dishcloth.engine.util.math.MatrixUtility;
 import dishcloth.engine.world.ITile;
 import dishcloth.engine.world.block.BlockID;
+import dishcloth.engine.world.block.BlockIDHelper;
 import dishcloth.engine.world.block.BlockRegistry;
 
 import java.util.ArrayList;
@@ -49,29 +55,38 @@ public class TerrainRenderer {
 
 	private TerrainRenderer() {}
 
-	public static void initialize(AGame game) {
+	@EventHandler
+	public static void onGamePostInitializeEvent(AGameEvents.GamePostInitializationEvent event) {
 		prepareShader();
 		prepareTexture();
 		prepareVBOs();
-		activeGame = game;
+		activeGame = event.getGame();
 	}
 
 	private static void prepareShader() {
-		shader = new ShaderProgram( "/engine/shaders/terrain", "/engine/shaders/default" );
+		shader = new ShaderProgram( "/engine/shaders/terrain", "/engine/shaders/terrain" );
 	}
 
 	private static void prepareTexture() {
 		// TODO: Generate blockAtlas from registered blocks
-		blockAtlas = new Texture( "game/textures/blocks/dirt.png" );
+		//blockAtlas = new Texture( "game/textures/blocks/dirt.png" );
+
+		TextureAtlasBuilder builder = new TextureAtlasBuilder( Math.round( TerrainChunk.BLOCK_SIZE ) );
+		BlockRegistry.getRegisteredBlocks().forEach( aBlock -> builder.addTexture( aBlock.getBlockTextureFilename() ) );
+		blockAtlas = builder.build();
 	}
 
 	private static void prepareVBOs() {
 		for (int i = 0; i < VBOs.length; i++) {
 			float size = (float) Math.pow( 2, i );
-			VBOs[i] = new VertexBufferObject( new Quad( new Rectangle( 0f,
-			                                                           0f,
-			                                                           size * TerrainChunk.BLOCK_SIZE,
-			                                                           size * TerrainChunk.BLOCK_SIZE ) ) );
+
+			VBOs[i] = new VertexBufferObject(
+					new Polygon(
+							new Vertex( 0f, 0f, 0f, size ),
+							new Vertex( size * TerrainChunk.BLOCK_SIZE, 0f, size, size ),
+							new Vertex( size * TerrainChunk.BLOCK_SIZE, size * TerrainChunk.BLOCK_SIZE, size, 0f ),
+							new Vertex( 0f, size * TerrainChunk.BLOCK_SIZE, 0f, 0f ) )
+			);
 
 			sizeLookup.put( Math.round( size ), i );
 		}
@@ -108,8 +123,12 @@ public class TerrainRenderer {
 			return;
 		}
 
-		int atlasSize = 32 - Integer.numberOfLeadingZeros( blockAtlas.getWidth() - 1 );
-		int index = tile.getBlockID().getID();
+		int atlasSize =
+				Math.round(
+						(float) Math.pow( 2f,
+						                  DishMath.nearestPowerOfTwo(
+								                  Math.round( blockAtlas.getWidth() / TerrainChunk.BLOCK_SIZE ) ) ) );
+		int index = BlockRegistry.getBlock( tile.getBlockID() ).getFrameID();
 
 		int row = (int) Math.floor( (float) index / (float) atlasSize );
 		int column = index % atlasSize;
@@ -135,6 +154,11 @@ public class TerrainRenderer {
 		}
 
 		VBOs[sizeLookup.get( tile.getSize() )].render();
+	}
+
+	public static void dispose() {
+		blockAtlas.dispose();
+		shader.dispose();
 	}
 
 	public static OrthographicCamera getCamera() {

@@ -1,5 +1,8 @@
 package dishcloth.engine.world.block;
 
+import dishcloth.engine.AGameEvents;
+import dishcloth.engine.events.EventHandler;
+import dishcloth.engine.events.EventRegistry;
 import dishcloth.engine.io.save.datapaths.AFileDataPath;
 import dishcloth.engine.io.save.datapaths.BlockIDHeaderDataPath;
 import dishcloth.engine.util.logger.Debug;
@@ -20,6 +23,11 @@ import java.util.List;
  */
 
 public final class BlockRegistry {
+
+	@EventHandler
+	public static void onGamePostInitializeEvent(AGameEvents.GamePostInitializationEvent event) {
+		doBlockRegistration( "dummy" );
+	}
 
 	/**
 	 * List for storing blocks loaded from disk until they are ready to be registered. To finally register blocks,
@@ -62,7 +70,7 @@ public final class BlockRegistry {
 		}
 
 		registryEntries.keySet().forEach( key -> {
-			Debug.log(key.toString(), "BlocRegistry");
+			Debug.log( key.toString(), "BlocRegistry" );
 		} );
 	}
 
@@ -102,6 +110,10 @@ public final class BlockRegistry {
 		BlockID blockID = BlockIDHandler.createBlockID( entry.id, entry.mod );
 		entry.block.setBlockID( blockID );
 		registryEntries.put( blockID, entry.block );
+	}
+
+	public static List<ABlock> getRegisteredBlocks() {
+		return new ArrayList<>( registryEntries.values() );
 	}
 
 	private static class TemporaryRegistryEntry {
