@@ -208,7 +208,7 @@ public abstract class ACurve {
 	 * @param f01 float which is between 0 and 1 (or equal)
 	 * @return the x-value
 	 */
-	protected final float convertToCurvePosition(float f01) {
+	public final float convertToCurvePosition(float f01) {
 		//		if (f01 < 0 || f01 > 1) throw new IllegalArgumentException("'f' has to be [0,1].");
 		// TODO: implement looping
 		if (f01 < 0) f01 = 0;
