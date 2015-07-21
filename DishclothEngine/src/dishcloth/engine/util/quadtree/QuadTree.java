@@ -110,4 +110,8 @@ public class QuadTree<T extends AQuadTreeDataObject> {
 		root.getCellsInRectangle( rectangle ).forEach( cell -> result.addAll( cell.getData() ) );
 		return result;
 	}
+
+	public List<T> getAllData() {
+		return root.getAllData();
+	}
 }

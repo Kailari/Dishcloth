@@ -1,5 +1,7 @@
 package dishcloth.engine.world.generation.generator;
 
+import dishcloth.engine.util.logger.ANSIColor;
+import dishcloth.engine.util.logger.Debug;
 import dishcloth.engine.world.level.TerrainChunk;
 import dishcloth.engine.world.generation.step.ITerrainGenerationStep;
 
@@ -22,10 +24,53 @@ public abstract class ATerrainGenerator {
 
 	// TODO: Design the objects/entity -storage. This function should return both TerrainChunk and populator results.
 	public final TerrainChunk generate(int chunkX, int chunkY) {
+		Debug.log( "Starting chunk generation: "
+				           + ANSIColor.BLACK + ANSIColor.GREEN_BACKGROUND
+				           + "( " + chunkX + ", " + chunkY + " )"
+				           + ANSIColor.RESET
+				, this );
+
+		long startTime = System.currentTimeMillis();
+
+		// Value generation
+		Debug.log("\tStarting value generation phase", this);
 		float[] values = generateValues( chunkX, chunkY );
+
+		long valuesTime = System.currentTimeMillis();
+		Debug.log( "\tValue generation phase completed in "
+				           + ANSIColor.BLUE
+				           + (valuesTime - startTime)
+				           + ANSIColor.RESET
+				           + " ms", this );
+
+		// Chunk generation
+		Debug.log("\tStarting chunk generation phase", this);
 		TerrainChunk chunk = generateChunk( chunkX, chunkY, values );
 
+		long chunksTime = System.currentTimeMillis();
+		Debug.log( "\tChunk generation phase completed in "
+				           + ANSIColor.BLUE
+				           + (chunksTime - valuesTime)
+				           + ANSIColor.RESET
+				           + " ms", this );
+
+		// World population
+		Debug.log("\tStarting world population phase", this);
 		// TODO: Run populator or sth.
+
+		long populatorTime = System.currentTimeMillis();
+		Debug.log( "\tWorld population phase completed in "
+				           + ANSIColor.BLUE
+				           + (populatorTime - chunksTime)
+				           + ANSIColor.RESET
+				           + " ms", this );
+
+		Debug.log( "Chunk generated in "
+				           + ANSIColor.BLUE
+				           + (populatorTime - startTime)
+				           + ANSIColor.RESET
+				           + " ms"
+				, this );
 
 		return chunk;
 	}
@@ -33,7 +78,13 @@ public abstract class ATerrainGenerator {
 	private TerrainChunk generateChunk(int chunkX, int chunkY, float[] values) {
 		TerrainChunk newChunk = new TerrainChunk( chunkX, chunkY );
 		for (ITerrainGenerationStep step : this.steps) {
+			long startTime = System.currentTimeMillis();
 			newChunk = step.onGenerateChunk( newChunk, values, this.seed, chunkX, chunkY );
+
+			Debug.log( "\t\tStep \"" + step.getClass().getSimpleName() + "\" took "
+					           + ANSIColor.BLUE
+					           + (System.currentTimeMillis() - startTime)
+					           + ANSIColor.RESET + " ms", this );
 		}
 		return newChunk;
 	}
@@ -43,8 +94,11 @@ public abstract class ATerrainGenerator {
 		for (ITerrainGenerationStep step : this.steps) {
 			long startTime = System.currentTimeMillis();
 			values = step.onGenerateValues( values, this.seed, chunkX, chunkY );
-			System.out.println("Step \"" + step.getClass().getSimpleName() +"\" took "
-					                   + (double)(System.currentTimeMillis() - startTime) + " ms");
+
+			Debug.log( "\t\tStep \"" + step.getClass().getSimpleName() + "\" took "
+					           + ANSIColor.BLUE
+					           + (System.currentTimeMillis() - startTime)
+					           + ANSIColor.RESET + " ms", this );
 		}
 		return values;
 	}

@@ -3,6 +3,7 @@ package dishcloth.engine.world.level;
 import dishcloth.engine.rendering.IRenderable;
 import dishcloth.engine.rendering.IRenderer;
 import dishcloth.engine.util.geom.Rectangle;
+import dishcloth.engine.util.logger.ANSIColor;
 import dishcloth.engine.util.logger.Debug;
 import dishcloth.engine.world.IUpdatable;
 import dishcloth.engine.world.generation.generator.DefaultTerrainGenerator;
@@ -18,6 +19,7 @@ import dishcloth.engine.world.generation.generator.DefaultTerrainGenerator;
  * Created by ASDSausage on 3.6.2015
  */
 
+// TODO: Move terrain generation from constructor to generator methods and implement disk I/O
 public class Terrain implements IUpdatable, IRenderable {
 
 	private final int w, h;
@@ -28,6 +30,13 @@ public class Terrain implements IUpdatable, IRenderable {
 	private final int xModifier, yModifier;
 	private TerrainChunk[] chunks;
 
+	/**
+	 * Creates (and generates) a new world.
+	 *
+	 * @param widthInChunks        World width in chunks
+	 * @param heightInChunks       World height in chunks.
+	 * @param chunksAboveZeroLevel How many chunks there are above zero-level
+	 */
 	public Terrain(int widthInChunks, int heightInChunks, int chunksAboveZeroLevel) {
 
 		// Make sure that widthInChunks is dividable by 2 (for centering the world)
@@ -36,15 +45,14 @@ public class Terrain implements IUpdatable, IRenderable {
 		this.chunks = new TerrainChunk[this.w * this.h];
 
 		this.xModifier = -widthInChunks / 2;
-		this.yModifier = -chunksAboveZeroLevel;
+		// TODO: Figure this thing out
+		this.yModifier = -(heightInChunks - chunksAboveZeroLevel);
 
 		DefaultTerrainGenerator generator = new DefaultTerrainGenerator();
 
 		for (int x = 0; x < this.w; x++) {
 			for (int y = 0; y < this.h; y++) {
 				this.chunks[x + y * this.w] = generator.generate( x + this.xModifier, y + this.yModifier );
-				Debug.log( "chunk generated: " + (x + this.xModifier) + ":" + (y + this.yModifier) + " == null?"
-						           + (this.chunks[x + y * this.w] == null), this );
 			}
 		}
 	}
@@ -59,17 +67,20 @@ public class Terrain implements IUpdatable, IRenderable {
 
 	public void render(IRenderer renderer) {
 		// Find Tiles on screen and queue them
-		Rectangle viewport = TerrainRenderer.getCamera().getViewportBounds();
+		Rectangle viewport = TerrainRenderer.getCamera().getViewportRenderBounds();
 		Rectangle viewportChunkBounds = new Rectangle(
 				viewport.x / TerrainChunk.BLOCK_SIZE,
 				viewport.y / TerrainChunk.BLOCK_SIZE,
 				viewport.w / TerrainChunk.BLOCK_SIZE,
 				viewport.h / TerrainChunk.BLOCK_SIZE );
+
 		for (TerrainChunk chunk : this.chunks) {
-			// XXX: Where does the nullPointer come from?
-			if (chunk.getRenderBounds().overlaps( viewport )) {
+			if (chunk.getRenderBounds().overlaps( viewportChunkBounds )) {
 				chunk.getTiles()
-						.getDataInRectangle( viewportChunkBounds ).forEach( TerrainRenderer::queueTileForRendering );
+						//.getAllData()
+						.getDataInRectangle( viewportChunkBounds )
+						.forEach( TerrainRenderer::queueTileForRendering );
+
 			}
 		}
 

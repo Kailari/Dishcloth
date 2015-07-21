@@ -4,6 +4,7 @@ import dishcloth.engine.util.geom.Point;
 import dishcloth.engine.util.geom.Rectangle;
 import dishcloth.engine.util.math.Matrix4;
 import dishcloth.engine.util.math.MatrixUtility;
+import dishcloth.engine.world.objects.actor.AActor;
 
 /**
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -16,7 +17,7 @@ import dishcloth.engine.util.math.MatrixUtility;
  * Created by ASDSausage on 29.5.2015
  */
 
-public class OrthographicCamera implements ICamera {
+public class OrthographicCamera extends AActor implements ICamera  {
 
 	public static OrthographicCamera instance;
 
@@ -45,7 +46,7 @@ public class OrthographicCamera implements ICamera {
 		}
 	}
 
-	public Rectangle getViewportBounds() {
+	public Rectangle getViewportRenderBounds() {
 		return new Rectangle( position.x - viewportW / 2f,
 		                      position.y - viewportH / 2f,
 		                      viewportW,

@@ -6,11 +6,10 @@ import static org.lwjgl.opengl.GL11.*;
 // For NULL constant
 import static org.lwjgl.system.MemoryUtil.*;
 
-import dishcloth.engine.events.events.KeyEvent;
-import dishcloth.engine.exception.GameInitializationException;
 import dishcloth.engine.events.EventHandler;
-import dishcloth.engine.events.EventAction;
-import dishcloth.engine.io.input.InputHandler;
+import dishcloth.engine.events.EventRegistry;
+import dishcloth.engine.exception.GameInitializationException;
+import dishcloth.engine.input.InputHandler;
 import dishcloth.engine.rendering.ICamera;
 import dishcloth.engine.rendering.IRenderer;
 import dishcloth.engine.rendering.OrthographicCamera;
@@ -18,6 +17,7 @@ import dishcloth.engine.rendering.Renderer;
 import dishcloth.engine.util.logger.Debug;
 import dishcloth.engine.util.time.Time;
 import dishcloth.engine.world.block.BlockRegistry;
+import dishcloth.engine.world.block.BlockTextureAtlas;
 import dishcloth.engine.world.level.TerrainRenderer;
 import org.lwjgl.opengl.GLContext;
 
@@ -33,7 +33,7 @@ import org.lwjgl.opengl.GLContext;
  * Created by ASDSausage on 12.5.2015.
  */
 
-public abstract class AGame implements IGame {
+public abstract class AGame extends ADishclothObject implements IGame {
 
 	protected int screenWidth, screenHeight;
 	protected boolean doUpdateTime = true;
@@ -43,7 +43,22 @@ public abstract class AGame implements IGame {
 	private ICamera viewportCamera;
 	private Timing timing;
 
-	private EventAction<KeyEvent> forceExitAction = eventTrigger -> windowShouldExit = eventTrigger.wasPressed();
+	protected AGame() {
+		super( true );
+	}
+
+	@EventHandler
+	public void onPreInitializeEvent(AGameEvents.GamePreInitializationEvent event) {
+		// TODO: Figure out some place where to store static class event listener registrations
+		// XXX: They are kept here purely for the purpose of example.
+
+		// Note how IDE says that "method onPreInitializeEvent is never used", yet when you start up
+		// the game, it is quite obvious that these two lines below this comment are getting called.
+
+		EventRegistry.registerEventListener( BlockTextureAtlas.class );
+		EventRegistry.registerEventListener( BlockRegistry.class );
+		EventRegistry.registerEventListener( TerrainRenderer.class );
+	}
 
 	public long getWindowID() {
 		return windowID;
@@ -67,16 +82,17 @@ public abstract class AGame implements IGame {
 		Debug.log( "Initializing...", this );
 
 		doInitialize();
+
+
 		Debug.logOK( "Initializing successful!", this );
 
 		Debug.log( "Loading content...", this );
 		doLoadContent();
+
 		Debug.logOK( "Content loading successful!", this );
 
-		// TODO: Figure out where these should be kept
-		BlockRegistry.doBlockRegistration( "dummy" );
-		TerrainRenderer.initialize( this );
-
+		Debug.log( "Triggering post-initialize events", this );
+		EventRegistry.fireEvent( new AGameEvents.GamePostInitializationEvent( this ) );
 
 		timing = new Timing();
 
@@ -84,10 +100,10 @@ public abstract class AGame implements IGame {
 
 		Debug.log( "", this );
 		Debug.logNote( "Entering main loop...", this );
+		int nFrames = 0;
+		float fpsRecordStart = (float) glfwGetTime();
 		while (glfwWindowShouldClose( windowID ) != GL_TRUE
 				&& !windowShouldExit) {
-
-			assert !windowShouldExit;
 
 			timing.tick++;
 
@@ -104,6 +120,17 @@ public abstract class AGame implements IGame {
 
 			doRender();
 
+			// Calculate FPS
+			nFrames++;
+			if (timing.currentTime - fpsRecordStart >= 1.0f) {
+				// Show fps in title
+				int timeToRender = Math.round( 1000f / (float) nFrames );
+				glfwSetWindowTitle( windowID, "Dishcloth - FPS: " + nFrames + ", Average ms/frame: " + timeToRender + " ms" );
+
+				fpsRecordStart += 1.0f;
+				nFrames = 0;
+			}
+
 			if (doUpdateTime) {
 				Time.update( timing );
 			}
@@ -114,7 +141,6 @@ public abstract class AGame implements IGame {
 		Debug.logWarn( "Unloading content...", this );
 
 		doUnloadContent();
-
 
 		Debug.logWarn( "Shutting down...", this );
 		doShutdown();
@@ -129,12 +155,8 @@ public abstract class AGame implements IGame {
 			// Attach inputHandler
 			InputHandler.attachToWindow( windowID );
 
-			// Register events
-			EventHandler.registerEvents( AGameEvents.class );
-
-			// Bind actions
-			EventHandler.bindAction( AGameEvents.forceExitEvent, forceExitAction );
-
+			Debug.log( "Triggering pre-initialize events", this );
+			EventRegistry.fireEvent( new AGameEvents.GamePreInitializationEvent( this ) );
 
 			// Call initialize
 			initialize();
@@ -144,7 +166,6 @@ public abstract class AGame implements IGame {
 			Debug.logException( e, this );
 			System.exit( 1 );
 		}
-
 	}
 
 	private void initHardware() throws GameInitializationException {
@@ -194,13 +215,16 @@ public abstract class AGame implements IGame {
 
 		glfwMakeContextCurrent( windowID );
 		GLContext.createFromCurrent();
-		glfwSwapInterval( 1 );
+		glfwSwapInterval( 0 );
 	}
 
 	@Override
 	public final void doLoadContent() {
 		// Call loadContent()
 		loadContent();
+
+		Debug.log( "Triggering content-initialization events", this );
+		EventRegistry.fireEvent( new AGameEvents.GameContentInitializationEvent( this ) );
 	}
 
 	@Override
@@ -208,9 +232,6 @@ public abstract class AGame implements IGame {
 
 		// Poll glfw events (input etc.)
 		glfwPollEvents();
-
-		// Update EventHandler
-		EventHandler.updateEvents();
 
 		// Call update
 		update( timing.delta );
@@ -232,9 +253,6 @@ public abstract class AGame implements IGame {
 
 			fixedUpdate();
 		}
-
-		float t = timing.simulationTimePool / timing.timestep;
-		// TODO: Interpolate world state using 't'
 	}
 
 	@Override
@@ -250,15 +268,17 @@ public abstract class AGame implements IGame {
 
 	@Override
 	public final void doUnloadContent() {
+		//EventRegistry.fireEvent( AGameEvents.contentUnloadingEvent );
 		unloadContent();
 	}
 
 	@Override
 	public final void doShutdown() {
 
+		//EventRegistry.fireEvent( AGameEvents.shutdownEvent );
+
 		// Call shutdown()
 		shutdown();
-
 
 		// Destroy window
 		glfwDestroyWindow( windowID );

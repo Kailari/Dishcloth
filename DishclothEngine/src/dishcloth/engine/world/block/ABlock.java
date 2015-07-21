@@ -1,7 +1,10 @@
 package dishcloth.engine.world.block;
 
+import dishcloth.engine.events.IEvent;
 import dishcloth.engine.rendering.IRenderer;
 import dishcloth.engine.rendering.render2d.SpriteBatch;
+import dishcloth.engine.world.level.ITile;
+import dishcloth.engine.world.level.TerrainRenderer;
 
 /**
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -14,26 +17,30 @@ import dishcloth.engine.rendering.render2d.SpriteBatch;
  * Created by ASDSausage on 11.6.2015
  */
 
-public abstract class ABlock implements IBlock {
+public abstract class ABlock {
 
 	private BlockID blockID;
+	private int frameID;
+
+	public BlockID getBlockID() {
+		return blockID;
+	}
 
 	final void setBlockID(BlockID id) {
 		this.blockID = id;
 	}
 
-	@Override
-	public BlockID getBlockID() {
-		return blockID;
-	}
-
-	@Override
 	public int getFrameID() {
-		return 0;
+		return frameID;
 	}
 
-	@Override
-	public void render(IRenderer renderer, SpriteBatch spriteBatch) {
-
+	final void setFrameID(int id) {
+		this.frameID = id;
 	}
+
+	public void render(ITile tile) {
+		TerrainRenderer.renderTile( getFrameID(), tile );
+	}
+
+	public abstract String getBlockTextureFilename();
 }

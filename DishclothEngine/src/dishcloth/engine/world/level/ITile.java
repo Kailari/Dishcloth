@@ -1,21 +1,24 @@
-package dishcloth.game.world.blocks;
+package dishcloth.engine.world.level;
 
-import dishcloth.engine.world.block.ABlock;
+import dishcloth.engine.util.geom.Rectangle;
+import dishcloth.engine.world.block.BlockID;
 
 /**
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- * BlockDirt.java
+ * ITile.java
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * <p>
- * TODO: Description
+ * Basic part of terrain. Comes in multitude of different sizes!
  * <p>
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- * Created by ASDSausage on 11.6.2015
+ * Created by ASDSausage on 21.5.2015
  */
+public interface ITile {
+	int getSize();
+	int getX();
+	int getY();
 
-public class BlockDirt extends ABlock {
-	@Override
-	public String getBlockTextureFilename() {
-		return "game/textures/blocks/dirt.png";
-	}
+	Rectangle getBounds();
+
+	BlockID getBlockID();
 }

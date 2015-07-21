@@ -2,7 +2,6 @@ package dishcloth.engine.world.level;
 
 import dishcloth.engine.util.geom.Rectangle;
 import dishcloth.engine.util.quadtree.QuadTree;
-import dishcloth.engine.world.Tile;
 import dishcloth.engine.world.block.ABlock;
 
 /**
@@ -29,12 +28,13 @@ public class TerrainChunk {
 	private QuadTree<Tile> tiles;
 
 	public TerrainChunk(int x, int y) {
+		this.x = x;
+		this.y = y;
+
 		this.tiles = new QuadTree<>( 1, -1, new TerrainQuadTreeCell( null, new Rectangle( x * CHUNK_SIZE,
 		                                                                                  y * CHUNK_SIZE,
 		                                                                                  CHUNK_SIZE,
 		                                                                                  CHUNK_SIZE ), 8 ) );
-		this.x = x;
-		this.y = y;
 	}
 
 	public int getChunkX() {

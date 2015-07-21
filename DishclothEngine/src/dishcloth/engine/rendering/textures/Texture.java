@@ -39,7 +39,11 @@ public class Texture {
 	// TODO: Move this stuff to content pipeline. Texture-class should not have to handle its own disk I/O and hw.
 	public Texture(String filename) {
 
-		int[] pixelData = processPixelData( readRawPixelData( filename ) );
+		int[] pixelData = FileIOHelper.readPixelDataFromFile( filename );
+		this.width = FileIOHelper.getImageWidth();
+		this.height = FileIOHelper.getImageHeight();
+
+		// TODO: round width/height up to nearest power of 2 for texture renderer optimizing.
 
 		textureID = glGenTextures();
 
@@ -64,49 +68,13 @@ public class Texture {
 
 	/**
 	 * ASSUMES THAT TEXID IS GENERATED MANUALLY
-	 * @param openGLTexID
-	 * @param width
-	 * @param height
 	 */
 	public Texture(int openGLTexID, int width, int height) {
 		this.textureID = openGLTexID;
 		this.width = width;
 		this.height = height;
-	}
 
-	private int[] readRawPixelData(String filename) {
-
-		int[] pixels = null;
-		try {
-			BufferedImage image = ImageIO.read( FileIOHelper.createInputStream( filename ) );
-
-			width = image.getWidth();
-			height = image.getHeight();
-
-			pixels = new int[width * height];
-
-			image.getRGB( 0, 0, width, height, pixels, 0, width );
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		return pixels;
-	}
-
-	private int[] processPixelData(int[] rawData) {
-		int[] data = new int[width * height];
-		for (int i = 0; i < width * height; i++) {
-			// parses RGBA values from pixels array and assigns them to the data array in the order which openGL
-			// will read them in.
-			int a = (rawData[i] & 0xff000000) >> 24;
-			int r = (rawData[i] & 0xff0000) >> 16;
-			int g = (rawData[i] & 0xff00) >> 8;
-			int b = (rawData[i] & 0xff);
-
-			data[i] = a << 24 | b << 16 | g << 8 | r;
-		}
-
-		return data;
+		textureCache.put( textureID, this );
 	}
 
 	public void bind() {

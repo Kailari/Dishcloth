@@ -1,4 +1,4 @@
-package dishcloth.engine.world;
+package dishcloth.engine.world.level;
 
 import dishcloth.engine.util.geom.Point;
 import dishcloth.engine.util.geom.Rectangle;

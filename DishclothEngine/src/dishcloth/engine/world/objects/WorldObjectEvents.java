@@ -1,13 +1,10 @@
-package dishcloth.engine.events;
+package dishcloth.engine.world.objects;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import dishcloth.engine.events.IEvent;
 
 /**
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- * EventAnnotations.java
+ * WorldObjectEvents.java
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * <p>
  * TODO: Description
@@ -16,10 +13,10 @@ import java.lang.annotation.Target;
  * Created by ASDSausage on 19.7.2015
  */
 
-/**
- * Flags a method as a EventHandler.
- */
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.METHOD)
-public @interface EventHandler {
+public class WorldObjectEvents {
+	public static class OnWorldObjectSpawnEvent implements IEvent {
+	}
+
+	public static class OnWorldObjectDestroyEvent implements IEvent {
+	}
 }

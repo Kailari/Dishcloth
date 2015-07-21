@@ -1,20 +1,21 @@
-package dishcloth.engine.events;
+package dishcloth.game.world.blocks;
+
+import dishcloth.engine.world.block.ABlock;
 
 /**
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- * EventAction.java
+ * BlockDirt.java
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * <p>
  * TODO: Description
  * <p>
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- * Created by ASDSausage on 1.6.2015
+ * Created by ASDSausage on 11.6.2015
  */
 
-public interface EventAction<T extends Event> {
-	/**
-	 * This method is ran after the bound event triggers.
-	 * @param eventTrigger    event that triggered this action
-	 */
-	void trigger(T eventTrigger);
+public class BlockGrass extends ABlock {
+	@Override
+	public String getBlockTextureFilename() {
+		return "game/textures/blocks/grass.png";
+	}
 }

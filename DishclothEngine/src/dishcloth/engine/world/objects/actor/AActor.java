@@ -1,19 +1,19 @@
-package dishcloth.engine.events;
+package dishcloth.engine.world.objects.actor;
+
+import dishcloth.engine.world.objects.AWorldObject;
 
 /**
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- * Event.java
+ * AActor.java
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * <p>
  * TODO: Description
+ * TODO: I still quite haven't figured out what common logic actors should share
  * <p>
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- * Created by ASDSausage on 1.6.2015
+ * Created by ASDSausage on 19.7.2015
  */
-public interface Event {
-	/**
-	 * Checks if trigger conditions are met.
-	 * @return true if trigger conditions are met.
-	 */
-	boolean triggerCondition();
+
+public class AActor extends AWorldObject {
+
 }

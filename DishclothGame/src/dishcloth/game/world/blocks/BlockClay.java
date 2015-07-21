@@ -1,25 +1,21 @@
-package dishcloth.engine.events;
+package dishcloth.game.world.blocks;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import dishcloth.engine.world.block.ABlock;
 
 /**
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- * EventAnnotations.java
+ * BlockDirt.java
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * <p>
  * TODO: Description
  * <p>
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- * Created by ASDSausage on 19.7.2015
+ * Created by ASDSausage on 11.6.2015
  */
 
-/**
- * Flags a method as a EventHandler.
- */
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.METHOD)
-public @interface EventHandler {
+public class BlockClay extends ABlock {
+	@Override
+	public String getBlockTextureFilename() {
+		return "game/textures/blocks/clay.png";
+	}
 }
