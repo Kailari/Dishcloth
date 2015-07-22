@@ -38,8 +38,8 @@ public abstract class ACurve {
 	}
 	
 	protected final Point getPoint(int index) {
-		// TODO: return new Point(points.get(index));
-		return points.get( index );
+		// return points.get( index );
+		return new Point( points.get( index ) );
 	}
 	
 	public void debug() {
@@ -208,7 +208,7 @@ public abstract class ACurve {
 	 * @param f01 float which is between 0 and 1 (or equal)
 	 * @return the x-value
 	 */
-	protected final float convertToCurvePosition(float f01) {
+	public final float convertToCurvePosition(float f01) {
 		//		if (f01 < 0 || f01 > 1) throw new IllegalArgumentException("'f' has to be [0,1].");
 		// TODO: implement looping
 		if (f01 < 0) f01 = 0;
@@ -219,7 +219,7 @@ public abstract class ACurve {
 		
 		// calculate the difference between the first point (index = 0) and the last point (index = size-1)
 		float total = points.get( points.size() - 1 ).x - points.get( 0 ).x;
-		return total * f01;
+		return total * f01 + points.get( 0 ).x;
 	}
 	
 	/**
