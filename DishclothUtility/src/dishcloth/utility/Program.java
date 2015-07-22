@@ -1,6 +1,6 @@
 package dishcloth.utility;
 
-import dishcloth.engine.util.logger.Debug;
+import dishcloth.utility.sdklauncher.DishclothUtilityLauncher;
 
 /**
  * Created by Lassi on 21.6.2015.
@@ -8,6 +8,7 @@ import dishcloth.engine.util.logger.Debug;
 public class Program {
 
 	public static void main(String[] args) {
-		Debug.log( "Hello world!", "DishclothUtility" );
+		// Start the high-tech SDK-launcher
+		DishclothUtilityLauncher.run( args );
 	}
 }
