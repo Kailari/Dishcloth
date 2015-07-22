@@ -112,7 +112,7 @@ public class GraphOptionWindow extends JFrame {
 		contentPane.add( btnOk );
 
 		setVisible( true );
-		colours = new Color[]{Color.BLACK, Color.BLACK, Color.BLACK, Color.BLACK};
+		colours = new Color[]{Color.BLACK, Color.BLACK, Color.CYAN, Color.RED};
 		this.points = points;
 		this.graphWindow = graphWindow;
 	}
@@ -132,7 +132,7 @@ public class GraphOptionWindow extends JFrame {
 		}
 
 		if (chckbxPoints.isSelected()) {
-			Graph graph = new Graph( new PointCurve( points ), colours[0], p );
+			Graph graph = new PointGraph( new PointCurve( points ), colours[0], p );
 			graphs.add( graph );
 		}
 		if (chckbxLinear.isSelected()) {

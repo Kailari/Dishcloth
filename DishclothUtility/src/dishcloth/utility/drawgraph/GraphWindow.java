@@ -43,8 +43,8 @@ public class GraphWindow extends JFrame {
 		Point min = graphs.getMin();
 		Point max = graphs.getMax();
 
-		final double xs = 0.90 * WIDTH / (max.x - min.x);
-		final double ys = 0.75 * HEIGHT / (max.y - min.y);
+		final float xs = 0.90F * WIDTH / (max.x - min.x);
+		final float ys = 0.75F * HEIGHT / (max.y - min.y);
 		graphs.draw( g, (int) AXIS_START.x, (int) AXIS_START.y, xs, ys );
 
 		g.dispose();

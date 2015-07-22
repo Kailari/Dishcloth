@@ -11,9 +11,9 @@ import java.util.List;
  * Created by Lassi on 21.7.2015.
  */
 public class Graph {
-
+	
+	protected Color col;
 	private ACurve curve;
-	private Color col;
 	private List<Point> points;
 
 	public Graph(ACurve curve, Color col, int pts) {
@@ -31,7 +31,7 @@ public class Graph {
 		return curve;
 	}
 
-	public void draw(Graphics g, int x0, int y0, double xScale, double yScale, Point min) {
+	public void draw(Graphics g, int x0, int y0, float xScale, float yScale, Point min) {
 		g.setColor( col );
 		for (int i = 0; i < points.size() - 1; i++) {
 

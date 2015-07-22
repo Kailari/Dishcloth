@@ -40,7 +40,7 @@ public class GraphBundle {
 		}
 	}
 
-	public void draw(Graphics g, int x0, int y0, double xScale, double yScale) {
+	public void draw(Graphics g, int x0, int y0, float xScale, float yScale) {
 		for (Graph graph : graphs) {
 			graph.draw( g, x0, y0, xScale, yScale, getMin() );
 		}
