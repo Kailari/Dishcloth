@@ -46,6 +46,7 @@ public class OrthographicCamera extends AActor implements ICamera  {
 		}
 	}
 
+	@Override
 	public Rectangle getViewportRenderBounds() {
 		return new Rectangle( position.x - viewportW / 2f,
 		                      position.y - viewportH / 2f,

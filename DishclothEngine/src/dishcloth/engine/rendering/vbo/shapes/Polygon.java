@@ -15,12 +15,12 @@ import dishcloth.engine.util.logger.Debug;
  * Created by ASDSausage on 23.5.2015
  */
 
-public class Polygon {
+public class Polygon<T extends Vertex> {
 
-	private Vertex[] vertices;
+	private T[] vertices;
 	private int[] indices;
 
-	public Polygon(Vertex... vertices) {
+	public Polygon(T[] vertices) {
 		if (vertices.length < 3) {
 			Debug.logErr( "Not enough vertices! n=" + vertices.length, this );
 			return;
@@ -34,14 +34,14 @@ public class Polygon {
 		int j = 2;
 		for (int i = 2; i < indices.length; i+=3) {
 			indices[i - 2] = 0;
-			indices[i - 1] = j;
-			indices[i] = j - 1;
+			indices[i - 1] = j - 1;
+			indices[i] = j;
 
 			j++;
 		}
 	}
 
-	public Vertex[] getVertices() {
+	public T[] getVertices() {
 		return vertices;
 	}
 

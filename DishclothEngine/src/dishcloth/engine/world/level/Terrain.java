@@ -1,10 +1,11 @@
 package dishcloth.engine.world.level;
 
+import dishcloth.engine.rendering.ICamera;
 import dishcloth.engine.rendering.IRenderable;
 import dishcloth.engine.rendering.IRenderer;
+import dishcloth.engine.rendering.render2d.TerrainRenderer;
+import dishcloth.engine.rendering.render2d.sprites.batch.SpriteBatch;
 import dishcloth.engine.util.geom.Rectangle;
-import dishcloth.engine.util.logger.ANSIColor;
-import dishcloth.engine.util.logger.Debug;
 import dishcloth.engine.world.IUpdatable;
 import dishcloth.engine.world.generation.generator.DefaultTerrainGenerator;
 
@@ -20,7 +21,7 @@ import dishcloth.engine.world.generation.generator.DefaultTerrainGenerator;
  */
 
 // TODO: Move terrain generation from constructor to generator methods and implement disk I/O
-public class Terrain implements IUpdatable, IRenderable {
+public class Terrain {
 
 	private final int w, h;
 	/**
@@ -57,17 +58,9 @@ public class Terrain implements IUpdatable, IRenderable {
 		}
 	}
 
-	@Override
-	public void update() {
-	}
-
-	@Override
-	public void fixedUpdate() {
-	}
-
-	public void render(IRenderer renderer) {
+	public void render(SpriteBatch spriteBatch, IRenderer renderer, ICamera camera) {
 		// Find Tiles on screen and queue them
-		Rectangle viewport = TerrainRenderer.getCamera().getViewportRenderBounds();
+		Rectangle viewport = camera.getViewportRenderBounds();
 		Rectangle viewportChunkBounds = new Rectangle(
 				viewport.x / TerrainChunk.BLOCK_SIZE,
 				viewport.y / TerrainChunk.BLOCK_SIZE,
@@ -85,6 +78,6 @@ public class Terrain implements IUpdatable, IRenderable {
 		}
 
 		// Render everything
-		TerrainRenderer.render( renderer );
+		TerrainRenderer.render( spriteBatch, renderer, camera );
 	}
 }

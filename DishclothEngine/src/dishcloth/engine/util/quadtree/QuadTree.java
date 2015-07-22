@@ -114,4 +114,8 @@ public class QuadTree<T extends AQuadTreeDataObject> {
 	public List<T> getAllData() {
 		return root.getAllData();
 	}
+
+	public QuadTreeCell<T> getRoot() {
+		return root;
+	}
 }

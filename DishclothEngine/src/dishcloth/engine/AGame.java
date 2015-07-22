@@ -18,7 +18,7 @@ import dishcloth.engine.util.logger.Debug;
 import dishcloth.engine.util.time.Time;
 import dishcloth.engine.world.block.BlockRegistry;
 import dishcloth.engine.world.block.BlockTextureAtlas;
-import dishcloth.engine.world.level.TerrainRenderer;
+import dishcloth.engine.rendering.render2d.TerrainRenderer;
 import org.lwjgl.opengl.GLContext;
 
 /**

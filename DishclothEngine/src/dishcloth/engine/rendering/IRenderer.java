@@ -2,7 +2,7 @@ package dishcloth.engine.rendering;
 
 import dishcloth.engine.rendering.shaders.ShaderProgram;
 import dishcloth.engine.rendering.textures.Texture;
-import dishcloth.engine.rendering.vbo.VertexBufferObject;
+import dishcloth.engine.rendering.vbo.VertexArrayObject;
 
 /**
  * IRenderer.java
@@ -29,7 +29,7 @@ public interface IRenderer {
 
 	int getBoundTextureID();
 
-	void renderVBOTextured(Texture texture, VertexBufferObject vbo);
+	void renderVBOTextured(Texture texture, VertexArrayObject vbo);
 
-	void renderVBO(VertexBufferObject vbo);
+	void renderVBO(VertexArrayObject vbo);
 }

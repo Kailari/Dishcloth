@@ -1,4 +1,4 @@
-package dishcloth.engine.rendering.render2d;
+package dishcloth.engine.rendering.render2d.sprites;
 
 import dishcloth.engine.util.geom.Point;
 

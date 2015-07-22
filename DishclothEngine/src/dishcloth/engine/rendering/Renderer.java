@@ -2,7 +2,7 @@ package dishcloth.engine.rendering;
 
 import dishcloth.engine.rendering.shaders.ShaderProgram;
 import dishcloth.engine.rendering.textures.Texture;
-import dishcloth.engine.rendering.vbo.VertexBufferObject;
+import dishcloth.engine.rendering.vbo.VertexArrayObject;
 
 import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
 import static org.lwjgl.opengl.GL11.glBindTexture;
@@ -55,7 +55,7 @@ public class Renderer implements IRenderer {
 	}
 
 	@Override
-	public void renderVBOTextured(Texture texture, VertexBufferObject vbo) {
+	public void renderVBOTextured(Texture texture, VertexArrayObject vbo) {
 		// Bind only if necessary
 		bindTexture( texture );
 
@@ -63,7 +63,7 @@ public class Renderer implements IRenderer {
 	}
 
 	@Override
-	public void renderVBO(VertexBufferObject vbo) {
+	public void renderVBO(VertexArrayObject vbo) {
 		vbo.render();
 	}
 }

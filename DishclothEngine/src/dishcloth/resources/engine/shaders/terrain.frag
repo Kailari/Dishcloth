@@ -2,22 +2,19 @@
 
 in vec2 tCoord;
 in vec2 tileOffset;
-in vec2 tileSize;
 
 out vec4 fragColor;
 
 uniform sampler2D textureSampler;
-
-uniform vec4 color_tint;
+uniform float tileSize;
 
 void main()
 {
-	vec2 dividedCoord = vec2(tCoord.x / tileSize.x, tCoord.y / tileSize.y);
-	vec2 fractCoord = fract(dividedCoord);
-	vec2 resultCoord = vec2(fractCoord.x * tileSize.x, fractCoord.y * tileSize.y) + tileOffset;
+	//vec2 dividedCoord = vec2(tCoord.x / tileSize, tCoord.y / tileSize);
+	vec2 fractCoord = fract(tCoord);
+	vec2 resultCoord = (fractCoord * tileSize) + tileOffset;
 
-	// Set all pixels to input color
-	fragColor = texture(textureSampler, resultCoord) * color_tint;
+	fragColor = texture(textureSampler, resultCoord);
 
 	// Accept only fully opaque pixels
 	if (fragColor.a < 1.0) {

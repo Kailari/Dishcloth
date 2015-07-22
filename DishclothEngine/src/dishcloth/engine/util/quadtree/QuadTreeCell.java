@@ -84,7 +84,7 @@ public class QuadTreeCell<T extends AQuadTreeDataObject> {
 		return parent;
 	}
 
-	protected List<QuadTreeCell<T>> getChildren() {
+	public List<QuadTreeCell<T>> getChildren() {
 		return this.children;
 	}
 
@@ -357,5 +357,13 @@ public class QuadTreeCell<T extends AQuadTreeDataObject> {
 
 	public Rectangle getBounds() {
 		return bounds;
+	}
+
+	public int getMaxDepth() {
+		return maxDepth;
+	}
+
+	public int getDepth() {
+		return depth;
 	}
 }

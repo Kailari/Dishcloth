@@ -1,6 +1,7 @@
-package dishcloth.engine.rendering.render2d;
+package dishcloth.engine.rendering.render2d.sprites;
 
 
+import dishcloth.engine.rendering.render2d.sprites.batch.SpriteBatch;
 import dishcloth.engine.rendering.textures.Texture;
 import dishcloth.engine.util.Color;
 import dishcloth.engine.util.geom.Point;

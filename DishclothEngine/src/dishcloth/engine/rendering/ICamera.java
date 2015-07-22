@@ -1,6 +1,7 @@
 package dishcloth.engine.rendering;
 
 import dishcloth.engine.util.geom.Point;
+import dishcloth.engine.util.geom.Rectangle;
 import dishcloth.engine.util.math.Matrix4;
 
 /**
@@ -23,4 +24,6 @@ public interface ICamera {
 
 	float getAngle();
 	void setAngle(float angle);
+
+	Rectangle getViewportRenderBounds();
 }

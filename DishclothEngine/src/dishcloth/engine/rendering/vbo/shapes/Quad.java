@@ -16,10 +16,12 @@ import dishcloth.engine.util.geom.Rectangle;
 
 public class Quad extends Polygon {
 	public Quad(float w, float h) {
-		super( new Vertex( -w / 2f, +h / 2f, 0f, 1f ),
-		       new Vertex( +w / 2f, +h / 2f, 1f, 1f ),
-		       new Vertex( +w / 2f, -h / 2f, 1f, 0f ),
-		       new Vertex( -w / 2f, -h / 2f, 0f, 0f ) );
+		super(
+				new Vertex( -w / 2f, -h / 2f, 0f, 1f ),     // Left bot
+				new Vertex( +w / 2f, -h / 2f, 1f, 1f ),     // right top
+				new Vertex( +w / 2f, +h / 2f, 1f, 0f ),     // Right bottom
+				new Vertex( -w / 2f, +h / 2f, 0f, 0f )     // Left top
+		);
 	}
 
 	public Quad(Rectangle bounds) {

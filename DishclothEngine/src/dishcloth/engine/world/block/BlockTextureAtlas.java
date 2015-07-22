@@ -52,7 +52,7 @@ public class BlockTextureAtlas {
 
 	private static void build() {
 		dispose();
-		texture = builder.build();
+		texture = new Texture("/engine/textures/debug/uv_checker.png");//builder.build();
 		isBuilt = true;
 	}
 
