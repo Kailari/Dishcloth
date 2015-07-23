@@ -12,6 +12,7 @@ import dishcloth.engine.rendering.OrthographicCamera;
 import dishcloth.engine.rendering.render2d.sprites.batch.SpriteBatch;
 import dishcloth.engine.rendering.shaders.ShaderProgram;
 import dishcloth.engine.rendering.textures.Texture;
+import dishcloth.engine.rendering.vbo.TerrainVertex;
 import dishcloth.engine.rendering.vbo.Vertex;
 import dishcloth.engine.rendering.vbo.VertexArrayObject;
 import dishcloth.engine.rendering.vbo.shapes.Polygon;
@@ -45,11 +46,15 @@ public class TerrainRenderer {
 	private static List<ITile> renderQueue = new ArrayList<>();
 	private static ShaderProgram shader;
 
+	private static SpriteBatch<TerrainVertex> spriteBatch;
+
 	private TerrainRenderer() {}
 
 	@EventHandler
 	public static void onGameContentInitializationEvent(AGameEvents.GameContentInitializationEvent event) {
 		prepareShader();
+
+		spriteBatch = new SpriteBatch<>( TerrainVertex.class );
 	}
 
 
@@ -66,7 +71,7 @@ public class TerrainRenderer {
 		renderQueue.add( tile );
 	}
 
-	public static void render(SpriteBatch spriteBatch, IRenderer renderer, ICamera camera) {
+	public static void render(IRenderer renderer, ICamera camera) {
 
 		spriteBatch.begin( shader, camera, renderer );
 
@@ -84,7 +89,7 @@ public class TerrainRenderer {
 			Debug.logException( e, "TerrainRenderer" );
 		}
 
-		spriteBatch.end(false);
+		spriteBatch.end( false );
 
 		renderQueue.clear();
 	}

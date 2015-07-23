@@ -18,7 +18,8 @@ import dishcloth.engine.world.block.ABlock;
 public class TerrainChunk {
 
 	// XXX: EXTREMELY TEMPORARY
-	public static final float BLOCK_SIZE = 128f;//16f;
+	// TODO: BLOCK_SIZE should probably be somewhere else.
+	public static final float BLOCK_SIZE = 16f;
 	public static final int CHUNK_SIZE = 256;
 	private static final float CHUNK_RENDER_SIZE = BLOCK_SIZE * CHUNK_SIZE;
 

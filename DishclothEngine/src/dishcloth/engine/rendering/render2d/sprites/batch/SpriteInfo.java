@@ -6,6 +6,7 @@ import dishcloth.engine.rendering.vbo.Vertex;
 import dishcloth.engine.util.Color;
 import dishcloth.engine.util.geom.Point;
 import dishcloth.engine.util.geom.Rectangle;
+import dishcloth.engine.util.logger.Debug;
 
 /**
  * SpriteInfo.java
@@ -17,20 +18,24 @@ import dishcloth.engine.util.geom.Rectangle;
  */
 
 // TODO: Figure out a convenient way to change vertex type. (<T extends Vertex>, perhaps?)
-class SpriteInfo {
+class SpriteInfo<T extends ColorTextureVertex> {
 	Texture texture;
-	Vertex topLeft, topRight, botLeft, botRight;
+	T topLeft, topRight, botLeft, botRight;
 
-	// TODO: Add colors
-	SpriteInfo(Rectangle source, Rectangle destination, float angle, Point origin, Texture texture, Color tint) {
-		this.topLeft = new ColorTextureVertex( 0f, 0f, tint.toInteger(), 0f, 0f );
-		this.topRight = new ColorTextureVertex( 0f, 0f, tint.toInteger(), 0f, 0f );
-		this.botLeft = new ColorTextureVertex( 0f, 0f, tint.toInteger(), 0f, 0f );
-		this.botRight = new ColorTextureVertex( 0f, 0f, tint.toInteger(), 0f, 0f );
-		this.setData( source, destination, angle, origin, texture, tint );
+	SpriteInfo(Class<T> vertexClass, Rectangle source, Rectangle destination, float angle, Point origin, Texture texture, Color tint, Object... additionalData) {
+		try {
+			this.topLeft = vertexClass.newInstance();
+			this.topRight = vertexClass.newInstance();
+			this.botLeft = vertexClass.newInstance();
+			this.botRight = vertexClass.newInstance();
+
+			this.setData( source, destination, angle, origin, texture, tint, additionalData );
+		} catch (IllegalAccessException | InstantiationException e) {
+			Debug.logException( e, this );
+		}
 	}
 	
-	void setData(Rectangle source, Rectangle destination, float angle, Point origin, Texture texture, Color tint) {
+	void setData(Rectangle source, Rectangle destination, float angle, Point origin, Texture texture, Color tint, Object... additionalData) {
 		this.texture = texture;
 		
 		float cos = (float) Math.cos( angle );
@@ -40,22 +45,40 @@ class SpriteInfo {
 		float vStart = source.y / texture.getHeight();
 		float uEnd = uStart + (source.w / texture.getWidth());
 		float vEnd = vStart + (source.h / texture.getHeight());
-		
-		this.topLeft.setData(
-				destination.x + (-origin.x) * cos - (-origin.y) * sin,
-				destination.y + (-origin.x) * sin + (-origin.y) * cos,
-				uStart, vEnd );
-		this.topRight.setData(
-				destination.x + ((-origin.x) + destination.w) * cos - (-origin.y) * sin,
-				destination.y + ((-origin.x) + destination.w) * sin + (-origin.y) * cos,
-				uEnd, vEnd );
-		this.botLeft.setData(
-				destination.x + (-origin.x) * cos - ((-origin.y) + destination.h) * sin,
-				destination.y + (-origin.x) * sin + ((-origin.y) + destination.h) * cos,
-				uStart, vStart );
-		this.botRight.setData(
-				destination.x + ((-origin.x) + destination.w) * cos - ((-origin.y) + destination.h) * sin,
-				destination.y + ((-origin.x) + destination.w) * sin + ((-origin.y) + destination.h) * cos,
-				uEnd, vStart );
+
+		Object[] varargs = new Object[5 + additionalData.length];
+		System.arraycopy( additionalData, 0, varargs, 5, additionalData.length );
+
+		varargs[0] = destination.x + (-origin.x) * cos - (-origin.y) * sin;
+		varargs[1] = destination.y + (-origin.x) * sin + (-origin.y) * cos;
+		varargs[2] = tint;
+		varargs[3] = uStart;
+		varargs[4] = vEnd;
+
+		this.topLeft.setData( varargs );
+
+
+		varargs[0] = destination.x + ((-origin.x) + destination.w) * cos - (-origin.y) * sin;
+		varargs[1] = destination.y + ((-origin.x) + destination.w) * sin + (-origin.y) * cos;
+		varargs[3] = uEnd;
+		varargs[4] = vEnd;
+
+		this.topRight.setData( varargs );
+
+
+		varargs[0] = destination.x + (-origin.x) * cos - ((-origin.y) + destination.h) * sin;
+		varargs[1] = destination.y + (-origin.x) * sin + ((-origin.y) + destination.h) * cos;
+		varargs[3] = uStart;
+		varargs[4] = vStart;
+
+		this.botLeft.setData( varargs );
+
+
+		varargs[0] = destination.x + ((-origin.x) + destination.w) * cos - ((-origin.y) + destination.h) * sin;
+		varargs[1] = destination.y + ((-origin.x) + destination.w) * sin + ((-origin.y) + destination.h) * cos;
+		varargs[3] = uEnd;
+		varargs[4] = vStart;
+
+		this.botRight.setData( varargs );
 	}
 }

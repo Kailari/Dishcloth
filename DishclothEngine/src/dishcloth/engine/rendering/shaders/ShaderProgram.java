@@ -5,6 +5,7 @@ import dishcloth.engine.exception.ShaderException;
 import dishcloth.engine.exception.ShaderLinkFailedException;
 import dishcloth.engine.exception.ShaderUniformException;
 import dishcloth.engine.io.FileIOHelper;
+import dishcloth.engine.util.logger.ANSIColor;
 import dishcloth.engine.util.logger.Debug;
 import dishcloth.engine.util.math.Matrix4;
 
@@ -48,6 +49,8 @@ public class ShaderProgram {
 	}
 
 	private void attachVertexShader(String name) throws ShaderCompilationFailedException {
+		Debug.log( "Compiling VertexShader: " + ANSIColor.GREEN + "\"" + name + "\"" + ANSIColor.RESET, this );
+
 		String source = FileIOHelper.readLinesFromFile( name + ".vert" );
 
 		// Create vertex shader
@@ -68,6 +71,7 @@ public class ShaderProgram {
 	}
 
 	private void attachFragmentShader(String name) throws ShaderCompilationFailedException {
+		Debug.log( "Compiling FragmentShader: " + ANSIColor.GREEN + "\"" + name + "\"" + ANSIColor.RESET, this );
 		String source = FileIOHelper.readLinesFromFile( name + ".frag" );
 
 		// Create vertex shader
@@ -88,6 +92,7 @@ public class ShaderProgram {
 	}
 
 	private void linkProgram() throws ShaderLinkFailedException {
+		Debug.log( "Linking shaders!", this );
 		// Link
 		glLinkProgram( programID );
 

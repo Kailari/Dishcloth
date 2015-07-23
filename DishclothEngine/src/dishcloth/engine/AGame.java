@@ -21,6 +21,8 @@ import dishcloth.engine.world.block.BlockTextureAtlas;
 import dishcloth.engine.rendering.render2d.TerrainRenderer;
 import org.lwjgl.opengl.GLContext;
 
+import java.text.DecimalFormat;
+
 /**
  * ********************************************************************************************************************
  * AGame.java
@@ -98,6 +100,8 @@ public abstract class AGame extends ADishclothObject implements IGame {
 
 		timing.timestep = 1f / 60f;
 
+		DecimalFormat fpsFormatter = new DecimalFormat( "0.00" );
+
 		Debug.log( "", this );
 		Debug.logNote( "Entering main loop...", this );
 		int nFrames = 0;
@@ -124,8 +128,12 @@ public abstract class AGame extends ADishclothObject implements IGame {
 			nFrames++;
 			if (timing.currentTime - fpsRecordStart >= 1.0f) {
 				// Show fps in title
-				int timeToRender = Math.round( 1000f / (float) nFrames );
-				glfwSetWindowTitle( windowID, "Dishcloth - FPS: " + nFrames + ", Average ms/frame: " + timeToRender + " ms" );
+				String msToRender = fpsFormatter.format( 1000f / (float) nFrames );
+				int nsToRender = Math.round( 1_000_000_000f / (float) nFrames );
+				glfwSetWindowTitle( windowID,
+				                    "Dishcloth - FPS: " + nFrames
+						                    + ", Average time per frame: " + msToRender + " ms"
+						                    + " (" + nsToRender + " ns)" );
 
 				fpsRecordStart += 1.0f;
 				nFrames = 0;

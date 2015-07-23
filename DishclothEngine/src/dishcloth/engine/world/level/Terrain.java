@@ -58,7 +58,7 @@ public class Terrain {
 		}
 	}
 
-	public void render(SpriteBatch spriteBatch, IRenderer renderer, ICamera camera) {
+	public void render( IRenderer renderer, ICamera camera) {
 		// Find Tiles on screen and queue them
 		Rectangle viewport = camera.getViewportRenderBounds();
 		Rectangle viewportChunkBounds = new Rectangle(
@@ -78,6 +78,6 @@ public class Terrain {
 		}
 
 		// Render everything
-		TerrainRenderer.render( spriteBatch, renderer, camera );
+		TerrainRenderer.render( renderer, camera );
 	}
 }

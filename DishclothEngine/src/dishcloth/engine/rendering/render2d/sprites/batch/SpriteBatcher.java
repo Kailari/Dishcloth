@@ -2,6 +2,7 @@ package dishcloth.engine.rendering.render2d.sprites.batch;
 
 import dishcloth.engine.rendering.shaders.ShaderProgram;
 import dishcloth.engine.rendering.textures.Texture;
+import dishcloth.engine.rendering.vbo.ColorTextureVertex;
 import dishcloth.engine.rendering.vbo.Vertex;
 import dishcloth.engine.rendering.vbo.VertexArrayObject;
 import dishcloth.engine.util.logger.Debug;
@@ -23,7 +24,7 @@ import static org.lwjgl.opengl.GL11.glBindTexture;
  * Created by ASDSausage on 21.7.2015
  */
 
-class SpriteBatcher {
+class SpriteBatcher<T extends ColorTextureVertex> {
 	private static final int BATCH_MAX_SIZE_SPRITES = 2048;
 	private static final int BATCH_MAX_SIZE_VERTICES = BATCH_MAX_SIZE_SPRITES * 4;
 	private static final int BATCH_MAX_SIZE_INDICES = BATCH_MAX_SIZE_SPRITES * 6;
@@ -32,7 +33,7 @@ class SpriteBatcher {
 	private Vertex[] vertices;
 	private int[] indices;
 	private VertexArrayObject VAO;
-	private List<SpriteInfo> renderQueue;
+	private List<SpriteInfo<T>> renderQueue;
 
 	public SpriteBatcher() {
 		this.renderQueue = new ArrayList<>();
@@ -41,7 +42,7 @@ class SpriteBatcher {
 		prepareArrays( BATCH_INITIAL_SIZE_SPRITES );
 	}
 
-	public void addSpriteInfo(SpriteInfo info) {
+	public void addSpriteInfo(SpriteInfo<T> info) {
 		this.renderQueue.add( info );
 	}
 
@@ -51,7 +52,7 @@ class SpriteBatcher {
 
 		if (requiredCapacityIndices > BATCH_MAX_SIZE_INDICES
 				|| requiredCapacityVertices > BATCH_MAX_SIZE_VERTICES) {
-			Debug.logErr("Error initializing batcher arrays. Capacity requirement too high.", this);
+			Debug.logErr( "Error initializing batcher arrays. Capacity requirement too high.", this );
 		}
 
 		// If arrays are not null and have already enough capacity, return.
@@ -89,7 +90,7 @@ class SpriteBatcher {
 		this.vertices = new Vertex[requiredCapacityVertices];
 	}
 
-	public void renderBatch(SoftReferencedCache<SpriteInfo> spriteInfoCache) {
+	public void renderBatch(SoftReferencedCache<SpriteInfo<T>> spriteInfoCache) {
 		// Return if there is nothing to render.
 		if (renderQueue.size() == 0) {
 			return;

@@ -10,6 +10,7 @@ import dishcloth.engine.rendering.render2d.sprites.Sprite;
 import dishcloth.engine.rendering.render2d.sprites.batch.SpriteBatch;
 import dishcloth.engine.rendering.shaders.ShaderProgram;
 import dishcloth.engine.rendering.textures.Texture;
+import dishcloth.engine.rendering.vbo.ColorTextureVertex;
 import dishcloth.engine.util.Color;
 import dishcloth.engine.util.geom.Point;
 import dishcloth.engine.util.logger.ANSIColor;
@@ -37,7 +38,7 @@ public class DishclothGame extends AGame {
 	Texture uvGrid;
 	Sprite sprite, sprite2, overlay;
 	
-	SpriteBatch spriteBatch;
+	SpriteBatch<ColorTextureVertex> spriteBatch;
 	ShaderProgram spriteShader;
 	
 	CameraActor cameraActor;
@@ -76,7 +77,7 @@ public class DishclothGame extends AGame {
 
 	@Override
 	public void loadContent() {
-		spriteBatch = new SpriteBatch();
+		spriteBatch = new SpriteBatch<>(ColorTextureVertex.class);
 		spriteShader = new ShaderProgram( "/engine/shaders/sprite", "/engine/shaders/default" );
 		
 		Texture uvGrid = new Texture( "engine/textures/debug/uv_checker.png" );
@@ -123,7 +124,7 @@ public class DishclothGame extends AGame {
 
 		spriteBatch.end();*/
 
-		terrain.render( spriteBatch, renderer, getViewportCamera() );
+		terrain.render( renderer, getViewportCamera() );
 	}
 
 	@Override

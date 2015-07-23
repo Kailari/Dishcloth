@@ -30,15 +30,23 @@ public class ColorTextureVertex extends ColorVertex {
 	private static final VertexFormat vertexFormat = new VertexFormat(
 			new VertexFormat.VertexAttribute( POSITION_SIZE, POSITION_TYPE, SIZE_IN_BYTES, POSITION_OFFSET, false ),
 			new VertexFormat.VertexAttribute( COLOR_SIZE, COLOR_TYPE, SIZE_IN_BYTES, COLOR_OFFSET, true ),
-			new VertexFormat.VertexAttribute( UV_SIZE, UV_TYPE, SIZE_IN_BYTES, UV_OFFSET, false)
+			new VertexFormat.VertexAttribute( UV_SIZE, UV_TYPE, SIZE_IN_BYTES, UV_OFFSET, false )
 	);
 
 	private float u, v; // 2 floats --> 8 bytes => 64 bits
+
+	public ColorTextureVertex() {
+		this( 0f, 0f, 0, 0f, 0f );
+	}
 
 	public ColorTextureVertex(float x, float y, int color, float u, float v) {
 		super( x, y, color );
 		this.u = u;
 		this.v = v;
+	}
+
+	public ColorTextureVertex(float x, float y, Color color, float u, float v) {
+		this( x, y, color.toInteger(), u, v );
 	}
 
 	@Override

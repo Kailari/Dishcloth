@@ -55,8 +55,6 @@ public abstract class ABlock {
 		int row = (int) Math.floor( (float) frameID / (float) atlasSize );
 		int column = frameID % atlasSize;
 
-		//shader.setUniformVec2f( "tileOffset",(float) column / (float) atlasSize,(float) row / (float) atlasSize );
-
 		Rectangle source = new Rectangle( 0f,
 		                                  0f,
 		                                  tile.getSize() * texture.getWidth(), // A bit hacky, eh?
@@ -67,7 +65,14 @@ public abstract class ABlock {
 		                                       tile.getSize() * TerrainChunk.BLOCK_SIZE,
 		                                       tile.getSize() * TerrainChunk.BLOCK_SIZE );
 
-		spriteBatch.queue( texture, destination, source, 0f, Color.WHITE, Vector2.zero() );
+		spriteBatch.queue( texture,
+		                   destination,
+		                   source,
+		                   0f,
+		                   Color.WHITE,
+		                   Vector2.zero(),
+		                   (float) column / (float) atlasSize,
+		                   (float) row / (float) atlasSize );
 	}
 
 	public abstract String getBlockTextureFilename();

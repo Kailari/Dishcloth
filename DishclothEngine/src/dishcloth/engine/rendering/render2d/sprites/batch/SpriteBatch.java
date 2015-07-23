@@ -6,6 +6,7 @@ import dishcloth.engine.rendering.IRenderer;
 import dishcloth.engine.rendering.render2d.sprites.Sprite;
 import dishcloth.engine.rendering.shaders.ShaderProgram;
 import dishcloth.engine.rendering.textures.Texture;
+import dishcloth.engine.rendering.vbo.ColorTextureVertex;
 import dishcloth.engine.rendering.vbo.Vertex;
 import dishcloth.engine.rendering.vbo.VertexArrayObject;
 import dishcloth.engine.util.Color;
@@ -16,6 +17,7 @@ import dishcloth.engine.util.math.Matrix4;
 import dishcloth.engine.util.math.MatrixUtility;
 import dishcloth.engine.util.memory.SoftReferencedCache;
 
+import java.lang.reflect.ParameterizedType;
 import java.util.*;
 
 /**
@@ -32,17 +34,19 @@ import java.util.*;
  * Created by ASDSausage on 22.5.2015
  */
 
-// TODO: Rewrite the whole thing to use dynamic VBO/IBO (Current implementation is just sprite renderer, not batch)
-public class SpriteBatch {
+public class SpriteBatch<T extends ColorTextureVertex> {
 
-	private SoftReferencedCache<SpriteInfo> spriteInfoCache;
-	private SpriteBatcher batcher;
+	// TODO: Make caches static and possibly centralize them to some kind of "MemoryAllocator"
+	private SoftReferencedCache<SpriteInfo<T>> spriteInfoCache;
+	private SpriteBatcher<T> batcher;
 	private RenderInfo renderInfo;
 	private boolean beginCalled;
+	private Class<T> vertexClass;
 
-	public SpriteBatch() {
-		this.batcher = new SpriteBatcher();
+	public SpriteBatch(Class<T> vertexClass) {
+		this.batcher = new SpriteBatcher<>();
 		this.spriteInfoCache = new SoftReferencedCache<>();
+		this.vertexClass = vertexClass;
 	}
 
 	public void begin(ShaderProgram shader, ICamera camera, IRenderer renderer) {
@@ -55,9 +59,19 @@ public class SpriteBatch {
 		this.renderInfo = new RenderInfo( shader, camera, renderer );
 	}
 
-	public void queue(Texture texture, Rectangle destination, Rectangle source, float angle, Color tint, Point origin) {
+	public void queue
+			(
+					Texture texture,
+					Rectangle destination,
+					Rectangle source,
+					float angle,
+					Color tint,
+					Point origin,
+					Object... additionalData
+			) {
+
 		if (!beginCalled) {
-			Debug.logErr("SpriteBatch.queue(...) called without calling .begin(...) first!", this);
+			Debug.logErr( "SpriteBatch.queue(...) called without calling .begin(...) first!", this );
 			return;
 		}
 
@@ -66,24 +80,34 @@ public class SpriteBatch {
 		                                         source,
 		                                         (float) Math.toRadians( angle ),
 		                                         tint,
-		                                         origin ) );
+		                                         origin,
+		                                         additionalData ) );
 	}
 
 	/**
 	 * Tries to save memory by using cache to recycle SpriteInfos as much as possible
 	 */
-	private SpriteInfo createSpriteInfo(Texture texture, Rectangle destination, Rectangle source, float angle, Color tint, Point origin) {
+	private SpriteInfo<T> createSpriteInfo
+	(
+			Texture texture,
+			Rectangle destination,
+			Rectangle source,
+			float angle,
+			Color tint,
+			Point origin,
+			Object... additionalData
+	) {
 		SpriteInfo spriteInfo;
 		if ((spriteInfo = spriteInfoCache.getItem()) != null) {
-			spriteInfo.setData( source, destination, angle, origin, texture, tint );
+			spriteInfo.setData( source, destination, angle, origin, texture, tint, additionalData );
 			return spriteInfo;
 		} else {
-			return new SpriteInfo( source, destination, angle, origin, texture, tint );
+			return new SpriteInfo<T>( vertexClass, source, destination, angle, origin, texture, tint, additionalData );
 		}
 	}
 
 	public void end() {
-		end(true);
+		end( true );
 	}
 
 	public void end(boolean bindShader) {
