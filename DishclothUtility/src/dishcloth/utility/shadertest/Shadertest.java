@@ -8,11 +8,13 @@ import dishcloth.engine.input.KeyCode;
 import dishcloth.engine.rendering.IRenderer;
 import dishcloth.engine.rendering.shaders.ShaderProgram;
 import dishcloth.engine.rendering.textures.Texture;
+import dishcloth.engine.rendering.vbo.ColorTextureVertex;
 import dishcloth.engine.rendering.vbo.Vertex;
 import dishcloth.engine.rendering.vbo.VertexArrayObject;
 import dishcloth.engine.rendering.vbo.shapes.Polygon;
-import dishcloth.engine.rendering.vbo.shapes.Quad;
-import dishcloth.engine.rendering.vbo.shapes.RegularNGon;
+import dishcloth.engine.rendering.vbo.shapes.SimpleQuad;
+import dishcloth.engine.rendering.vbo.shapes.SimpleRegularNGon;
+import dishcloth.engine.util.Color;
 import dishcloth.engine.util.geom.Rectangle;
 import dishcloth.engine.util.logger.Debug;
 import dishcloth.engine.world.block.BlockRegistry;
@@ -34,7 +36,6 @@ public class Shadertest extends AGame {
 			"/engine/shaders/test", "/engine/shaders/test",
 			"/engine/shaders/default", "/engine/shaders/default",
 			"/engine/shaders/terrain", "/engine/shaders/terrain",
-			"/engine/shaders/terrain", "/engine/shaders/default",
 	};
 	
 	private static final String[] textureFiles = new String[]{
@@ -47,22 +48,24 @@ public class Shadertest extends AGame {
 	private boolean spaceResetFlag;
 	private boolean enterResetFlag;
 	private boolean tabResetFlag;
-	private int activeShader = 2;
+	private int activeShader;
 	private int activeTexture;
-	private int activeVAO = 2;
+	private int activeVAO;
 	
 	@Override
+	@SuppressWarnings("unchecked")
 	public void initialize() {
 		float w = 500f;
 		float h = 500f;
 		VAO = new VertexArrayObject[]{
-				new VertexArrayObject( new Quad( w, h ) ),
-				new VertexArrayObject( new RegularNGon( 8, w / 2f ) ),
-				new VertexArrayObject( new Polygon( new Vertex( -w / 2f, -h / 2f, 0f, 32f ),     // Left bot
-				                                    new Vertex( +w / 2f, -h / 2f, 32f, 32f ),     // right top
-				                                    new Vertex( +w / 2f, +h / 2f, 32f, 0f ),     // Right bottom
-				                                    new Vertex( -w / 2f, +h / 2f, 0f, 0f ) ) ), // Left top
-				new VertexArrayObject( new Quad( new Rectangle( -w / 2f, -h / 2f, w, h ) ) )
+				new VertexArrayObject( new SimpleQuad( w, h ) ),
+				new VertexArrayObject( new SimpleRegularNGon( 8, w / 2f ) ),
+				new VertexArrayObject( new Polygon<>( new ColorTextureVertex[]{
+						new ColorTextureVertex( -w / 2f, -h / 2f, Color.WHITE.toInteger(), 0f, 32f ),     // Left bot
+						new ColorTextureVertex( +w / 2f, -h / 2f, Color.WHITE.toInteger(), 32f, 32f ),     // right top
+						new ColorTextureVertex( +w / 2f, +h / 2f, Color.WHITE.toInteger(), 32f, 0f ),     // Right bottom
+						new ColorTextureVertex( -w / 2f, +h / 2f, Color.WHITE.toInteger(), 0f, 0f )} ) ), // Left top
+				new VertexArrayObject( new SimpleQuad( new Rectangle( -w / 2f, -h / 2f, w, h ) ) )
 		};
 	}
 	
@@ -91,6 +94,7 @@ public class Shadertest extends AGame {
 		
 		int j = 0;
 		for (int i = 0; i < shaderFiles.length; i += 2, j++) {
+			Debug.log( "Creating shader #" + j, this );
 			shaders[j] = new ShaderProgram( shaderFiles[i], shaderFiles[i + 1] );
 		}
 	}

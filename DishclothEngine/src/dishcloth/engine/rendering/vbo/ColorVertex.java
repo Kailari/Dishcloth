@@ -11,7 +11,7 @@ import static org.lwjgl.opengl.GL11.GL_UNSIGNED_BYTE;
 
 /**
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- * Vertex.java
+ * ColorVertex.java
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * <p>
  * A Vertex. Point in a shape, contains some special properties like texture coordinates
@@ -27,13 +27,12 @@ public class ColorVertex extends Vertex {
 	public static final int COLOR_OFFSET = Vertex.SIZE_IN_BYTES;
 	public static final int COLOR_TYPE = GL_UNSIGNED_BYTE;
 	public static final int COLOR_SIZE = 4;
-	public static final int COLOR_STRIDE = SIZE_IN_BYTES;
 
 	// TODO: Add possibility to "extend" superclass vertexFormat (avoids having to re-register vertex ordering in subclasses)
-	//  - note problem with changing stride! (which is always subclass SIZE_IN_BYTES)
+	//  - note problem with changing stride! (which is always(?) subclass SIZE_IN_BYTES)
 	private static VertexFormat vertexFormat = new VertexFormat(
-			new VertexFormat.VertexAttribute( Vertex.POSITION_SIZE, Vertex.POSITION_TYPE, SIZE_IN_BYTES, Vertex.POSITION_OFFSET, false ),
-	        new VertexFormat.VertexAttribute( COLOR_SIZE, COLOR_TYPE, COLOR_STRIDE, COLOR_OFFSET, false )
+			new VertexFormat.VertexAttribute( POSITION_SIZE, POSITION_TYPE, SIZE_IN_BYTES, POSITION_OFFSET, false ),
+	        new VertexFormat.VertexAttribute( COLOR_SIZE, COLOR_TYPE, SIZE_IN_BYTES, COLOR_OFFSET, true )
 	);
 
 	private int color; // 1 int --> 4 bytes => 32 bits
@@ -71,5 +70,10 @@ public class ColorVertex extends Vertex {
 	@Override
 	public VertexFormat getFormat() {
 		return vertexFormat;
+	}
+
+	@Override
+	public int getSizeInBytes() {
+		return SIZE_IN_BYTES;
 	}
 }

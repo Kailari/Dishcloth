@@ -2,6 +2,7 @@ package dishcloth.utility.sdklauncher;
 
 import dishcloth.engine.util.logger.ANSIColor;
 import dishcloth.game.DishclothGame;
+import dishcloth.utility.drawgraph.DrawGraph;
 import dishcloth.utility.shadertest.Shadertest;
 
 import java.util.*;
@@ -31,6 +32,7 @@ public class DishclothUtilityLauncher {
 
 		addUtility( "Game", "Run the DishclothGame", () -> new DishclothGame().run() );
 		addUtility( "Shadertest", "Shader debugging utility", () -> new Shadertest().run() );
+		addUtility( "drawgraph", "Graph-class debugging utility", DrawGraph::run );
 
 		// ********************************* //
 

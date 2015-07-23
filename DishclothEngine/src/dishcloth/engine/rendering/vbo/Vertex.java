@@ -23,10 +23,9 @@ public class Vertex {
 	public static final int POSITION_OFFSET = 0;
 	public static final int POSITION_TYPE = GL_FLOAT;
 	public static final int POSITION_SIZE = 2;
-	public static final int POSITION_STRIDE = SIZE_IN_BYTES;
 
 	private static final VertexFormat vertexFormat = new VertexFormat(
-			new VertexFormat.VertexAttribute( POSITION_SIZE, POSITION_TYPE, POSITION_STRIDE, POSITION_OFFSET, false )
+			new VertexFormat.VertexAttribute( POSITION_SIZE, POSITION_TYPE, SIZE_IN_BYTES, POSITION_OFFSET, false )
 	);
 
 	private float x, y; // 2 floats --> 8 bytes => 64 bits
@@ -36,11 +35,11 @@ public class Vertex {
 		this.y = y;
 	}
 
-	public static ByteBuffer getAsBytes(Vertex[] vertices) {
+	public static <T extends Vertex> ByteBuffer getAsBytes(T[] vertices) {
 
-		ByteBuffer buffer = BufferUtils.createByteBuffer( vertices.length * SIZE_IN_BYTES );
+		ByteBuffer buffer = BufferUtils.createByteBuffer( vertices.length * vertices[0].getSizeInBytes() );
 
-		for (Vertex v : vertices) {
+		for (T v : vertices) {
 			if (v != null) {
 				v.toBytes( buffer );
 			}
@@ -50,6 +49,10 @@ public class Vertex {
 		buffer.flip();
 
 		return buffer;
+	}
+
+	public int getSizeInBytes() {
+		return SIZE_IN_BYTES;
 	}
 
 	public void setData(Object... data) {

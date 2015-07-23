@@ -34,7 +34,7 @@ public class VertexFormat {
 			glVertexAttribPointer( arrayIndex,
 			                       attribute.getSize(),
 			                       attribute.getGLType(),
-			                       false,
+			                       attribute.getNormalize(),
 			                       attribute.getStride(),
 			                       attribute.getOffset() );
 			arrayIndex++;

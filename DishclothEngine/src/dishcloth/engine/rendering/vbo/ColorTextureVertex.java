@@ -10,7 +10,7 @@ import static org.lwjgl.opengl.GL11.GL_FLOAT;
 
 /**
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- * Vertex.java
+ * ColorTextureVertex.java
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * <p>
  * A Vertex. Point in a shape, contains some special properties like texture coordinates
@@ -26,7 +26,12 @@ public class ColorTextureVertex extends ColorVertex {
 	public static final int UV_OFFSET = 12;              // 2 floats
 	public static final int UV_TYPE = GL_FLOAT;
 	public static final int UV_SIZE = 2;
-	public static final int UV_STRIDE = SIZE_IN_BYTES;
+
+	private static final VertexFormat vertexFormat = new VertexFormat(
+			new VertexFormat.VertexAttribute( POSITION_SIZE, POSITION_TYPE, SIZE_IN_BYTES, POSITION_OFFSET, false ),
+			new VertexFormat.VertexAttribute( COLOR_SIZE, COLOR_TYPE, SIZE_IN_BYTES, COLOR_OFFSET, true ),
+			new VertexFormat.VertexAttribute( UV_SIZE, UV_TYPE, SIZE_IN_BYTES, UV_OFFSET, false)
+	);
 
 	private float u, v; // 2 floats --> 8 bytes => 64 bits
 
@@ -36,22 +41,7 @@ public class ColorTextureVertex extends ColorVertex {
 		this.v = v;
 	}
 
-	public static ByteBuffer getAsBytes(ColorTextureVertex[] vertices) {
-
-		ByteBuffer buffer = BufferUtils.createByteBuffer( vertices.length * SIZE_IN_BYTES );
-
-		for (ColorTextureVertex v : vertices) {
-			if (v != null) {
-				v.toBytes( buffer );
-			}
-
-		}
-
-		buffer.flip();
-
-		return buffer;
-	}
-
+	@Override
 	public void setData(Object... data) {
 		if (data.length < 5) {
 			Debug.logErr( "Invalid data!", this );
@@ -64,11 +54,22 @@ public class ColorTextureVertex extends ColorVertex {
 		this.v = (float) data[4];
 	}
 
+	@Override
 	protected ByteBuffer toBytes(ByteBuffer buffer) {
 		buffer = super.toBytes( buffer );
 		buffer.putFloat( u );
 		buffer.putFloat( v );
 
 		return buffer;
+	}
+
+	@Override
+	public VertexFormat getFormat() {
+		return vertexFormat;
+	}
+
+	@Override
+	public int getSizeInBytes() {
+		return SIZE_IN_BYTES;
 	}
 }
