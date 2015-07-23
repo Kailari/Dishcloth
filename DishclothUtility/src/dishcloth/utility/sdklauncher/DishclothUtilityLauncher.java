@@ -238,6 +238,9 @@ public class DishclothUtilityLauncher {
 
 					targetLauncher = null;
 					System.out.println( "Utility finished execution..." );
+					System.out.println();
+					System.out.println();
+					printHeader();
 				} else {
 					printTHEMessage();
 				}
