@@ -90,7 +90,6 @@ public class InputHandler {
 	}
 
 	private static class KeyState {
-		private boolean previous, current;
 		private State currentState;
 
 		KeyState() {
@@ -98,25 +97,6 @@ public class InputHandler {
 		}
 
 		void updateState(int glfw_state) {
-
-			// 'glfw_state' value is either GLFW_PRESS, GLFW_REPEAT or GLFW_RELEASE
-			// - GLFW_PRESS means that key was pressed.
-			// - GLFW_RELEASE means that key was released
-			// - GLFW_REPEAT means that 'key was held until it repeated', whatever that means.
-			// To simplify State-parsing, 'current' is set to true if key was pressed or down (*_PRESS or *_REPEAT)
-			// and set to false if key was released (*_RELEASE).
-			current = glfw_state == GLFW.GLFW_REPEAT;
-
-			/*if (!previous && !current) {
-				this.currentState = State.UP;
-			} else if (previous && !current) {
-				this.currentState = State.RELEASE;
-			} else if (!previous && current) {
-				this.currentState = State.PRESS;
-			} else { //if (previous && current) {
-				this.currentState = State.DOWN;
-			}*/
-
 			if (glfw_state == GLFW_PRESS) {
 				this.currentState = State.PRESS;
 			}
