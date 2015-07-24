@@ -49,14 +49,14 @@ public abstract class AGame extends ADishclothObject implements IGame {
 		super( true );
 	}
 
-	@EventHandler
-	public void onPreInitializeEvent(AGameEvents.GamePreInitializationEvent event) {
+	protected void registerStaticEventListeners() {
 		// TODO: Figure out some place where to store static class event listener registrations
 		// XXX: They are kept here purely for the purpose of example.
 
 		// Note how IDE says that "method onPreInitializeEvent is never used", yet when you start up
 		// the game, it is quite obvious that these two lines below this comment are getting called.
 
+		EventRegistry.registerEventListener( InputHandler.class );
 		EventRegistry.registerEventListener( BlockTextureAtlas.class );
 		EventRegistry.registerEventListener( BlockRegistry.class );
 		EventRegistry.registerEventListener( TerrainRenderer.class );
@@ -81,17 +81,16 @@ public abstract class AGame extends ADishclothObject implements IGame {
 		Debug.log( "||XX||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||XX||", this );
 		Debug.log( "", this );
 
+		Debug.log( "Registering static EventListeners...", this );
+		registerStaticEventListeners();
+
 		Debug.log( "Initializing...", this );
 
 		doInitialize();
 
 
-		Debug.logOK( "Initializing successful!", this );
-
 		Debug.log( "Loading content...", this );
 		doLoadContent();
-
-		Debug.logOK( "Content loading successful!", this );
 
 		Debug.log( "Triggering post-initialize events", this );
 		EventRegistry.fireEvent( new AGameEvents.GamePostInitializationEvent( this ) );
@@ -159,9 +158,6 @@ public abstract class AGame extends ADishclothObject implements IGame {
 		try {
 
 			initHardware();
-
-			// Attach inputHandler
-			InputHandler.attachToWindow( windowID );
 
 			Debug.log( "Triggering pre-initialize events", this );
 			EventRegistry.fireEvent( new AGameEvents.GamePreInitializationEvent( this ) );
@@ -237,6 +233,9 @@ public abstract class AGame extends ADishclothObject implements IGame {
 
 	@Override
 	public final void doUpdate() {
+
+		// XXX: Should this be an event? (OnUpdateTickEvent or something like that)
+		InputHandler.refreshStates();
 
 		// Poll glfw events (input etc.)
 		glfwPollEvents();
