@@ -10,13 +10,11 @@ import java.util.HashMap;
 import static org.lwjgl.glfw.GLFW.*;
 
 /**
- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * InputHandler.java
- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * <p>
  * TODO: Description
  * <p>
- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *<br>
  * Created by ASDSausage on 13.7.2015
  */
 
@@ -99,11 +97,9 @@ public class InputHandler {
 		void updateState(int glfw_state) {
 			if (glfw_state == GLFW_PRESS) {
 				this.currentState = State.PRESS;
-			}
-			else if (glfw_state == GLFW_REPEAT) {
+			} else if (glfw_state == GLFW_REPEAT) {
 				this.currentState = State.DOWN;
-			}
-			else if (glfw_state == GLFW_RELEASE) {
+			} else if (glfw_state == GLFW_RELEASE) {
 				this.currentState = State.RELEASE;
 			}
 		}
@@ -111,8 +107,7 @@ public class InputHandler {
 		void refresh() {
 			if (this.currentState == State.RELEASE) {
 				this.currentState = State.UP;
-			}
-			else if (this.currentState == State.PRESS) {
+			} else if (this.currentState == State.PRESS) {
 				this.currentState = State.DOWN;
 			}
 		}

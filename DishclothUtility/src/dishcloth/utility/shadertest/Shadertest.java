@@ -102,7 +102,7 @@ public class Shadertest extends AGame {
 	
 	@Override
 	public void update(float delta) {
-		if (!spaceResetFlag && InputHandler.getKey( KeyCode.KEY_SPACE ) == GLFW.GLFW_PRESS) {
+		if (!spaceResetFlag && InputHandler.getKeyPress( KeyCode.KEY_SPACE )) {
 			activeShader++;
 			if (activeShader >= shaders.length) {
 				activeShader = 0;
@@ -110,11 +110,11 @@ public class Shadertest extends AGame {
 			Debug.log( "Swapping shaders! New shader index: " + activeShader, this );
 			
 			spaceResetFlag = true;
-		} else if (InputHandler.getKey( KeyCode.KEY_SPACE ) == GLFW.GLFW_RELEASE) {
+		} else if (InputHandler.getKeyPress( KeyCode.KEY_SPACE )) {
 			spaceResetFlag = false;
 		}
 		
-		if (!enterResetFlag && InputHandler.getKey( KeyCode.KEY_ENTER ) == GLFW.GLFW_PRESS) {
+		if (!enterResetFlag && InputHandler.getKeyPress( KeyCode.KEY_ENTER )) {
 			activeTexture++;
 			if (activeTexture > textures.length) {
 				activeTexture = 0;
@@ -125,11 +125,11 @@ public class Shadertest extends AGame {
 					: "BlockTextureAtlas"), this );
 			
 			enterResetFlag = true;
-		} else if (InputHandler.getKey( KeyCode.KEY_ENTER ) == GLFW.GLFW_RELEASE) {
+		} else if (InputHandler.getKeyPress( KeyCode.KEY_ENTER )) {
 			enterResetFlag = false;
 		}
 		
-		if (!tabResetFlag && InputHandler.getKey( KeyCode.KEY_TAB ) == GLFW.GLFW_PRESS) {
+		if (!tabResetFlag && InputHandler.getKeyPress( KeyCode.KEY_TAB )) {
 			activeVAO++;
 			if (activeVAO >= VAO.length) {
 				activeVAO = 0;
@@ -137,7 +137,7 @@ public class Shadertest extends AGame {
 			Debug.log( "Swapping VAO! New VAO index: " + activeVAO, this );
 			
 			tabResetFlag = true;
-		} else if (InputHandler.getKey( KeyCode.KEY_TAB ) == GLFW.GLFW_RELEASE) {
+		} else if (InputHandler.getKeyPress( KeyCode.KEY_TAB )) {
 			tabResetFlag = false;
 		}
 	}
