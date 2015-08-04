@@ -1,12 +1,14 @@
 package dishcloth.engine.content;
 
 /**
- * AContentImporter.java
+ * <b>AContentImporter</b>
  * <p>
- * TODO: Description
+ * Abstract base for content importers
  * <p>
- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * <br>
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *<br>
  * Created by ASDSausage on 26.7.2015
+ *
+ * @param <TOutput> Type of data this importer outputs.
  */
 
 public abstract class AContentImporter<TOutput> {

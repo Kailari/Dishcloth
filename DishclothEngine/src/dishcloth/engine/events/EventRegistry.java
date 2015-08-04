@@ -11,14 +11,18 @@ import java.util.HashMap;
 import java.util.List;
 
 /**
- * EventRegistry.java
+ * <b>EventRegistry</b>
  * <p>
- * So... much... reflection...
+ * Handles event registration, event listener class reflection and event firing on demand.
  * <p>
- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * <br>
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *<br>
  * Created by ASDSausage on 29.5.2015
+ *
+ * @see IEvent
+ * @see EventHandler
  */
 
+// TODO: Split this class into multiple classes to follow the SRP
 public final class EventRegistry {
 
 	/**

@@ -8,12 +8,15 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
 /**
- * ReadAllLinesImporter.java
+ * <b>ReadAllLinesImporter</b>
  * <p>
- * Simple content importer that reads all lines from a file to a string.
+ * Simple content importer that reads all lines from a file to a string. Resulting string represents all
+ * lines of the source file, separated by EOL-character '\n'
  * <p>
- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * <br>
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *<br>
  * Created by ASDSausage on 4.8.2015
+ *
+ * @see dishcloth.engine.content.AContentImporter
  */
 
 public class ReadAllLinesImporter extends AContentImporter<String> {

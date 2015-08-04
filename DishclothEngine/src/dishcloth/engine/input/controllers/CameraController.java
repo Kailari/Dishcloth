@@ -9,12 +9,13 @@ import org.lwjgl.glfw.GLFW;
 /**
  * CameraController.java
  * <p>
- * TODO: Description
+ * A simple use-arrow-keys-to-move-camera-thingy.
  * <p>
- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * <br>
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *<br>
  * Created by ASDSausage on 20.7.2015
  */
 
+// TODO: Create IController interface (It should have some way to link to IControllable Actors and should provide update-methods)
 public class CameraController implements IUpdatable {
 
 	public static final float CAMERA_SPEED = 10f;

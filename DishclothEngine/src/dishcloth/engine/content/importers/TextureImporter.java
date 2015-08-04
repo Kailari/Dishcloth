@@ -8,12 +8,14 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 
 /**
- * TextureImporter.java
+ * <b>TextureImporter</b>
  * <p>
- * Reads an image file into a TextureImportInfo
+ * Reads an image file and returns it as a TextureImportInfo.
  * <p>
- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * <br>
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *<br>
  * Created by ASDSausage on 4.8.2015
+ *
+ * @see dishcloth.engine.content.AContentImporter
  */
 
 public class TextureImporter extends AContentImporter<TextureImporter.TextureImportInfo> {

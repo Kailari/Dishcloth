@@ -10,11 +10,11 @@ import java.util.HashMap;
 import static org.lwjgl.glfw.GLFW.*;
 
 /**
- * InputHandler.java
+ * <b>InputHandler</b>
  * <p>
- * TODO: Description
+ * Provides easy access to user input. Wraps GLFW input processing and extends it with some additional polling.
  * <p>
- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *<br>
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *<br>
  * Created by ASDSausage on 13.7.2015
  */
 

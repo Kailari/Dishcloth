@@ -3,14 +3,18 @@ package dishcloth.engine.content;
 import dishcloth.engine.ADishclothObject;
 
 /**
- * AContent.java
+ * <b>AContent</b>
  * <p>
- * TODO: Description
+ * Abstract base-class for all content-classes.
  * <p>
- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * <br>
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *<br>
  * Created by ASDSausage on 4.8.2015
+ *
+ * @see ContentPipeline
+ * @see ContentManager
  */
 
+// XXX: Must be abstract class due to ADishclothObject.dispose()
 public abstract class AContent extends ADishclothObject {
 	public AContent() {
 		super( false );

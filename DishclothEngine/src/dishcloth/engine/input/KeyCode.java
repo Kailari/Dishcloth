@@ -1,11 +1,11 @@
 package dishcloth.engine.input;
 
 /**
- * KeyCode.java
+ * <b>KeyCode</b>
  * <p>
- * KeyCodes. Values are taken from GLFW constants.
+ * KeyCodes. Values are GLFW key-code constants.
  * <p>
- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * <br>
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *<br>
  * Created by ASDSausage on 20.7.2015
  */
 public enum KeyCode {

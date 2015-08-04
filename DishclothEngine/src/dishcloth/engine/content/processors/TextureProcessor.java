@@ -12,12 +12,15 @@ import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
 
 /**
- * TextureProcessor.java
+ * <b>TextureProcessor</b>
  * <p>
  * Processes TextureImportInfo into a Texture.
  * <p>
- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * <br>
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *<br>
  * Created by ASDSausage on 4.8.2015
+ *
+ * @see dishcloth.engine.content.AContentProcessor
+ * @see Texture
  */
 
 public class TextureProcessor extends AContentProcessor<TextureImporter.TextureImportInfo, Texture> {

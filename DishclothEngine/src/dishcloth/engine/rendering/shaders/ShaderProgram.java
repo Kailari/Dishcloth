@@ -1,29 +1,23 @@
 package dishcloth.engine.rendering.shaders;
 
 import dishcloth.engine.content.AContent;
-import dishcloth.engine.exception.ShaderCompilationFailedException;
-import dishcloth.engine.exception.ShaderException;
-import dishcloth.engine.exception.ShaderLinkFailedException;
+import dishcloth.engine.content.processors.ShaderProgramProcessor;
 import dishcloth.engine.exception.ShaderUniformException;
-import dishcloth.engine.io.FileIOHelper;
-import dishcloth.engine.util.logger.ANSIColor;
-import dishcloth.engine.util.logger.Debug;
 import dishcloth.engine.util.math.Matrix4;
 
 import java.util.HashMap;
 
-import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL20.*;
 
 /**
- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- * ShaderProgram.java
- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * <b>ShaderProgram</b>
  * <p>
- * TODO: Description
+ * Wraps OpenGL ShaderProgram and vertex- and fragment shaders into a one class.
  * <p>
- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *<br>
  * Created by ASDSausage on 21.5.2015
+ *
+ * @see ShaderProgramProcessor
  */
 
 public class ShaderProgram extends AContent {

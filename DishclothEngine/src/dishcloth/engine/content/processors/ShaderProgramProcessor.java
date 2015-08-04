@@ -15,12 +15,15 @@ import static org.lwjgl.opengl.GL20.GL_LINK_STATUS;
 import static org.lwjgl.opengl.GL20.glGetProgrami;
 
 /**
- * ShaderProgramProcessor.java
+ * <b>ShaderProgramProcessor</b>
  * <p>
- * TODO: Description
+ * Processes data received from ShaderProgramImporter and compiles it into a {@link ShaderProgram}.
  * <p>
- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * <br>
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *<br>
  * Created by ASDSausage on 4.8.2015
+ *
+ * @see dishcloth.engine.content.AContentProcessor
+ * @see ShaderProgram
  */
 
 public class ShaderProgramProcessor extends AContentProcessor<String[], ShaderProgram> {

@@ -1,15 +1,18 @@
 package dishcloth.engine.content.importers;
 
 import dishcloth.engine.content.AContentImporter;
-import dishcloth.engine.io.FileIOHelper;
 
 /**
- * ShaderProgramImporter.java
+ * <b>ShaderProgramImporter</b>
  * <p>
- * TODO: Description
+ * An importer that reads shader description file, parses it for shader source-file paths,
+ * and returns array of those paths. Paths are returned as strings, ordered by indices
+ * found in <b>ShaderProgramImporter.*_SHADER_INDEX</b> constants.
  * <p>
- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * <br>
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *<br>
  * Created by ASDSausage on 4.8.2015
+ *
+ * @see dishcloth.engine.content.AContentImporter
  */
 
 public class ShaderProgramImporter extends AContentImporter<String[]> {

@@ -5,12 +5,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * ContentManager.java
+ * <b>ContentManager</b>
  * <p>
- * TODO: Description
+ * Handles content loading using ContentPipeline, and stores list of loaded content
+ * for easy disposing.
  * <p>
- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * <br>
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *<br>
  * Created by ASDSausage on 4.8.2015
+ *
+ * @see ContentPipeline
  */
 
 public class ContentManager extends ADishclothObject {

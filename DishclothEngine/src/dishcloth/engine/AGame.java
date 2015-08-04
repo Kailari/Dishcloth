@@ -25,17 +25,16 @@ import org.lwjgl.opengl.GLContext;
 import java.text.DecimalFormat;
 
 /**
- * ********************************************************************************************************************
  * AGame.java
- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * <p>
  * Abstract game class for handling initialization, update-tick, fps synchronization, etc.
- * (This class just shouts "FUCK YOU" at Single Responsibility Principle, but just don't care about it)
+ * This class just shouts "FUCK YOU" at Single Responsibility Principle, but just don't care about it, OK? :)
  * <p>
- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *<br>
  * Created by ASDSausage on 12.5.2015.
  */
 
+// TODO: Some of AGame's responsibilities could be moved to other classes (ex. Window hardware initialization could be wrapped into its own class)
 public abstract class AGame extends ADishclothObject implements IGame {
 
 	protected int screenWidth, screenHeight;

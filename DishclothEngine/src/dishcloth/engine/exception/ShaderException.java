@@ -1,33 +1,22 @@
 package dishcloth.engine.exception;
 
 /**
- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- * ShaderException.java
- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * <b>ShaderException</b>
  * <p>
- * TODO: Description
+ * A general exception thrown when encountering problems with shaders.
+ * Superclass for other shader-related exceptions.
  * <p>
- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *<br>
  * Created by ASDSausage on 22.5.2015
+ *
+ * @see dishcloth.engine.rendering.shaders.ShaderProgram
+ * @see ShaderUniformException
+ * @see ShaderCompilationFailedException
+ * @see ShaderLinkFailedException
  */
 
-public abstract class ShaderException extends Exception {
-	public ShaderException() {
-	}
-
+public class ShaderException extends Exception {
 	public ShaderException(String message) {
 		super( message );
-	}
-
-	public ShaderException(String message, Throwable cause) {
-		super( message, cause );
-	}
-
-	public ShaderException(Throwable cause) {
-		super( cause );
-	}
-
-	public ShaderException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
-		super( message, cause, enableSuppression, writableStackTrace );
 	}
 }

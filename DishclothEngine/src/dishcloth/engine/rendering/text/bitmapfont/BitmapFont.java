@@ -1,19 +1,17 @@
 package dishcloth.engine.rendering.text.bitmapfont;
 
 import dishcloth.engine.content.AContent;
-import dishcloth.engine.io.FileIOHelper;
 import dishcloth.engine.rendering.textures.Texture;
 import dishcloth.engine.util.geom.Rectangle;
-import dishcloth.engine.util.logger.Debug;
 
 import java.util.HashMap;
 
 /**
- * BitmapFont.java
+ * <b>BitmapFont</b>
  * <p>
  * TODO: Description
  * <p>
- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * <br>
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *<br>
  * Created by ASDSausage on 25.7.2015
  */
 

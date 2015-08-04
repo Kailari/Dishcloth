@@ -7,13 +7,11 @@ import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 
 /**
- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- * ByteHelper.java
- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * <b>ByteHelper</b>
  * <p>
- * Converts data from byte arrays to primitive datatypes and back
+ * Handles conversions between byte arrays and primitive types.
  * <p>
- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *<br>
  * Created by ASDSausage on 10.6.2015
  */
 

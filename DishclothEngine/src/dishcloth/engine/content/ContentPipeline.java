@@ -17,12 +17,15 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * ContentPipeline.java
+ * <b>ContentPipeline</b>
  * <p>
- * TODO: Description
+ * Handles content importer and processor registration, and provides methods to load and parse
+ * content from disk.
  * <p>
- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * <br>
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *<br>
  * Created by ASDSausage on 26.7.2015
+ *
+ * @see ContentManager
  */
 
 public final class ContentPipeline {

@@ -7,12 +7,15 @@ import dishcloth.engine.rendering.text.bitmapfont.*;
 import java.util.HashMap;
 
 /**
- * BitmapFontProcessor.java
+ * <b>BitmapFontProcessor</b>
  * <p>
- * TODO: Description
+ * Processes data received from ReadAllLinesImporter and compiles it into a {@link BitmapFont}
  * <p>
- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * <br>
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *<br>
  * Created by ASDSausage on 4.8.2015
+ *
+ * @see dishcloth.engine.content.AContentProcessor
+ * @see BitmapFont
  */
 
 public class BitmapFontProcessor extends AContentProcessor<String, BitmapFont> {

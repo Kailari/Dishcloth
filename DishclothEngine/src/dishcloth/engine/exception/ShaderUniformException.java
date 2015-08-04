@@ -1,33 +1,19 @@
 package dishcloth.engine.exception;
 
 /**
- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- * ShaderUniformException.java
- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * <b>ShaderUniformException</b>
  * <p>
- * TODO: Description
+ * An exception thrown when encountering error with setting shader uniforms.
  * <p>
- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *<br>
  * Created by ASDSausage on 23.5.2015
+ *
+ * @see dishcloth.engine.rendering.shaders.ShaderProgram
+ * @see ShaderException
  */
 
 public class ShaderUniformException extends ShaderException {
-	public ShaderUniformException() {
-	}
-
 	public ShaderUniformException(String message) {
 		super( message );
-	}
-
-	public ShaderUniformException(String message, Throwable cause) {
-		super( message, cause );
-	}
-
-	public ShaderUniformException(Throwable cause) {
-		super( cause );
-	}
-
-	public ShaderUniformException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
-		super( message, cause, enableSuppression, writableStackTrace );
 	}
 }
