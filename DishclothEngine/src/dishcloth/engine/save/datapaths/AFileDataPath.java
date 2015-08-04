@@ -1,7 +1,7 @@
-package dishcloth.engine.io.save.datapaths;
+package dishcloth.engine.save.datapaths;
 
 import dishcloth.engine.io.ByteHelper;
-import dishcloth.engine.io.save.IDataPath;
+import dishcloth.engine.save.IDataPath;
 import dishcloth.engine.util.logger.Debug;
 
 import java.io.*;

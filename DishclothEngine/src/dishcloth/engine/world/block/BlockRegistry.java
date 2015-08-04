@@ -3,8 +3,8 @@ package dishcloth.engine.world.block;
 import dishcloth.engine.AGameEvents;
 import dishcloth.engine.events.EventHandler;
 import dishcloth.engine.events.EventRegistry;
-import dishcloth.engine.io.save.datapaths.AFileDataPath;
-import dishcloth.engine.io.save.datapaths.BlockIDHeaderDataPath;
+import dishcloth.engine.save.datapaths.AFileDataPath;
+import dishcloth.engine.save.datapaths.BlockIDHeaderDataPath;
 import dishcloth.engine.util.logger.ANSIColor;
 import dishcloth.engine.util.logger.Debug;
 

@@ -1,6 +1,6 @@
 package dishcloth.engine.world.block;
 
-import dishcloth.engine.io.save.IDataPath;
+import dishcloth.engine.save.IDataPath;
 
 import java.util.List;
 

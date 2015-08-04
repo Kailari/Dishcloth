@@ -1,6 +1,4 @@
-package dishcloth.engine.io.save.datapaths;
-
-import dishcloth.engine.io.save.IDataPath;
+package dishcloth.engine.save.datapaths;
 
 /**
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
