@@ -6,7 +6,8 @@ import static org.lwjgl.opengl.GL11.*;
 // For NULL constant
 import static org.lwjgl.system.MemoryUtil.*;
 
-import dishcloth.engine.events.EventHandler;
+import dishcloth.engine.content.ContentManager;
+import dishcloth.engine.content.ContentPipeline;
 import dishcloth.engine.events.EventRegistry;
 import dishcloth.engine.exception.GameInitializationException;
 import dishcloth.engine.input.InputHandler;
@@ -44,6 +45,7 @@ public abstract class AGame extends ADishclothObject implements IGame {
 	private IRenderer renderer;
 	private ICamera viewportCamera;
 	private Timing timing;
+	private ContentManager contentManager;
 
 	protected AGame() {
 		super( true );
@@ -51,15 +53,11 @@ public abstract class AGame extends ADishclothObject implements IGame {
 
 	protected void registerStaticEventListeners() {
 		// TODO: Figure out some place where to store static class event listener registrations
-		// XXX: They are kept here purely for the purpose of example.
-
-		// Note how IDE says that "method onPreInitializeEvent is never used", yet when you start up
-		// the game, it is quite obvious that these two lines below this comment are getting called.
-
-		EventRegistry.registerEventListener( InputHandler.class );
-		EventRegistry.registerEventListener( BlockTextureAtlas.class );
-		EventRegistry.registerEventListener( BlockRegistry.class );
-		EventRegistry.registerEventListener( TerrainRenderer.class );
+		EventRegistry.registerStaticEventListener( InputHandler.class );
+		EventRegistry.registerStaticEventListener( BlockTextureAtlas.class );
+		EventRegistry.registerStaticEventListener( BlockRegistry.class );
+		EventRegistry.registerStaticEventListener( TerrainRenderer.class );
+		EventRegistry.registerStaticEventListener( ContentPipeline.class );
 	}
 
 	public long getWindowID() {
@@ -87,7 +85,6 @@ public abstract class AGame extends ADishclothObject implements IGame {
 		Debug.log( "Initializing...", this );
 
 		doInitialize();
-
 
 		Debug.log( "Loading content...", this );
 		doLoadContent();
@@ -165,6 +162,16 @@ public abstract class AGame extends ADishclothObject implements IGame {
 			// Call initialize
 			initialize();
 
+			// TODO: Use reflection and URIClassloader -magic to find and initialize all mods
+
+			// Register default ContentPipeline extensions
+			// (Mods' extensions are handled via event that is fired inside this method)
+			ContentPipeline.registerDefaultContentPipelineExtensions();
+
+			// Initialize content pipeline
+			ContentPipeline.initialize();
+			this.contentManager = new ContentManager();
+
 		} catch (GameInitializationException e) {
 
 			Debug.logException( e, this );
@@ -215,6 +222,7 @@ public abstract class AGame extends ADishclothObject implements IGame {
 			throw new GameInitializationException( "glfwCreateWindow() failed!" );
 		}
 
+
 		// Make created window active
 
 		glfwMakeContextCurrent( windowID );
@@ -225,10 +233,10 @@ public abstract class AGame extends ADishclothObject implements IGame {
 	@Override
 	public final void doLoadContent() {
 		// Call loadContent()
-		loadContent();
+		loadContent( this.contentManager );
 
 		Debug.log( "Triggering content-initialization events", this );
-		EventRegistry.fireEvent( new AGameEvents.GameContentInitializationEvent( this ) );
+		EventRegistry.fireEvent( new AGameEvents.GameContentLoadingEvent( this, this.contentManager ) );
 	}
 
 	@Override
@@ -275,14 +283,18 @@ public abstract class AGame extends ADishclothObject implements IGame {
 
 	@Override
 	public final void doUnloadContent() {
-		//EventRegistry.fireEvent( AGameEvents.contentUnloadingEvent );
+		EventRegistry.fireEvent( new AGameEvents.GameContentDisposingEvent( this, contentManager ) );
+		// Unload all non-contentManager-content
 		unloadContent();
+
+		// Dispose content manager
+		contentManager.dispose();
 	}
 
 	@Override
 	public final void doShutdown() {
 
-		//EventRegistry.fireEvent( AGameEvents.shutdownEvent );
+		EventRegistry.fireEvent( new AGameEvents.GameShutdownEvent( this ) );
 
 		// Call shutdown()
 		shutdown();

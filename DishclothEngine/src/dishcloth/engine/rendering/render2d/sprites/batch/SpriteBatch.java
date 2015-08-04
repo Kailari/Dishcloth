@@ -5,6 +5,8 @@ import dishcloth.engine.rendering.ICamera;
 import dishcloth.engine.rendering.IRenderer;
 import dishcloth.engine.rendering.render2d.sprites.Sprite;
 import dishcloth.engine.rendering.shaders.ShaderProgram;
+import dishcloth.engine.rendering.text.TextRenderer;
+import dishcloth.engine.rendering.text.bitmapfont.BitmapFont;
 import dishcloth.engine.rendering.textures.Texture;
 import dishcloth.engine.rendering.vbo.ColorTextureVertex;
 import dishcloth.engine.rendering.vbo.Vertex;
@@ -15,6 +17,7 @@ import dishcloth.engine.util.geom.Rectangle;
 import dishcloth.engine.util.logger.Debug;
 import dishcloth.engine.util.math.Matrix4;
 import dishcloth.engine.util.math.MatrixUtility;
+import dishcloth.engine.util.math.Vector2;
 import dishcloth.engine.util.memory.SoftReferencedCache;
 
 import java.lang.reflect.ParameterizedType;
@@ -35,6 +38,9 @@ import java.util.*;
  */
 
 public class SpriteBatch<T extends ColorTextureVertex> {
+
+	public static final int CHARACTERS_IN_FONT_X = 16;
+	public static final int CHARACTERS_IN_FONT_Y = 16;
 
 	// TODO: Make caches static and possibly centralize them to some kind of "MemoryAllocator"
 	private SoftReferencedCache<SpriteInfo<T>> spriteInfoCache;
@@ -82,6 +88,10 @@ public class SpriteBatch<T extends ColorTextureVertex> {
 		                                         tint,
 		                                         origin,
 		                                         additionalData ) );
+	}
+
+	public void queueString(BitmapFont font, Point position, Color color, String text) {
+		TextRenderer.renderText( this, position, font, color, text );
 	}
 
 	/**

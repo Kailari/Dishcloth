@@ -12,8 +12,7 @@ void main()
 	// Set all pixels to input color
 	fragColor = texture(textureSampler, tCoord) * tint;
 
-	// Accept only fully opaque pixels
-	if (fragColor.a < 1.0) {
+	if (fragColor.a == 0) {
 		discard;
 	}
 }

@@ -2,6 +2,7 @@ package dishcloth.game;
 
 import dishcloth.engine.AGame;
 import dishcloth.engine.AGameEvents;
+import dishcloth.engine.content.ContentManager;
 import dishcloth.engine.events.EventHandler;
 import dishcloth.engine.input.controllers.CameraController;
 import dishcloth.engine.rendering.IRenderer;
@@ -9,6 +10,7 @@ import dishcloth.engine.rendering.render2d.sprites.Anchor;
 import dishcloth.engine.rendering.render2d.sprites.Sprite;
 import dishcloth.engine.rendering.render2d.sprites.batch.SpriteBatch;
 import dishcloth.engine.rendering.shaders.ShaderProgram;
+import dishcloth.engine.rendering.text.bitmapfont.BitmapFont;
 import dishcloth.engine.rendering.textures.Texture;
 import dishcloth.engine.rendering.vbo.ColorTextureVertex;
 import dishcloth.engine.util.Color;
@@ -35,6 +37,7 @@ import dishcloth.game.world.blocks.DishclothBlocks;
 public class DishclothGame extends AGame {
 	public static final String DEFAULT_MOD_ID = "dishcloth";
 
+	BitmapFont font;
 	Texture uvGrid;
 	Sprite sprite, sprite2, overlay;
 	
@@ -76,15 +79,17 @@ public class DishclothGame extends AGame {
 	}
 
 	@Override
-	public void loadContent() {
-		spriteBatch = new SpriteBatch<>(ColorTextureVertex.class);
-		spriteShader = new ShaderProgram( "/engine/shaders/sprite", "/engine/shaders/default" );
+	public void loadContent(ContentManager contentManager) {
+		spriteBatch = new SpriteBatch<>( ColorTextureVertex.class );
+		spriteShader = contentManager.loadContent( "/engine/shaders/sprite.shader" );
 		
-		Texture uvGrid = new Texture( "engine/textures/debug/uv_checker.png" );
+		uvGrid = contentManager.loadContent( "engine/textures/debug/uv_checker.png" );
 		sprite = new Sprite( uvGrid, 8, 8, 0, Anchor.CENTER );
 		sprite2 = new Sprite( uvGrid, 1, 1, 0, Anchor.CENTER );
 
-		overlay = new Sprite( new Texture( "engine/textures/debug/800x600.png" ), 1, 1, 0, Anchor.CENTER );
+		overlay = new Sprite( contentManager.loadContent( "engine/textures/debug/800x600.png" ), 1, 1, 0, Anchor.CENTER );
+
+		font = contentManager.loadContent( "/engine/fonts/default.fnt" );
 	}
 
 	@Override
@@ -125,12 +130,20 @@ public class DishclothGame extends AGame {
 		spriteBatch.end();*/
 
 		terrain.render( renderer, getViewportCamera() );
+
+		spriteBatch.begin( spriteShader, getViewportCamera(), renderer );
+
+		spriteBatch.queueString( font, new Point( 0f, 0f ), Color.GREEN, "Hello World!" );
+		spriteBatch.queueString( font, new Point( 100f, 100f ), Color.GREEN, "__--HelloWorld!ggjj" );
+
+		spriteBatch.queueString( font, new Point( 200f, 200f ), Color.BLUE, "This is a...\nmulti-line string!" );
+
+		spriteBatch.end();
+
 	}
 
 	@Override
 	public void unloadContent() {
-		sprite.dispose();   // Both sprites use the same texture, dispose only one of them
-		overlay.dispose();
 	}
 
 	@Override

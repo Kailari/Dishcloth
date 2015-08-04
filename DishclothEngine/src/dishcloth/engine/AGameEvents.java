@@ -1,5 +1,6 @@
 package dishcloth.engine;
 
+import dishcloth.engine.content.ContentManager;
 import dishcloth.engine.events.IEvent;
 
 /**
@@ -38,15 +39,21 @@ public class AGameEvents {
 		}
 	}
 
-	public static class GameContentInitializationEvent extends AGameEvent {
-		public GameContentInitializationEvent(AGame game) {
+	public static class GameContentLoadingEvent extends AGameEvent {
+		public final ContentManager contentManager;
+
+		public GameContentLoadingEvent(AGame game, ContentManager contentManager) {
 			super( game );
+			this.contentManager = contentManager;
 		}
 	}
 
 	public static class GameContentDisposingEvent extends AGameEvent {
-		public GameContentDisposingEvent(AGame game) {
+		public final ContentManager contentManager;
+
+		public GameContentDisposingEvent(AGame game, ContentManager contentManager) {
 			super( game );
+			this.contentManager = contentManager;
 		}
 	}
 

@@ -37,7 +37,7 @@ public final class BlockRegistry {
 
 	@EventHandler
 	//public static void onGamePostInitializeEvent(AGameEvents.GamePostInitializationEvent event) {
-	public static void onGameContentInitializationEvent(AGameEvents.GameContentInitializationEvent event) {
+	public static void onGameContentInitializationEvent(AGameEvents.GameContentLoadingEvent event) {
 		doBlockRegistration( "dummy" );
 	}
 
@@ -116,7 +116,7 @@ public final class BlockRegistry {
 
 		BlockTextureAtlas.addBlock( entry.block );
 
-		//EventRegistry.fireEvent( new BlockEvents.OnBlockRegistrationEvent( blockID, entry.block ) );
+		EventRegistry.fireEvent( new BlockEvents.OnBlockRegistrationEvent( blockID, entry.block ) );
 	}
 
 	public static List<ABlock> getRegisteredBlocks() {

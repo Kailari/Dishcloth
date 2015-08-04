@@ -58,7 +58,7 @@ public final class EventRegistry {
 	 *
 	 * @param listenerClass Event listener class. (static)
 	 */
-	public static void registerEventListener(Class listenerClass) {
+	public static void registerStaticEventListener(Class listenerClass) {
 		registerEventListener( listenerClass, null );
 	}
 
