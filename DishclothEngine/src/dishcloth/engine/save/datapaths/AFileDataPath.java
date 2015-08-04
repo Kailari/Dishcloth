@@ -28,15 +28,17 @@ public class AFileDataPath implements IDataPath {
 
 		// Create the file if it does not already exist
 		try {
-			new File( filename.substring( 0, filename.lastIndexOf( "/" ) ) ).mkdirs();
-			this.file.createNewFile();
+			if (!new File( filename.substring( 0, filename.lastIndexOf( "/" ) ) ).mkdirs() && !this.file.createNewFile()) {
+				if (!this.file.isFile()) {
+					throw new IOException( "Could not create file" );
+				}
+			}
 		} catch (IOException e) {
 			Debug.logException( e, this );
 		}
 	}
 
 	public boolean fileIsEmpty() {
-		long l = file.length();
 		return file.length() == 0;
 	}
 
