@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/DishclothEngine/DishclothEngine.iml" filepath="$PROJECT_DIR$/DishclothEngine/DishclothEngine.iml" />
+      <module fileurl="file://$PROJECT_DIR$/DishclothGame/DishclothGame.iml" filepath="$PROJECT_DIR$/DishclothGame/DishclothGame.iml" />
+      <module fileurl="file://$PROJECT_DIR$/DishclothUtility/DishclothUtility.iml" filepath="$PROJECT_DIR$/DishclothUtility/DishclothUtility.iml" />
+    </modules>
+  </component>
+</project>
