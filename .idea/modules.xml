@@ -4,7 +4,10 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/DishclothEngine/DishclothEngine.iml" filepath="$PROJECT_DIR$/DishclothEngine/DishclothEngine.iml" />
       <module fileurl="file://$PROJECT_DIR$/DishclothGame/DishclothGame.iml" filepath="$PROJECT_DIR$/DishclothGame/DishclothGame.iml" />
+      <module fileurl="file://$PROJECT_DIR$/DishclothModules/DishclothModules.iml" filepath="$PROJECT_DIR$/DishclothModules/DishclothModules.iml" />
+      <module fileurl="file://$PROJECT_DIR$/DishclothModules/DishclothTestModule/DishclothTestModule.iml" filepath="$PROJECT_DIR$/DishclothModules/DishclothTestModule/DishclothTestModule.iml" />
       <module fileurl="file://$PROJECT_DIR$/DishclothUtility/DishclothUtility.iml" filepath="$PROJECT_DIR$/DishclothUtility/DishclothUtility.iml" />
+      <module fileurl="file://$PROJECT_DIR$/DishclothModules/TestAPI/TestAPI.iml" filepath="$PROJECT_DIR$/DishclothModules/TestAPI/TestAPI.iml" />
     </modules>
   </component>
 </project>
