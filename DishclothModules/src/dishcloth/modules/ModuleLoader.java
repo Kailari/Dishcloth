@@ -2,10 +2,12 @@ package dishcloth.modules;
 
 import dishcloth.api.IDishclothModule;
 
-import java.io.File;
+import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * <b>ModuleLoader</b>
@@ -17,16 +19,58 @@ import java.net.URLClassLoader;
  */
 
 public class ModuleLoader {
-	/**
-	 * Loads a module main-class from .jar and instantiates it.
-	 *
-	 * @param moduleName      Name of module .jar
-	 * @param moduleMainClass Full qualified name of the module main class
-	 * @return new instance of the module main.
-	 */
-	public IDishclothModule loadModule(String moduleName, String moduleMainClass) {
-		URLClassLoader urlClassLoader = new URLClassLoader( createURLsFromModuleName( moduleName ) );
 
+	public IDishclothModule[] loadModules(List<URL> moduleURLs) {
+		List<IDishclothModule> modules = new ArrayList<>();
+
+		URL[] urls = new URL[moduleURLs.size()];
+		urls = moduleURLs.toArray( urls );
+
+		URLClassLoader urlClassLoader = new URLClassLoader( urls );
+
+		for (URL url : moduleURLs) {
+
+			String filename = url.getFile().replace( "\\", "/" );
+			filename = filename.substring( filename.lastIndexOf( '/' ) + 1, filename.lastIndexOf( '.' ) );
+			filename += ".info";
+
+			String moduleMainClassName = readModuleMainClassNameFromInfo( urlClassLoader, filename );
+
+			if (moduleMainClassName != null) {
+				IDishclothModule module = loadModule( urlClassLoader, moduleMainClassName );
+				modules.add( module );
+			} else {
+				System.err.println( "Encountered error while reading module.info" );
+			}
+		}
+
+		// Return the result as an array
+		IDishclothModule[] result = new IDishclothModule[modules.size()];
+		result = modules.toArray( result );
+		return result;
+	}
+
+	private String readModuleMainClassNameFromInfo(URLClassLoader urlClassLoader, String filename) {
+		String result = null;
+
+		InputStream stream = urlClassLoader.getResourceAsStream( filename );
+
+		if (stream != null) {
+			try (BufferedReader reader = new BufferedReader( new InputStreamReader( stream ) )) {
+				do {
+					result = reader.readLine();
+				}
+				while (reader.ready() && result != null && result.length() == 0);
+			} catch (IOException e) {
+				e.printStackTrace();
+				return null;
+			}
+		}
+
+		return result;
+	}
+
+	private IDishclothModule loadModule(URLClassLoader urlClassLoader, String moduleMainClass) {
 		try {
 			Class moduleClass = urlClassLoader.loadClass( moduleMainClass );
 			Object o = moduleClass.newInstance();
@@ -43,7 +87,7 @@ public class ModuleLoader {
 		try {
 			File f = new File( "./modules/" + moduleName + ".jar" );
 			if (!f.isFile()) {
-				System.out.println("File not found!");
+				System.out.println( "File not found!" );
 			}
 			result[0] = f.toURI().toURL();
 		} catch (MalformedURLException e) {

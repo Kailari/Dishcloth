@@ -14,10 +14,13 @@ import dishcloth.api.IDishclothModule;
 public class Program {
 	public static void main(String[] args) {
 
+		ModuleFinder finder = new ModuleFinder( "./modules/" );
 
 		ModuleLoader loader = new ModuleLoader();
-		IDishclothModule module = loader.loadModule( "DishclothTestModule", "dishcloth.test.TestModule" );
+		IDishclothModule[] modules = loader.loadModules( finder.findModules() );
 
-		module.run( "\n\t\tHello from main!" );
+		for (IDishclothModule module : modules) {
+			module.run( "\n\t\tHello from main!" );
+		}
 	}
 }
