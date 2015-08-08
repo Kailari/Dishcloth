@@ -1,6 +1,7 @@
 package dishcloth.utility.drawgraph;
 
-import dishcloth.engine.util.geom.Point;
+import dishcloth.api.util.geom.Point;
+import dishcloth.api.util.memory.PointCache;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,11 +30,11 @@ public class DrawGraph {
 		points.add( new Point( 18, 1 ) );
 		points.add( new Point( 21, 5 ) );
 		points.add( new Point( 25, 8 ) );*/
-		points.add( new Point( -20, 70 ) );
-		points.add( new Point( 5, 50 ) );
-		points.add( new Point( 60, 1 ) );
-		points.add( new Point( 90, -15 ) );
-		points.add( new Point( 110, -50 ) );
+		points.add( PointCache.getPoint( -20, 70 ) );
+		points.add( PointCache.getPoint( 5, 50 ) );
+		points.add( PointCache.getPoint( 60, 1 ) );
+		points.add( PointCache.getPoint( 90, -15 ) );
+		points.add( PointCache.getPoint( 110, -50 ) );
 
 		GraphWindow graph = new GraphWindow();
 		new GraphOptionWindow( points, graph );

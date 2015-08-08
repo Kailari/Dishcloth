@@ -1,34 +1,27 @@
 package dishcloth.engine.rendering.render2d.sprites.batch;
 
-import dishcloth.engine.exception.ShaderUniformException;
-import dishcloth.engine.rendering.ICamera;
-import dishcloth.engine.rendering.IRenderer;
-import dishcloth.engine.rendering.render2d.sprites.Sprite;
+import dishcloth.api.exception.ShaderUniformException;
+import dishcloth.api.util.memory.Cache;
+import dishcloth.engine.ADishclothObject;
+import dishcloth.api.abstractionlayer.rendering.ICamera;
+import dishcloth.api.abstractionlayer.rendering.IRenderer;
 import dishcloth.engine.rendering.shaders.ShaderProgram;
 import dishcloth.engine.rendering.text.TextRenderer;
 import dishcloth.engine.rendering.text.bitmapfont.BitmapFont;
 import dishcloth.engine.rendering.textures.Texture;
-import dishcloth.engine.rendering.vbo.ColorTextureVertex;
-import dishcloth.engine.rendering.vbo.Vertex;
-import dishcloth.engine.rendering.vbo.VertexArrayObject;
-import dishcloth.engine.util.Color;
-import dishcloth.engine.util.geom.Point;
-import dishcloth.engine.util.geom.Rectangle;
-import dishcloth.engine.util.logger.Debug;
-import dishcloth.engine.util.math.Matrix4;
-import dishcloth.engine.util.math.MatrixUtility;
-import dishcloth.engine.util.math.Vector2;
-import dishcloth.engine.util.memory.SoftReferencedCache;
-
-import java.lang.reflect.ParameterizedType;
-import java.util.*;
+import dishcloth.api.util.Color;
+import dishcloth.api.util.geom.Point;
+import dishcloth.api.util.geom.Rectangle;
+import dishcloth.engine.rendering.vao.vertex.VertexFormat;
+import dishcloth.engine.util.debug.Debug;
+import dishcloth.api.util.memory.SoftReferencedCache;
 
 /**
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * SpriteBatch.java
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * <p>
- * Renders bunch of sprites. ShaderProgram is not unloaded between render calls giving a significant performance gain
+ * Renders bunch of sprites. ShaderProgram is not unloaded between renderBlock calls giving a significant performance gain
  * when rendering large quantities of sprites.
  * <p>
  * Batches also wrap shader program and handle setting transformations for drawing.
@@ -37,22 +30,23 @@ import java.util.*;
  * Created by ASDSausage on 22.5.2015
  */
 
-public class SpriteBatch<T extends ColorTextureVertex> {
+public class SpriteBatch extends ADishclothObject {
 
-	public static final int CHARACTERS_IN_FONT_X = 16;
-	public static final int CHARACTERS_IN_FONT_Y = 16;
-
-	// TODO: Make caches static and possibly centralize them to some kind of "MemoryAllocator"
-	private SoftReferencedCache<SpriteInfo<T>> spriteInfoCache;
-	private SpriteBatcher<T> batcher;
+	private Cache<SpriteInfo> spriteInfoCache;
+	private SpriteBatcher batcher;
 	private RenderInfo renderInfo;
 	private boolean beginCalled;
-	private Class<T> vertexClass;
 
-	public SpriteBatch(Class<T> vertexClass) {
-		this.batcher = new SpriteBatcher<>();
-		this.spriteInfoCache = new SoftReferencedCache<>();
-		this.vertexClass = vertexClass;
+	public SpriteBatch() {
+		super( false );
+		this.renderInfo = new RenderInfo( null, null, null );
+		this.batcher = new SpriteBatcher();
+		this.spriteInfoCache = new Cache<>();
+	}
+
+	public SpriteBatch(VertexFormat customFormat) {
+		this();
+		batcher.setCustomFormat( customFormat );
 	}
 
 	public void begin(ShaderProgram shader, ICamera camera, IRenderer renderer) {
@@ -62,7 +56,9 @@ public class SpriteBatch<T extends ColorTextureVertex> {
 		}
 		beginCalled = true;
 
-		this.renderInfo = new RenderInfo( shader, camera, renderer );
+		this.renderInfo.shader = shader;
+		this.renderInfo.camera = camera;
+		this.renderInfo.renderer = renderer;
 	}
 
 	public void queue
@@ -72,8 +68,20 @@ public class SpriteBatch<T extends ColorTextureVertex> {
 					Rectangle source,
 					float angle,
 					Color tint,
-					Point origin,
-					Object... additionalData
+					Point origin
+			) {
+
+		queue( texture, destination, source, angle, tint.toInteger(), origin );
+	}
+
+	public void queue
+			(
+					Texture texture,
+					Rectangle destination,
+					Rectangle source,
+					float angle,
+					int tint,
+					Point origin
 			) {
 
 		if (!beginCalled) {
@@ -86,33 +94,43 @@ public class SpriteBatch<T extends ColorTextureVertex> {
 		                                         source,
 		                                         (float) Math.toRadians( angle ),
 		                                         tint,
-		                                         origin,
-		                                         additionalData ) );
+		                                         origin ) );
 	}
 
 	public void queueString(BitmapFont font, Point position, Color color, String text) {
 		TextRenderer.renderText( this, position, font, color, text );
 	}
 
+	private SpriteInfo createSpriteInfo
+			(
+					Texture texture,
+					Rectangle destination,
+					Rectangle source,
+					float angle,
+					Color tint,
+					Point origin
+			) {
+		return createSpriteInfo( texture, destination, source, angle, tint.toInteger(), origin );
+	}
+
 	/**
 	 * Tries to save memory by using cache to recycle SpriteInfos as much as possible
 	 */
-	private SpriteInfo<T> createSpriteInfo
+	private SpriteInfo createSpriteInfo
 	(
 			Texture texture,
 			Rectangle destination,
 			Rectangle source,
 			float angle,
-			Color tint,
-			Point origin,
-			Object... additionalData
+			int tint,
+			Point origin
 	) {
 		SpriteInfo spriteInfo;
 		if ((spriteInfo = spriteInfoCache.getItem()) != null) {
-			spriteInfo.setData( source, destination, angle, origin, texture, tint, additionalData );
+			spriteInfo.setData( source, destination, angle, origin, texture, tint );
 			return spriteInfo;
 		} else {
-			return new SpriteInfo<T>( vertexClass, source, destination, angle, origin, texture, tint, additionalData );
+			return new SpriteInfo( source, destination, angle, origin, texture, tint );
 		}
 	}
 
@@ -129,7 +147,7 @@ public class SpriteBatch<T extends ColorTextureVertex> {
 
 		try {
 			renderInfo.shader.setUniformMat4( "mat_project", renderInfo.camera.getProjectionMatrix() );
-			renderInfo.shader.setUniformMat4( "mat_view", renderInfo.camera.getViewMatrix() );
+			renderInfo.shader.setUniformMat4( "mat_view", renderInfo.camera.getCameraTransformMatrix() );
 		} catch (ShaderUniformException e) {
 			Debug.logException( e, this );
 			return;
@@ -138,5 +156,10 @@ public class SpriteBatch<T extends ColorTextureVertex> {
 		batcher.renderBatch( spriteInfoCache );
 
 		renderInfo.renderer.bindShader( 0 );
+	}
+
+	@Override
+	public void dispose() {
+		batcher.dispose();
 	}
 }

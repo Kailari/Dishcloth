@@ -1,6 +1,7 @@
 package dishcloth.engine.rendering.render2d.sprites;
 
-import dishcloth.engine.util.geom.Point;
+import dishcloth.api.util.geom.Point;
+import dishcloth.api.util.memory.PointCache;
 
 /**
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -31,6 +32,6 @@ public enum Anchor {
 	}
 
 	public Point createPivot(float w, float h) {
-		return new Point( xOffsetMultiplier * w, yOffsetMultiplier * h );
+		return PointCache.getPoint( xOffsetMultiplier * w, yOffsetMultiplier * h );
 	}
 }

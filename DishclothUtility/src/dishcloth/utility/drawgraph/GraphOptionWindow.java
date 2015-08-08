@@ -4,7 +4,7 @@ import dishcloth.engine.util.curve.CosineCurve;
 import dishcloth.engine.util.curve.CubicCurve;
 import dishcloth.engine.util.curve.LinearCurve;
 import dishcloth.engine.util.curve.PointCurve;
-import dishcloth.engine.util.geom.Point;
+import dishcloth.api.util.geom.Point;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;

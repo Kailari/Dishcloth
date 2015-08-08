@@ -1,5 +1,7 @@
 package dishcloth.engine.io;
 
+import dishcloth.engine.modules.ModuleManager;
+
 import java.io.InputStream;
 
 /**
@@ -18,7 +20,11 @@ public class FileIOHelper {
 	// TODO: Create a mod-sensitive version. ex. can search content from both "/resources/engine/" and "/resources/game/"
 	// (it also could/should auto-detect the mod)
 	public static InputStream createInputStream(String filename) {
-		return FileIOHelper.class.getResourceAsStream( RES_PATH + filename );
+		InputStream stream = FileIOHelper.class.getResourceAsStream( RES_PATH + filename );
+		if (stream == null) {
+			stream = ModuleManager.createInputStream( RES_PATH + filename );
+		}
+		return stream;
 	}
 
 	public static InputStream createInputStream(String filename, String modID) {

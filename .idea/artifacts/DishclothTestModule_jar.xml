@@ -1,9 +1,9 @@
 <component name="ArtifactManager">
   <artifact type="jar" build-on-make="true" name="DishclothTestModule:jar">
-    <output-path>$PROJECT_DIR$/DishclothModules/modules</output-path>
+    <output-path>$PROJECT_DIR$/run/modules</output-path>
     <root id="archive" name="DishclothTestModule.jar">
       <element id="module-output" name="DishclothTestModule" />
-      <element id="module-output" name="TestAPI" />
+      <element id="module-output" name="DishclothAPI" />
     </root>
   </artifact>
 </component>

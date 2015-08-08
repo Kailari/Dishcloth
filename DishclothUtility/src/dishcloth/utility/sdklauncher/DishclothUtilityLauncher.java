@@ -1,6 +1,6 @@
 package dishcloth.utility.sdklauncher;
 
-import dishcloth.engine.util.logger.ANSIColor;
+import dishcloth.api.util.ANSIColor;
 import dishcloth.game.DishclothGame;
 import dishcloth.utility.drawgraph.DrawGraph;
 import dishcloth.utility.shadertest.Shadertest;

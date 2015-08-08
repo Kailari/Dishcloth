@@ -1,15 +1,15 @@
 package dishcloth.engine.content;
 
-import dishcloth.engine.AGameEvents;
+import dishcloth.api.events.GameEvents;
 import dishcloth.engine.content.importers.ReadAllLinesImporter;
 import dishcloth.engine.content.importers.ShaderProgramImporter;
 import dishcloth.engine.content.importers.TextureImporter;
 import dishcloth.engine.content.processors.BitmapFontProcessor;
 import dishcloth.engine.content.processors.ShaderProgramProcessor;
 import dishcloth.engine.content.processors.TextureProcessor;
-import dishcloth.engine.events.EventHandler;
+import dishcloth.api.abstractionlayer.events.EventHandler;
 import dishcloth.engine.events.EventRegistry;
-import dishcloth.engine.util.logger.Debug;
+import dishcloth.engine.util.debug.Debug;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -46,7 +46,7 @@ public final class ContentPipeline {
 	}
 
 	@EventHandler
-	public static void onGameShutdownEvent(AGameEvents.GameContentDisposingEvent event) {
+	public static void onGameShutdownEvent(GameEvents.GameContentDisposingEvent event) {
 		contentImporters.clear();
 		contentProcessors.clear();
 		pipelineExtensions.clear();

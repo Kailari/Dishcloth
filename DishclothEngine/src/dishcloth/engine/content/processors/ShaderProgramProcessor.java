@@ -4,10 +4,10 @@ import dishcloth.engine.content.AContentProcessor;
 import dishcloth.engine.content.ContentManager;
 import dishcloth.engine.content.importers.ShaderProgramImporter;
 import dishcloth.engine.exception.ShaderCompilationFailedException;
-import dishcloth.engine.exception.ShaderException;
+import dishcloth.api.exception.ShaderException;
 import dishcloth.engine.exception.ShaderLinkFailedException;
 import dishcloth.engine.rendering.shaders.ShaderProgram;
-import dishcloth.engine.util.logger.Debug;
+import dishcloth.engine.util.debug.Debug;
 
 import static org.lwjgl.opengl.GL11.GL_FALSE;
 import static org.lwjgl.opengl.GL20.*;

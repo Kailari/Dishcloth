@@ -1,6 +1,6 @@
 package dishcloth.engine.util.curve;
 
-import dishcloth.engine.util.geom.Point;
+import dishcloth.api.util.geom.Point;
 
 import java.util.List;
 
@@ -25,11 +25,11 @@ public class LinearCurve extends ACurve {
 //		if (index == X_LESS_THAN_SMALLEST) throw new IllegalArgumentException("f < smallest x");
 //		if (index == X_GREATER_THAN_GREATEST) throw new IllegalArgumentException("f > greatest x");
 
-		if (index == getListSize() - 1) return getPoint( getListSize() - 1 ).y;
+		if (index == getListSize() - 1) return getPoint( getListSize() - 1 ).getY();
 
-		float n = getNormalizedBetween( f, getPoint( index ).x, getPoint( index + 1 ).x );
+		float n = getNormalizedBetween( f, getPoint( index ).getX(), getPoint( index + 1 ).getX() );
 
-		return getPoint( index ).y * (1 - n) + getPoint( index + 1 ).y * n;
+		return getPoint( index ).getY() * (1 - n) + getPoint( index + 1 ).getY() * n;
 	}
 
 }

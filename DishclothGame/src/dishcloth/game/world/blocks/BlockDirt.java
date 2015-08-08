@@ -1,6 +1,6 @@
 package dishcloth.game.world.blocks;
 
-import dishcloth.engine.world.block.ABlock;
+import dishcloth.api.world.block.ABlock;
 
 /**
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *

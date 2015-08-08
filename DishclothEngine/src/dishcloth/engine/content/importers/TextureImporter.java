@@ -6,6 +6,7 @@ import dishcloth.engine.io.FileIOHelper;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * <b>TextureImporter</b>
@@ -25,7 +26,12 @@ public class TextureImporter extends AContentImporter<TextureImporter.TextureImp
 		int width = 0;
 		int height = 0;
 		try {
-			BufferedImage image = ImageIO.read( FileIOHelper.createInputStream( filename ) );
+			InputStream stream = FileIOHelper.createInputStream( filename );
+			if (stream == null) {
+				throw new IOException( "Resource not found: " + filename );
+			}
+
+			BufferedImage image = ImageIO.read( stream );
 
 			width = image.getWidth();
 			height = image.getHeight();

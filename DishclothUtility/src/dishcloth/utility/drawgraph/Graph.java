@@ -1,7 +1,8 @@
 package dishcloth.utility.drawgraph;
 
+import dishcloth.api.util.memory.PointCache;
 import dishcloth.engine.util.curve.ACurve;
-import dishcloth.engine.util.geom.Point;
+import dishcloth.api.util.geom.Point;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -23,7 +24,7 @@ public class Graph {
 		points = new ArrayList<>();
 		for (int i = 0; i <= pts; i++) {
 			float norm = i / (float) pts;
-			points.add( new Point( curve.convertToCurvePosition( norm ), curve.valueAtNormalized( norm ) ) );
+			points.add( PointCache.getPoint( curve.convertToCurvePosition( norm ), curve.valueAtNormalized( norm ) ) );
 		}
 	}
 
@@ -35,11 +36,11 @@ public class Graph {
 		g.setColor( col );
 		for (int i = 0; i < points.size() - 1; i++) {
 
-			int x1 = x0 + (int) ((points.get( i ).x - min.x) * xScale);
-			int y1 = y0 - (int) ((points.get( i ).y - min.y) * yScale);
+			int x1 = x0 + (int) ((points.get( i ).getX() - min.getX()) * xScale);
+			int y1 = y0 - (int) ((points.get( i ).getY() - min.getY()) * yScale);
 
-			int x2 = x0 + (int) ((points.get( i + 1 ).x - min.x) * xScale);
-			int y2 = y0 - (int) ((points.get( i + 1 ).y - min.y) * yScale);
+			int x2 = x0 + (int) ((points.get( i + 1 ).getX() - min.getX()) * xScale);
+			int y2 = y0 - (int) ((points.get( i + 1 ).getY() - min.getY()) * yScale);
 
 			g.drawLine( x1, y1, x2, y2 );
 		}

@@ -1,6 +1,9 @@
 package dishcloth.engine.content;
 
+import dishcloth.api.abstractionlayer.content.IContent;
+import dishcloth.api.abstractionlayer.content.IContentManager;
 import dishcloth.engine.ADishclothObject;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,7 +19,7 @@ import java.util.List;
  * @see ContentPipeline
  */
 
-public class ContentManager extends ADishclothObject {
+public class ContentManager extends ADishclothObject implements IContentManager {
 	protected List<AContent> loadedContent;
 
 	public ContentManager() {
@@ -24,7 +27,16 @@ public class ContentManager extends ADishclothObject {
 		loadedContent = new ArrayList<>();
 	}
 
-	public <T extends AContent> T loadContent(String filename) {
+	/**
+	 *  IF POSSIBLE, USE ContentManager.load() INSTEAD! THIS EXISTS JUST FOR MODULE ABSTRACTION LAYER.
+	 */
+	@Override
+	@SuppressWarnings("unchecked")
+	public <T extends IContent> T loadContent(String filename) {
+		return (T) load( filename );
+	}
+
+	public <T extends AContent> T load(String filename) {
 		T content = ContentPipeline.importAndProcessContent( filename, this );
 		loadedContent.add( content );
 

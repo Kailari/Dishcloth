@@ -1,5 +1,6 @@
 package dishcloth.engine.rendering.textures;
 
+import dishcloth.api.abstractionlayer.rendering.textures.ITexture;
 import dishcloth.engine.content.AContent;
 
 import static org.lwjgl.opengl.GL11.glDeleteTextures;
@@ -15,7 +16,7 @@ import static org.lwjgl.opengl.GL11.glDeleteTextures;
  * @see TextureAtlasBuilder
  */
 
-public class Texture extends AContent {
+public class Texture extends AContent implements ITexture {
 
 	private int width, height;
 	private int textureID;
@@ -31,14 +32,17 @@ public class Texture extends AContent {
 		glDeleteTextures( textureID );
 	}
 
+	@Override
 	public int getGLTexID() {
 		return textureID;
 	}
 
+	@Override
 	public int getWidth() {
 		return width;
 	}
 
+	@Override
 	public int getHeight() {
 		return height;
 	}

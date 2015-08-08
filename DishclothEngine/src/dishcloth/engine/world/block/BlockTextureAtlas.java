@@ -1,7 +1,8 @@
 package dishcloth.engine.world.block;
 
-import dishcloth.engine.AGameEvents;
-import dishcloth.engine.events.EventHandler;
+import dishcloth.api.abstractionlayer.events.EventHandler;
+import dishcloth.api.events.GameEvents;
+import dishcloth.api.world.block.ABlock;
 import dishcloth.engine.rendering.textures.Texture;
 import dishcloth.engine.rendering.textures.TextureAtlasBuilder;
 import dishcloth.engine.world.level.TerrainChunk;
@@ -23,7 +24,7 @@ public class BlockTextureAtlas {
 	private BlockTextureAtlas() {}
 
 	@EventHandler
-	public static void onGameDisposingEvent(AGameEvents.GameContentDisposingEvent event) {
+	public static void onGameDisposingEvent(GameEvents.GameContentDisposingEvent event) {
 		dispose();
 	}
 
@@ -31,7 +32,7 @@ public class BlockTextureAtlas {
 	 * Adds block's texture to atlas and assigns block a frameID.
 	 */
 	public static void addBlock(ABlock block) {
-		block.setFrameID( addTexture( block.getBlockTextureFilename() ) );
+		BlockHelper.setFrameID( block, addTexture( block.getBlockTextureFilename() ) );
 	}
 
 	/**

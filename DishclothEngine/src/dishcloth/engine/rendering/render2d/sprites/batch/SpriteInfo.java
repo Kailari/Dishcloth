@@ -1,12 +1,11 @@
 package dishcloth.engine.rendering.render2d.sprites.batch;
 
+import dishcloth.api.util.math.DishMath;
 import dishcloth.engine.rendering.textures.Texture;
-import dishcloth.engine.rendering.vbo.ColorTextureVertex;
-import dishcloth.engine.rendering.vbo.Vertex;
-import dishcloth.engine.util.Color;
-import dishcloth.engine.util.geom.Point;
-import dishcloth.engine.util.geom.Rectangle;
-import dishcloth.engine.util.logger.Debug;
+import dishcloth.engine.rendering.vao.vertex.ColorTextureVertex;
+import dishcloth.api.util.Color;
+import dishcloth.api.util.geom.Point;
+import dishcloth.api.util.geom.Rectangle;
 
 /**
  * SpriteInfo.java
@@ -18,67 +17,106 @@ import dishcloth.engine.util.logger.Debug;
  */
 
 // TODO: Figure out a convenient way to change vertex type. (<T extends Vertex>, perhaps?)
-class SpriteInfo<T extends ColorTextureVertex> {
+class SpriteInfo {
 	Texture texture;
-	T topLeft, topRight, botLeft, botRight;
+	ColorTextureVertex topLeft, topRight, botLeft, botRight;
 
-	SpriteInfo(Class<T> vertexClass, Rectangle source, Rectangle destination, float angle, Point origin, Texture texture, Color tint, Object... additionalData) {
-		try {
-			this.topLeft = vertexClass.newInstance();
-			this.topRight = vertexClass.newInstance();
-			this.botLeft = vertexClass.newInstance();
-			this.botRight = vertexClass.newInstance();
+	SpriteInfo(Rectangle source, Rectangle destination, float angle, Point origin, Texture texture, int tint) {
+		this.topLeft = new ColorTextureVertex();
+		this.topRight = new ColorTextureVertex();
+		this.botLeft = new ColorTextureVertex();
+		this.botRight = new ColorTextureVertex();
 
-			this.setData( source, destination, angle, origin, texture, tint, additionalData );
-		} catch (IllegalAccessException | InstantiationException e) {
-			Debug.logException( e, this );
-		}
+		this.setData( source, destination, angle, origin, texture, tint );
 	}
 	
-	void setData(Rectangle source, Rectangle destination, float angle, Point origin, Texture texture, Color tint, Object... additionalData) {
+	void setData(Rectangle source, Rectangle destination, float angle, Point origin, Texture texture, int tint) {
+
+		if (DishMath.approxSame( angle, 0.0D )) {
+			setData( source, destination, origin, texture, tint );
+		} else {
+			this.texture = texture;
+
+			float cos = (float) Math.cos( angle );
+			float sin = (float) Math.sin( angle );
+
+			float uStart = source.getX() / texture.getWidth();
+			float vStart = source.getY() / texture.getHeight();
+			float uEnd = uStart + (source.getW() / texture.getWidth());
+			float vEnd = vStart + (source.getH() / texture.getHeight());
+
+			this.topLeft.setData(
+					destination.getX() + (-origin.getX()) * cos - (-origin.getY()) * sin,
+					destination.getY() + (-origin.getY()) * sin + (-origin.getY()) * cos,
+					tint,
+					uStart,
+					vEnd
+			);
+
+			this.topRight.setData(
+					destination.getX() + ((-origin.getX()) + destination.getW()) * cos - (-origin.getY()) * sin,
+					destination.getY() + ((-origin.getY()) + destination.getW()) * sin + (-origin.getY()) * cos,
+					tint,
+					uEnd,
+					vEnd
+			);
+
+			this.botLeft.setData(
+					destination.getX() + (-origin.getX()) * cos - ((-origin.getY()) + destination.getH()) * sin,
+					destination.getY() + (-origin.getX()) * sin + ((-origin.getY()) + destination.getH()) * cos,
+					tint,
+					uStart,
+					vStart
+			);
+
+			this.botRight.setData(
+					destination.getX() + ((-origin.getX()) + destination.getW()) * cos - ((-origin.getY()) + destination.getH()) * sin,
+					destination.getY() + ((-origin.getX()) + destination.getW()) * sin + ((-origin.getY()) + destination.getH()) * cos,
+					tint,
+					uEnd,
+					vStart
+			);
+		}
+	}
+
+	void setData(Rectangle source, Rectangle destination, Point origin, Texture texture, int tint) {
 		this.texture = texture;
-		
-		float cos = (float) Math.cos( angle );
-		float sin = (float) Math.sin( angle );
-		
-		float uStart = source.x / texture.getWidth();
-		float vStart = source.y / texture.getHeight();
-		float uEnd = uStart + (source.w / texture.getWidth());
-		float vEnd = vStart + (source.h / texture.getHeight());
 
-		Object[] varargs = new Object[5 + additionalData.length];
-		System.arraycopy( additionalData, 0, varargs, 5, additionalData.length );
+		float uStart = source.getX() / texture.getWidth();
+		float vStart = source.getY() / texture.getHeight();
+		float uEnd = uStart + (source.getW() / texture.getWidth());
+		float vEnd = vStart + (source.getH() / texture.getHeight());
 
-		varargs[0] = destination.x + (-origin.x) * cos - (-origin.y) * sin;
-		varargs[1] = destination.y + (-origin.x) * sin + (-origin.y) * cos;
-		varargs[2] = tint;
-		varargs[3] = uStart;
-		varargs[4] = vEnd;
+		this.topLeft.setData(
+				destination.getLeftX() - origin.getX(),
+				destination.getTopY() - origin.getY(),
+				tint,
+				uStart,
+				vStart
+		);
 
-		this.topLeft.setData( varargs );
+		this.topRight.setData(
+				destination.getRightX() - origin.getX(),
+				destination.getTopY() - origin.getY(),
+				tint,
+				uEnd,
+				vStart
+		);
 
+		this.botLeft.setData(
+				destination.getLeftX() - origin.getX(),
+				destination.getBottomY() - origin.getY(),
+				tint,
+				uStart,
+				vEnd
+		);
 
-		varargs[0] = destination.x + ((-origin.x) + destination.w) * cos - (-origin.y) * sin;
-		varargs[1] = destination.y + ((-origin.x) + destination.w) * sin + (-origin.y) * cos;
-		varargs[3] = uEnd;
-		varargs[4] = vEnd;
-
-		this.topRight.setData( varargs );
-
-
-		varargs[0] = destination.x + (-origin.x) * cos - ((-origin.y) + destination.h) * sin;
-		varargs[1] = destination.y + (-origin.x) * sin + ((-origin.y) + destination.h) * cos;
-		varargs[3] = uStart;
-		varargs[4] = vStart;
-
-		this.botLeft.setData( varargs );
-
-
-		varargs[0] = destination.x + ((-origin.x) + destination.w) * cos - ((-origin.y) + destination.h) * sin;
-		varargs[1] = destination.y + ((-origin.x) + destination.w) * sin + ((-origin.y) + destination.h) * cos;
-		varargs[3] = uEnd;
-		varargs[4] = vStart;
-
-		this.botRight.setData( varargs );
+		this.botRight.setData(
+				destination.getRightX() - origin.getX(),
+				destination.getBottomY() - origin.getY(),
+				tint,
+				uEnd,
+				vEnd
+		);
 	}
 }

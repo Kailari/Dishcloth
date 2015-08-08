@@ -1,12 +1,11 @@
 package dishcloth.engine.rendering.render2d.sprites.batch;
 
-import dishcloth.engine.rendering.shaders.ShaderProgram;
-import dishcloth.engine.rendering.textures.Texture;
-import dishcloth.engine.rendering.vbo.ColorTextureVertex;
-import dishcloth.engine.rendering.vbo.Vertex;
-import dishcloth.engine.rendering.vbo.VertexArrayObject;
-import dishcloth.engine.util.logger.Debug;
-import dishcloth.engine.util.memory.SoftReferencedCache;
+import dishcloth.api.util.memory.Cache;
+import dishcloth.engine.rendering.vao.vertex.ColorTextureVertex;
+import dishcloth.engine.rendering.vao.VertexArrayObject;
+import dishcloth.engine.rendering.vao.vertex.VertexFormat;
+import dishcloth.engine.util.debug.Debug;
+import dishcloth.api.util.memory.SoftReferencedCache;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -24,25 +23,25 @@ import static org.lwjgl.opengl.GL11.glBindTexture;
  * Created by ASDSausage on 21.7.2015
  */
 
-class SpriteBatcher<T extends ColorTextureVertex> {
+class SpriteBatcher {
 	private static final int BATCH_MAX_SIZE_SPRITES = 2048;
 	private static final int BATCH_MAX_SIZE_VERTICES = BATCH_MAX_SIZE_SPRITES * 4;
 	private static final int BATCH_MAX_SIZE_INDICES = BATCH_MAX_SIZE_SPRITES * 6;
 	private static final int BATCH_INITIAL_SIZE_SPRITES = 256;
 
-	private Vertex[] vertices;
+	private ColorTextureVertex[] vertices;
 	private int[] indices;
-	private VertexArrayObject VAO;
-	private List<SpriteInfo<T>> renderQueue;
+	private VertexArrayObject<ColorTextureVertex> VAO;
+	private List<SpriteInfo> renderQueue;
 
 	public SpriteBatcher() {
 		this.renderQueue = new ArrayList<>();
-		this.VAO = new VertexArrayObject();
+		this.VAO = new VertexArrayObject<>( ColorTextureVertex.getFormat() );
 
 		prepareArrays( BATCH_INITIAL_SIZE_SPRITES );
 	}
 
-	public void addSpriteInfo(SpriteInfo<T> info) {
+	public void addSpriteInfo(SpriteInfo info) {
 		this.renderQueue.add( info );
 	}
 
@@ -87,11 +86,11 @@ class SpriteBatcher<T extends ColorTextureVertex> {
 		}
 		this.indices = newIndexArray;
 
-		this.vertices = new Vertex[requiredCapacityVertices];
+		this.vertices = new ColorTextureVertex[requiredCapacityVertices];
 	}
 
-	public void renderBatch(SoftReferencedCache<SpriteInfo<T>> spriteInfoCache) {
-		// Return if there is nothing to render.
+	public void renderBatch(Cache<SpriteInfo> spriteInfoCache) {
+		// Return if there is nothing to renderBlock.
 		if (renderQueue.size() == 0) {
 			return;
 		}
@@ -144,7 +143,7 @@ class SpriteBatcher<T extends ColorTextureVertex> {
 	}
 
 	private void doRender(int endIndex, int textureID) {
-		// Check if there is anything to render at all
+		// Check if there is anything to renderBlock at all
 		if (endIndex == 0) {
 			return;
 		}
@@ -153,11 +152,19 @@ class SpriteBatcher<T extends ColorTextureVertex> {
 		glBindTexture( GL_TEXTURE_2D, textureID );
 
 		// Update VAO
-		VAO.setData( vertices, indices, endIndex / 4 * 2 * 3 );
+		VAO.setData( vertices, indices, endIndex / 4 * 2 * 3, true );
 
 		// Render VAO
 		VAO.render();
 
 		Arrays.fill( vertices, null );
+	}
+
+	public void dispose() {
+		this.VAO.dispose();
+	}
+
+	public void setCustomFormat(VertexFormat customFormat) {
+		this.VAO = new VertexArrayObject<>( customFormat );
 	}
 }

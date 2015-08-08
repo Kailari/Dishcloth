@@ -1,8 +1,7 @@
 package dishcloth.engine.input;
 
-import dishcloth.engine.AGameEvents;
-import dishcloth.engine.events.EventHandler;
-import org.lwjgl.glfw.GLFW;
+import dishcloth.api.abstractionlayer.events.EventHandler;
+import dishcloth.api.events.GameEvents;
 import org.lwjgl.glfw.GLFWKeyCallback;
 
 import java.util.HashMap;
@@ -26,12 +25,12 @@ public class InputHandler {
 	private InputHandler() {}
 
 	@EventHandler
-	public static void onGamePreInitializeEvent(AGameEvents.GamePreInitializationEvent event) {
+	public static void onGamePreInitializeEvent(GameEvents.GamePreInitializationEvent event) {
 		attachToWindow( event.getGame().getWindowID() );
 	}
 
 	@EventHandler
-	public static void onGameShutdownEvent(AGameEvents.GameShutdownEvent event) {
+	public static void onGameShutdownEvent(GameEvents.GameShutdownEvent event) {
 		detachFromWindow();
 	}
 

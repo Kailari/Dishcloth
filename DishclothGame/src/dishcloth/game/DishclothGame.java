@@ -1,23 +1,24 @@
 package dishcloth.game;
 
+import dishcloth.api.GameInfo;
+import dishcloth.api.abstractionlayer.content.IContentManager;
+import dishcloth.api.events.GameEvents;
+import dishcloth.api.util.memory.PointCache;
+import dishcloth.api.world.WorldInfo;
 import dishcloth.engine.AGame;
-import dishcloth.engine.AGameEvents;
-import dishcloth.engine.content.ContentManager;
-import dishcloth.engine.events.EventHandler;
+import dishcloth.api.abstractionlayer.events.EventHandler;
 import dishcloth.engine.input.controllers.CameraController;
-import dishcloth.engine.rendering.IRenderer;
+import dishcloth.api.abstractionlayer.rendering.IRenderer;
 import dishcloth.engine.rendering.render2d.sprites.Anchor;
 import dishcloth.engine.rendering.render2d.sprites.Sprite;
 import dishcloth.engine.rendering.render2d.sprites.batch.SpriteBatch;
 import dishcloth.engine.rendering.shaders.ShaderProgram;
 import dishcloth.engine.rendering.text.bitmapfont.BitmapFont;
 import dishcloth.engine.rendering.textures.Texture;
-import dishcloth.engine.rendering.vbo.ColorTextureVertex;
-import dishcloth.engine.util.Color;
-import dishcloth.engine.util.geom.Point;
-import dishcloth.engine.util.logger.ANSIColor;
-import dishcloth.engine.util.logger.Debug;
-import dishcloth.engine.util.math.Vector2;
+import dishcloth.api.util.Color;
+import dishcloth.api.util.geom.Point;
+import dishcloth.api.util.ANSIColor;
+import dishcloth.engine.util.debug.Debug;
 import dishcloth.engine.world.block.BlockRegistry;
 import dishcloth.engine.world.level.Terrain;
 import dishcloth.engine.world.objects.actor.CameraActor;
@@ -36,26 +37,32 @@ import dishcloth.game.world.blocks.DishclothBlocks;
 
 public class DishclothGame extends AGame {
 	public static final String DEFAULT_MOD_ID = "dishcloth";
-
+	public WorldInfo worldInfo;
 	BitmapFont font;
 	Texture uvGrid;
 	Sprite sprite, sprite2, overlay;
-	
-	SpriteBatch<ColorTextureVertex> spriteBatch;
+	SpriteBatch spriteBatch;
 	ShaderProgram spriteShader;
-	
 	CameraActor cameraActor;
 	CameraController cameraController;
 	Terrain terrain;
-
-	Point position;
+	Point position, position2;
 	float t, angle;
+	private Point pointStr1 = PointCache.getPoint( 0f, 0f );
+	private Point pointStr2 = PointCache.getPoint( 100f, 100f );
+	private Point pointStr3 = PointCache.getPoint( 200f, 200f );
+
+	private Point pointZero = PointCache.getPoint( 0f, 0f );
 
 	@EventHandler
-	public void onPostInitializeEvent(AGameEvents.GamePostInitializationEvent event) {
+	public void onPostInitializeEvent(GameEvents.GamePostInitializationEvent event) {
 		Debug.log( "Creating new terrain!", this );
 		terrain = new Terrain( 2, 3, 2 );
 		Debug.log( "Terrain generated successfully!", this );
+
+		worldInfo = new WorldInfo();
+		worldInfo.terrain = terrain;
+		GameInfo.worldInfo = worldInfo;
 	}
 
 	@Override
@@ -65,25 +72,22 @@ public class DishclothGame extends AGame {
 				           + "DishclothGame"
 				           + ANSIColor.RESET, this );
 
-		BlockRegistry.registerBlock( DishclothBlocks.DIRT, DEFAULT_MOD_ID, "dirt" );
-		BlockRegistry.registerBlock( DishclothBlocks.GRASS, DEFAULT_MOD_ID, "grass" );
-		BlockRegistry.registerBlock( DishclothBlocks.CLAY, DEFAULT_MOD_ID, "clay" );
-		BlockRegistry.registerBlock( DishclothBlocks.STONE, DEFAULT_MOD_ID, "stone" );
-		BlockRegistry.registerBlock( DishclothBlocks.BRICKS, DEFAULT_MOD_ID, "bricks" );
+		DishclothBlocks.registerBlocks();
 
 		cameraActor = new CameraActor( getViewportCamera() );
 		cameraController = new CameraController();
 		cameraController.setActiveCamera( cameraActor );
 
-		position = new Point( 0, 0 );
+		position = PointCache.getPoint( 0, 0 );
+		position2 = PointCache.getPoint( 0, 0 );
 	}
 
 	@Override
-	public void loadContent(ContentManager contentManager) {
-		spriteBatch = new SpriteBatch<>( ColorTextureVertex.class );
+	public void loadContent(IContentManager contentManager) {
+		spriteBatch = new SpriteBatch();
 		spriteShader = contentManager.loadContent( "/engine/shaders/sprite.shader" );
 		
-		uvGrid = contentManager.loadContent( "engine/textures/debug/uv_checker.png" );
+		uvGrid = contentManager.loadContent( "/engine/textures/debug/uv_checker.png" );
 		sprite = new Sprite( uvGrid, 8, 8, 0, Anchor.CENTER );
 		sprite2 = new Sprite( uvGrid, 1, 1, 0, Anchor.CENTER );
 
@@ -101,8 +105,10 @@ public class DishclothGame extends AGame {
 
 		sprite.setFrame( Math.round( t ) );
 
-		position.x = (float) Math.cos( Math.toRadians( angle ) ) * 200f;
-		position.y = (float) Math.sin( Math.toRadians( angle ) ) * 200f;
+		position.setX( (float) Math.cos( Math.toRadians( angle ) ) * 200f );
+		position.setY( (float) Math.sin( Math.toRadians( angle ) ) * 200f );
+		position2.setX( -position.getX() );
+		position2.setY( -position.getY() );
 
 		angle = t * (360f / 10f);
 	}
@@ -116,27 +122,26 @@ public class DishclothGame extends AGame {
 	@Override
 	public void render(IRenderer renderer) {
 
-		/*spriteBatch.begin( spriteShader, getViewportCamera(), renderer );
+		spriteBatch.begin( spriteShader, getViewportCamera(), renderer );
 
-		sprite2.render( spriteBatch, new Point( 0f, 0f ), -angle, Color.WHITE );
+		sprite2.render( spriteBatch, pointZero, -angle, Color.WHITE );
 
-		sprite.render( spriteBatch, new Point( position.x, position.y ), 0f, Color.CYAN );
-		sprite.render( spriteBatch, new Point( -position.x, -position.y ), -angle, Color.GREEN );
+		sprite.render( spriteBatch, position, 0f, Color.CYAN );
+		sprite.render( spriteBatch, position2, -angle, Color.GREEN );
 
-		sprite.render( spriteBatch, new Point( 0f, 0f ), angle );
+		sprite.render( spriteBatch, pointZero, angle );
 
-		overlay.render( spriteBatch, new Point( 0f, 0f ), 0f, Color.WHITE );
+		overlay.render( spriteBatch, pointZero );
 
-		spriteBatch.end();*/
+		spriteBatch.end();
 
 		terrain.render( renderer, getViewportCamera() );
 
 		spriteBatch.begin( spriteShader, getViewportCamera(), renderer );
 
-		spriteBatch.queueString( font, new Point( 0f, 0f ), Color.GREEN, "Hello World!" );
-		spriteBatch.queueString( font, new Point( 100f, 100f ), Color.GREEN, "__--HelloWorld!ggjj" );
-
-		spriteBatch.queueString( font, new Point( 200f, 200f ), Color.BLUE, "This is a...\nmulti-line string!" );
+		//spriteBatch.queueString( font, pointStr1, Color.GREEN, "Hello World!" );
+		//spriteBatch.queueString( font, pointStr2, Color.GREEN, "__--HelloWorld!ggjj" );
+		//spriteBatch.queueString( font, pointStr3, Color.BLUE, "This is a...\nmulti-line string!" );
 
 		spriteBatch.end();
 
@@ -144,6 +149,7 @@ public class DishclothGame extends AGame {
 
 	@Override
 	public void unloadContent() {
+		spriteBatch.dispose();
 	}
 
 	@Override

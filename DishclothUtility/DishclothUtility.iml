@@ -10,5 +10,6 @@
     <orderEntry type="module" module-name="DishclothEngine" />
     <orderEntry type="module" module-name="DishclothGame" />
     <orderEntry type="library" name="lwjgl" level="project" />
+    <orderEntry type="module" module-name="DishclothAPI" />
   </component>
 </module>

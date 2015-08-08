@@ -1,9 +1,10 @@
 package dishcloth.engine.rendering.shaders;
 
+import dishcloth.api.abstractionlayer.rendering.shaders.IShaderProgram;
 import dishcloth.engine.content.AContent;
 import dishcloth.engine.content.processors.ShaderProgramProcessor;
-import dishcloth.engine.exception.ShaderUniformException;
-import dishcloth.engine.util.math.Matrix4;
+import dishcloth.api.exception.ShaderUniformException;
+import dishcloth.api.util.math.Matrix4;
 
 import java.util.HashMap;
 
@@ -20,7 +21,7 @@ import static org.lwjgl.opengl.GL20.*;
  * @see ShaderProgramProcessor
  */
 
-public class ShaderProgram extends AContent {
+public class ShaderProgram extends AContent implements IShaderProgram {
 	private int programID;
 
 	private int vertID;
@@ -66,45 +67,54 @@ public class ShaderProgram extends AContent {
 		return uniformLocation;
 	}
 
-
+	@Override
 	public void setUniformFloat(String name, float f) throws ShaderUniformException {
 		glUniform1f( findUniformLocation( name ), f );
 	}
 
+	@Override
 	public void setUniformVec2f(String name, float x, float y) throws ShaderUniformException {
 		glUniform2f( findUniformLocation( name ), x, y );
 	}
-	
+
+	@Override
 	public void setUniformVec3f(String name, float x, float y, float z) throws ShaderUniformException {
 		glUniform3f( findUniformLocation( name ), x, y, z );
 	}
-	
+
+	@Override
 	public void setUniformVec4f(String name, float x, float y, float z, float w) throws ShaderUniformException {
 		glUniform4f( findUniformLocation( name ), x, y, z, w );
 	}
-	
-	
+
+
+	@Override
 	public void setUniformInt(String name, int i) throws ShaderUniformException {
 		glUniform1i( findUniformLocation( name ), i );
 	}
-	
+
+	@Override
 	public void setUniformVec2I(String name, int x, int y) throws ShaderUniformException {
 		glUniform2i( findUniformLocation( name ), x, y );
 	}
-	
+
+	@Override
 	public void setUniformVec3I(String name, int x, int y, int z) throws ShaderUniformException {
 		glUniform3i( findUniformLocation( name ), x, y, z );
 	}
-	
+
+	@Override
 	public void setUniformVec4I(String name, int x, int y, int z, int w) throws ShaderUniformException {
 		glUniform4i( findUniformLocation( name ), x, y, z, w );
 	}
 
 
+	@Override
 	public void setUniformMat4(String name, Matrix4 mat) throws ShaderUniformException {
 		glUniformMatrix4fv( findUniformLocation( name ), false, mat.toFloatBuffer() );
 	}
 
+	@Override
 	public int getGLShaderID() {
 		return programID;
 	}

@@ -1,13 +1,14 @@
 package dishcloth.engine.world.block;
 
-import dishcloth.engine.util.logger.Debug;
+import dishcloth.api.abstractionlayer.world.block.IBlockID;
+import dishcloth.engine.util.debug.Debug;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- * BlockIDHandler.java
+ * IBlockIDHandler.java
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * <p>
  * Ensures that block IDs are kept same, even if new blocks are registered and/or some of old blocks are removed.
@@ -25,7 +26,7 @@ final class BlockIDHandler {
 
 	private BlockIDHandler() {}
 
-	protected static BlockID getBlockID(short id) {
+	protected static IBlockID getBlockID(short id) {
 		// -1 is the default fallback ID
 		if (id == -1) {
 			// TODO: Return air or something like that.
@@ -39,8 +40,8 @@ final class BlockIDHandler {
 		}
 	}
 
-	protected static BlockID getBlockID(String mod, String idString) {
-		BlockID blockID = IDs.get( mod, idString );
+	protected static IBlockID getBlockID(String mod, String idString) {
+		IBlockID blockID = IDs.get( mod, idString );
 		if (blockID != null) {
 			if (IDsWithForcedFallback.contains( blockID.getID() )) {
 				return getBlockID( blockID.getFallbackID() );
@@ -52,36 +53,36 @@ final class BlockIDHandler {
 		}
 	}
 
-	protected static void registerBlockID(BlockID id) {
+	protected static void registerBlockID(IBlockID id) {
 		IDs.add( id );
 	}
 
-	protected static BlockID createBlockID(String mod, String id) {
+	protected static IBlockID createBlockID(String mod, String id) {
 		// Ensure that block hasn't been registered yet.
 		if (IDs.get( mod, id ) != null) {
-			Debug.logWarn( "Tried to re-register block! MOD:ID = " + mod + ":" + id, "BlockIDHandler" );
+			Debug.logWarn( "Tried to re-register block! MOD:ID = " + mod + ":" + id, "IBlockIDHandler" );
 			return null;
 		}
-		BlockID blockID = new BlockID( mod, id, blockID_counter++, (short) -1 );
+		IBlockID blockID = new BlockID( mod, id, blockID_counter++, (short) -1 );
 		registerBlockID( blockID );
 		return blockID;
 	}
 
-	protected static void registerFallbackID(BlockID target, String fallbackMod, String fallbackID) {
-		BlockID fallbackBlockID = IDs.get( fallbackMod, fallbackID );
-		target.setFallbackID( fallbackBlockID.getID() );
-		IDsWithForcedFallback.add( fallbackBlockID.getID() );
+	protected static void registerFallbackID(IBlockID target, String fallbackMod, String fallbackID) {
+		IBlockID fallbackIBlockID = IDs.get( fallbackMod, fallbackID );
+		((BlockID)target).setFallbackID( fallbackIBlockID.getID() );
+		IDsWithForcedFallback.add( fallbackIBlockID.getID() );
 	}
 
-	protected static void registerFallbackID(BlockID target, short fallback) {
-		target.setFallbackID( fallback );
+	protected static void registerFallbackID(IBlockID target, short fallback) {
+		((BlockID)target).setFallbackID( fallback );
 	}
 
-	protected static void forceFallback(BlockID target) {
+	protected static void forceFallback(IBlockID target) {
 		IDsWithForcedFallback.add( target.getID() );
 	}
 
-	protected static List<BlockID> getBlockIDs() {
+	protected static List<IBlockID> getBlockIDs() {
 		return IDs.asList();
 	}
 

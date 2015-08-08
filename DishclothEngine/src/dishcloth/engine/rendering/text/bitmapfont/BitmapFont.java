@@ -2,7 +2,7 @@ package dishcloth.engine.rendering.text.bitmapfont;
 
 import dishcloth.engine.content.AContent;
 import dishcloth.engine.rendering.textures.Texture;
-import dishcloth.engine.util.geom.Rectangle;
+import dishcloth.api.util.geom.Rectangle;
 
 import java.util.HashMap;
 
@@ -36,7 +36,7 @@ public class BitmapFont extends AContent {
 		if (info != null) {
 			return info.getSpriteBatchSourceRectangle();
 		} else {
-			return new Rectangle( 0, 0, 0, 0 );
+			return null;
 		}
 	}
 
@@ -72,19 +72,19 @@ public class BitmapFont extends AContent {
 		CharacterInfo info = getCharacter( characterID );
 		if (info != null) {
 
-			rectangle.x = cursorPosition + info.getOffsetX(); // Assume that cursor position resets on newline
-			rectangle.y = getBaseY()
-					- (getLineHeight() - (info.getOffsetY() + info.getHeight()))
-					- lineIndex * getLineHeight();
-			rectangle.w = info.getWidth();
-			rectangle.h = info.getHeight();
+			rectangle.setX( cursorPosition + info.getOffsetX() ); // Assume that cursor position resets on newline
+			rectangle.setY( getBaseY()
+					                - (getLineHeight() - (info.getOffsetY() + info.getHeight()))
+					                - lineIndex * getLineHeight() );
+			rectangle.setW( info.getWidth() );
+			rectangle.setH( info.getHeight() );
 
 		} else {
 
-			rectangle.x = 0;
-			rectangle.y = 0;
-			rectangle.w = 0;
-			rectangle.h = 0;
+			rectangle.setX( 0 );
+			rectangle.setY( 0 );
+			rectangle.setW( 0 );
+			rectangle.setH( 0 );
 
 		}
 

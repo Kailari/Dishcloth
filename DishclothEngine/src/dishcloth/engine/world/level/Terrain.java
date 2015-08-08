@@ -1,13 +1,22 @@
 package dishcloth.engine.world.level;
 
-import dishcloth.engine.rendering.ICamera;
-import dishcloth.engine.rendering.IRenderable;
-import dishcloth.engine.rendering.IRenderer;
+import dishcloth.api.abstractionlayer.rendering.ICamera;
+import dishcloth.api.abstractionlayer.rendering.IRenderer;
+import dishcloth.api.abstractionlayer.world.block.IBlockID;
+import dishcloth.api.abstractionlayer.world.level.ITerrain;
+import dishcloth.api.util.memory.RectangleCache;
+import dishcloth.api.world.block.ABlock;
 import dishcloth.engine.rendering.render2d.TerrainRenderer;
-import dishcloth.engine.rendering.render2d.sprites.batch.SpriteBatch;
-import dishcloth.engine.util.geom.Rectangle;
-import dishcloth.engine.world.IUpdatable;
+import dishcloth.api.util.geom.Rectangle;
+import dishcloth.engine.util.debug.Debug;
+import dishcloth.engine.world.block.BlockIDHelper;
+import dishcloth.engine.world.block.BlockRegistry;
+import dishcloth.engine.world.generation.generator.ATerrainGenerator;
 import dishcloth.engine.world.generation.generator.DefaultTerrainGenerator;
+import dishcloth.engine.world.level.database.TerrainTreeCell;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -21,15 +30,21 @@ import dishcloth.engine.world.generation.generator.DefaultTerrainGenerator;
  */
 
 // TODO: Move terrain generation from constructor to generator methods and implement disk I/O
-public class Terrain {
+public class Terrain implements ITerrain {
+
+	private static final int LEFT = 0;
+	private static final int RIGHT = 1;
+	private static final int TOP = 0;
+	private static final int BOTTOM = 2;
+
+	private static List<TerrainTreeCell> tmp = new ArrayList<>();
 
 	private final int w, h;
-	/**
-	 * Used to convert array indices to chunk coordinates. (Chunk coordinate 0,0 is at the center of the map, while
-	 * array index 0 is at the left bottom corner.)
-	 */
-	private final int xModifier, yModifier;
-	private TerrainChunk[] chunks;
+	private final int halfW, hTop, hBot;
+	private final ATerrainGenerator generator;
+	private final boolean oddWidth;
+	int counter;
+	private TerrainChunk[][] chunks;
 
 	/**
 	 * Creates (and generates) a new world.
@@ -40,44 +55,125 @@ public class Terrain {
 	 */
 	public Terrain(int widthInChunks, int heightInChunks, int chunksAboveZeroLevel) {
 
-		// Make sure that widthInChunks is dividable by 2 (for centering the world)
-		this.w = (((float) widthInChunks % 2f == 0) ? widthInChunks : widthInChunks + 1);
+		this.w = widthInChunks;
 		this.h = heightInChunks;
-		this.chunks = new TerrainChunk[this.w * this.h];
 
-		this.xModifier = -widthInChunks / 2;
-		// TODO: Figure this thing out
-		this.yModifier = -(heightInChunks - chunksAboveZeroLevel);
+		this.halfW = (int) Math.ceil( widthInChunks / 2f );
+		int leftW;
+		if (widthInChunks % 2 != 0) {
+			this.oddWidth = true;
+			leftW = halfW - 1;
+		} else {
+			this.oddWidth = false;
+			leftW = halfW;
+		}
+		this.hBot = heightInChunks - chunksAboveZeroLevel;
+		this.hTop = chunksAboveZeroLevel;
 
-		DefaultTerrainGenerator generator = new DefaultTerrainGenerator();
+		this.chunks = new TerrainChunk[4][];
+		this.chunks[TOP + LEFT] = new TerrainChunk[leftW * this.hTop];
+		this.chunks[BOTTOM + LEFT] = new TerrainChunk[leftW * this.hBot];
+		this.chunks[TOP + RIGHT] = new TerrainChunk[halfW * this.hTop];
+		this.chunks[BOTTOM + RIGHT] = new TerrainChunk[halfW * this.hBot];
 
-		for (int x = 0; x < this.w; x++) {
-			for (int y = 0; y < this.h; y++) {
-				this.chunks[x + y * this.w] = generator.generate( x + this.xModifier, y + this.yModifier );
+		this.generator = new DefaultTerrainGenerator();
+
+		for (int x = -this.halfW + (this.oddWidth ? 1 : 0); x < this.halfW; ++x) {
+			for (int y = -hBot; y < this.hTop; ++y) {
+				generateChunk( x, y );
 			}
 		}
 	}
 
-	public void render( IRenderer renderer, ICamera camera) {
+	private void generateChunk(int chunkX, int chunkY) {
+		int target = (chunkX < 0 ? LEFT : RIGHT) + (chunkY < 0 ? BOTTOM : TOP);
+		this.chunks[target][getChunkIndex( chunkX, chunkY )] = generator.generate( chunkX, chunkY );
+		/*int chunkIndex = getChunkIndex( chunkX, chunkY );
+		IBlockID id = BlockIDHelper.getBlockID( (short) (counter++ % 7) );
+		Debug.log( "chunkXY:" + chunkX + ":" + chunkY + ", counter: " + counter + ", id: " + id, this );
+		this.chunks[target][chunkIndex] = new TerrainChunk( chunkX, chunkY );
+		for (int x = 0; x < TerrainChunk.CHUNK_SIZE; x++) {
+			for (int y = 0; y < TerrainChunk.CHUNK_SIZE; y++) {
+				this.chunks[target][chunkIndex].setBlock( chunkX * TerrainChunk.CHUNK_SIZE + x,
+				                                          chunkY * TerrainChunk.CHUNK_SIZE + y,
+				                                          id );
+			}
+		}*/
+	}
+
+	public TerrainChunk getChunk(int chunkX, int chunkY) {
+		int target = (chunkX < 0 ? LEFT : RIGHT) + (chunkY < 0 ? BOTTOM : TOP);
+		return this.chunks[target][getChunkIndex( chunkX, chunkY )];
+	}
+
+	private int getChunkIndex(int chunkX, int chunkY) {
+		int x = (chunkX < 0 ? -(chunkX + 1) : chunkX);
+		int y = (chunkY < 0 ? -(chunkY + 1) : chunkY);
+		int w = (!this.oddWidth ? halfW : (chunkX < 0 ? halfW - 1 : halfW));
+		return x + y * w;
+	}
+
+	@Override
+	public void setBlock(int x, int y, ABlock block) {
+		setBlock( x, y, block.getBlockID() );
+	}
+
+	@Override
+	public void setBlock(int x, int y, IBlockID blockID) {
+		int chunkX =
+				(x < 0 ? (int) Math.ceil( x / TerrainChunk.CHUNK_SIZE )
+						: (int) Math.floor( x / TerrainChunk.CHUNK_SIZE ));
+
+		int chunkY =
+				(y < 0 ? (int) Math.ceil( y / TerrainChunk.CHUNK_SIZE )
+						: (int) Math.floor( y / TerrainChunk.CHUNK_SIZE ));
+		getChunk( chunkX, chunkY ).setBlock( x, y, blockID );
+	}
+
+	@Override
+	public ABlock getBlock(int x, int y) {
+		return BlockRegistry.getBlock( getBlockID( x, y ) );
+	}
+
+	@Override
+	public IBlockID getBlockID(int x, int y) {
+		int chunkX =
+				(x < 0 ? (int) Math.ceil( x / TerrainChunk.CHUNK_SIZE )
+						: (int) Math.floor( x / TerrainChunk.CHUNK_SIZE ));
+
+		int chunkY =
+				(y < 0 ? (int) Math.ceil( y / TerrainChunk.CHUNK_SIZE )
+						: (int) Math.floor( y / TerrainChunk.CHUNK_SIZE ));
+		return getChunk( chunkX, chunkY ).getBlockID( x, y );
+	}
+
+	// TODO: Create TerrainBatcher to get rid of SpriteBatch limitations
+	public void render(IRenderer renderer, ICamera camera) {
 		// Find Tiles on screen and queue them
+
+		// Get viewport bounds and scale it to match block coordinates
 		Rectangle viewport = camera.getViewportRenderBounds();
-		Rectangle viewportChunkBounds = new Rectangle(
-				viewport.x / TerrainChunk.BLOCK_SIZE,
-				viewport.y / TerrainChunk.BLOCK_SIZE,
-				viewport.w / TerrainChunk.BLOCK_SIZE,
-				viewport.h / TerrainChunk.BLOCK_SIZE );
+		viewport.setX( viewport.getX() / TerrainChunk.BLOCK_SIZE );
+		viewport.setY( viewport.getY() / TerrainChunk.BLOCK_SIZE );
+		viewport.setW( viewport.getW() / TerrainChunk.BLOCK_SIZE );
+		viewport.setH( viewport.getH() / TerrainChunk.BLOCK_SIZE );
 
-		for (TerrainChunk chunk : this.chunks) {
-			if (chunk.getRenderBounds().overlaps( viewportChunkBounds )) {
-				chunk.getTiles()
-						//.getAllData()
-						.getDataInRectangle( viewportChunkBounds )
-						.forEach( TerrainRenderer::queueTileForRendering );
+		TerrainRenderer.beginRender( renderer, camera );
 
+		for (int x = -this.halfW + (this.oddWidth ? 1 : 0); x < this.halfW; ++x) {
+			for (int y = -hBot; y < this.hTop; ++y) {
+				TerrainChunk chunk = getChunk( x, y );
+				tmp = chunk.getCellsToRender( tmp, viewport );
+
+				for (TerrainTreeCell cell : tmp) {
+					TerrainRenderer.queueTileForRendering( cell, x, y );
+				}
 			}
 		}
 
+		RectangleCache.cacheRectangle( viewport );
+
 		// Render everything
-		TerrainRenderer.render( renderer, camera );
+		TerrainRenderer.endRender();
 	}
 }

@@ -1,8 +1,15 @@
 package dishcloth.engine.world.level;
 
-import dishcloth.engine.util.geom.Rectangle;
-import dishcloth.engine.util.quadtree.QuadTree;
-import dishcloth.engine.world.block.ABlock;
+import dishcloth.api.abstractionlayer.world.block.IBlockID;
+import dishcloth.api.util.geom.Rectangle;
+import dishcloth.api.util.math.DishMath;
+import dishcloth.api.util.memory.RectangleCache;
+import dishcloth.api.world.block.ABlock;
+import dishcloth.engine.world.block.BlockRegistry;
+import dishcloth.engine.world.level.database.TerrainTree;
+import dishcloth.engine.world.level.database.TerrainTreeCell;
+
+import java.util.List;
 
 /**
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -17,25 +24,19 @@ import dishcloth.engine.world.block.ABlock;
 
 public class TerrainChunk {
 
-	// XXX: EXTREMELY TEMPORARY
-	// TODO: BLOCK_SIZE should probably be somewhere else.
 	public static final float BLOCK_SIZE = 16f;
 	public static final int CHUNK_SIZE = 256;
-	private static final float CHUNK_RENDER_SIZE = BLOCK_SIZE * CHUNK_SIZE;
 
-	private int x;
-	private int y;
+	private final int x;
+	private final int y;
 
-	private QuadTree<Tile> tiles;
+	private TerrainTree terrainTree;
 
 	public TerrainChunk(int x, int y) {
 		this.x = x;
 		this.y = y;
 
-		this.tiles = new QuadTree<>( 1, -1, new TerrainQuadTreeCell( null, new Rectangle( x * CHUNK_SIZE,
-		                                                                                  y * CHUNK_SIZE,
-		                                                                                  CHUNK_SIZE,
-		                                                                                  CHUNK_SIZE ), 8 ) );
+		this.terrainTree = new TerrainTree();
 	}
 
 	public int getChunkX() {
@@ -63,19 +64,42 @@ public class TerrainChunk {
 	}
 
 	public void setBlock(int x, int y, ABlock block) {
-		// Tile size can be anything, it will be overridden without getting read once.
-		this.tiles.addData( new Tile( x, y, 0, block.getBlockID() ) );
+		setBlock( x, y, block.getBlockID() );
 	}
 
-	public Tile getTile(int x, int y) {
-		return this.tiles.getDataAt( x, y ).get( 0 );
+	public void setBlock(int x, int y, IBlockID blockID) {
+		x -= this.getTileX();
+		y -= this.getTileY();
+
+		this.terrainTree.setBlockID( (short) x, (short) y, blockID );
 	}
 
-	public Rectangle getRenderBounds() {
-		return new Rectangle( getRenderX(), getRenderY(), CHUNK_RENDER_SIZE, CHUNK_RENDER_SIZE );
+	public IBlockID getBlockID(int x, int y) {
+		x -= this.getTileX();
+		y -= this.getTileY();
+		return this.terrainTree.getBlockID( (short) x, (short) y );
 	}
 
-	public QuadTree<Tile> getTiles() {
-		return tiles;
+	public List<TerrainTreeCell> getCellsToRender(List<TerrainTreeCell> listToReuse, Rectangle viewport) {
+		listToReuse.clear();
+
+		float x = viewport.getX() - this.getTileX();
+		float y = this.getTileY() - this.getTileY();
+
+		if (x + viewport.getW() < 0 || x > TerrainChunk.CHUNK_SIZE
+				|| y + viewport.getH() < 0 || y > TerrainChunk.CHUNK_SIZE) {
+			return listToReuse;
+		} else {
+			short w = (short) Math.min( 256 - x, Math.ceil( viewport.getW() ) );
+			short h = (short) Math.min( 256 - y, Math.ceil( viewport.getH() ) );
+
+			return this.terrainTree.getCellsInRectangle(
+					this.x,
+					this.y,
+					x,
+					y,
+					w,
+					h );
+		}
 	}
 }

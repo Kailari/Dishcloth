@@ -1,6 +1,6 @@
 package dishcloth.engine.world.generation.step;
 
-import dishcloth.engine.util.math.DishMath;
+import dishcloth.api.util.math.DishMath;
 import dishcloth.engine.world.level.TerrainChunk;
 
 import static java.lang.Math.*;

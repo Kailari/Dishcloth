@@ -1,6 +1,6 @@
 package dishcloth.engine.io;
 
-import dishcloth.engine.util.logger.Debug;
+import dishcloth.engine.util.debug.Debug;
 
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;

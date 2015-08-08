@@ -18,7 +18,7 @@ public class FontPage {
 
 	public FontPage(short id, String textureName, ContentManager contentManager) {
 		this.id = id;
-		this.texture = contentManager.loadContent( textureName );
+		this.texture = contentManager.load( textureName );
 	}
 
 	/**

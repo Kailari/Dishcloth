@@ -1,8 +1,9 @@
 package dishcloth.engine.world;
 
-import dishcloth.engine.util.geom.Point;
-import dishcloth.engine.util.math.DishMath;
-import dishcloth.engine.util.math.Vector2;
+import dishcloth.api.util.geom.Point;
+import dishcloth.api.util.math.DishMath;
+import dishcloth.api.util.math.Vector2;
+import dishcloth.api.util.memory.PointCache;
 
 /**
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -25,6 +26,7 @@ public class RenderTransform {
 		this.target = target;
 
 		this.currentState = new TransformState();
+		this.oldState = new TransformState();
 		this.interpolatedState = new TransformState();
 	}
 
@@ -38,9 +40,14 @@ public class RenderTransform {
 
 	public void updateState(float t) {
 
-		oldState = currentState;
+		oldState.angle = currentState.angle;
+		oldState.location.setX( currentState.location.getX() );
+		oldState.location.setY( currentState.location.getY() );
 
-		currentState = new TransformState();
+		// Cache the point
+		PointCache.cachePoint( currentState.location );
+		currentState.location = null;
+
 		currentState.angle = target.getGlobalRotation();
 		currentState.location = target.getGlobalPosition( false );
 

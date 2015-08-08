@@ -1,5 +1,6 @@
 package dishcloth.engine.world.block;
 
+import dishcloth.api.abstractionlayer.world.block.IBlockID;
 import dishcloth.engine.save.IDataPath;
 import dishcloth.engine.save.ISaveHandler;
 
@@ -14,7 +15,7 @@ import dishcloth.engine.save.ISaveHandler;
  * Created by ASDSausage on 7.6.2015
  */
 
-public class BlockID {
+public class BlockID implements IBlockID {
 
 	public static final SaveHandler saveHandler = new SaveHandler();
 
@@ -32,18 +33,22 @@ public class BlockID {
 		this.fallbackID = fallbackID;
 	}
 
+	@Override
 	public String getMod() {
 		return mod;
 	}
 
+	@Override
 	public String getIDString() {
 		return idString;
 	}
 
+	@Override
 	public short getID() {
 		return id;
 	}
 
+	@Override
 	public short getFallbackID() {
 		return fallbackID;
 	}

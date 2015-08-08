@@ -1,6 +1,7 @@
 package dishcloth.utility.drawgraph;
 
-import dishcloth.engine.util.geom.Point;
+import dishcloth.api.util.geom.Point;
+import dishcloth.api.util.memory.PointCache;
 
 import java.awt.*;
 import java.util.List;
@@ -42,16 +43,20 @@ public class GraphBundle {
 
 	public void draw(Graphics g, int x0, int y0, float xScale, float yScale) {
 		for (Graph graph : graphs) {
-			graph.draw( g, x0, y0, xScale, yScale, getMin() );
+			Point min = getMin();
+			graph.draw( g, x0, y0, xScale, yScale, min );
+
+			PointCache.cachePoint( min );
 		}
 	}
 
+	// TODO: Can these be done without instantiating new points?
 	public Point getMin() {
-		return new Point( xmin, ymin );
+		return PointCache.getPoint( xmin, ymin );
 	}
 
 	public Point getMax() {
-		return new Point( xmax, ymax );
+		return PointCache.getPoint( xmax, ymax );
 	}
 
 }

@@ -1,6 +1,7 @@
 package dishcloth.utility.drawgraph;
 
-import dishcloth.engine.util.geom.Point;
+import dishcloth.api.util.geom.Point;
+import dishcloth.api.util.memory.PointCache;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -12,7 +13,8 @@ import java.awt.*;
 public class GraphWindow extends JFrame {
 	private static final long serialVersionUID = 1L;
 	private static final int WIDTH = 750, HEIGHT = 500;
-	private static final Point AXIS_START = new Point( 50, HEIGHT - 75 );
+	private static final int AXIS_START_X = 50;
+	private static final int AXIS_START_Y = HEIGHT - 75;
 	private GraphBundle graphs;
 
 	public GraphWindow() {
@@ -43,24 +45,28 @@ public class GraphWindow extends JFrame {
 		Point min = graphs.getMin();
 		Point max = graphs.getMax();
 
-		final float xs = 0.90F * WIDTH / (max.x - min.x);
-		final float ys = 0.75F * HEIGHT / (max.y - min.y);
-		graphs.draw( g, (int) AXIS_START.x, (int) AXIS_START.y, xs, ys );
+		final float xs = 0.90F * WIDTH / (max.getX() - min.getX());
+		final float ys = 0.75F * HEIGHT / (max.getY() - min.getY());
+
+		graphs.draw( g, AXIS_START_X, AXIS_START_Y, xs, ys );
+
+		PointCache.cachePoint( min );
+		PointCache.cachePoint( max );
 
 		g.dispose();
 	}
 
 	private void paintGrid(Graphics g) {
-		g.drawLine( (int) AXIS_START.x, (int) AXIS_START.y, (int) (AXIS_START.x), 0 );
-		g.drawLine( (int) AXIS_START.x, (int) AXIS_START.y, WIDTH, (int) (AXIS_START.y) );
+		g.drawLine( AXIS_START_X, AXIS_START_Y, AXIS_START_X, 0 );
+		g.drawLine( AXIS_START_X, AXIS_START_Y, WIDTH, AXIS_START_Y );
 
 		if (graphs == null) return;
 		Point min = graphs.getMin();
-		g.drawString( "" + min.x, (int) AXIS_START.x, (int) AXIS_START.y + 15 );
-		g.drawString( "" + min.y, (int) AXIS_START.x - 40, (int) AXIS_START.y );
+		g.drawString( "" + min.getX(), AXIS_START_X, AXIS_START_Y + 15 );
+		g.drawString( "" + min.getY(), AXIS_START_X - 40, AXIS_START_Y );
 
 		Point max = graphs.getMax();
-		g.drawString( "" + max.x, WIDTH - 50, (int) AXIS_START.y + 15 );
-		g.drawString( "" + max.y, (int) AXIS_START.x - 40, 50 );
+		g.drawString( "" + max.getX(), WIDTH - 50, AXIS_START_Y + 15 );
+		g.drawString( "" + max.getY(), AXIS_START_X - 40, 50 );
 	}
 }

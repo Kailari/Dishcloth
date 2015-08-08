@@ -1,7 +1,7 @@
 package dishcloth.utility.drawgraph;
 
 import dishcloth.engine.util.curve.PointCurve;
-import dishcloth.engine.util.geom.Point;
+import dishcloth.api.util.geom.Point;
 
 import java.awt.*;
 import java.util.List;

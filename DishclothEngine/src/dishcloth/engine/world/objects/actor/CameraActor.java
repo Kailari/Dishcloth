@@ -1,9 +1,9 @@
 package dishcloth.engine.world.objects.actor;
 
-import dishcloth.engine.rendering.ICamera;
-import dishcloth.engine.rendering.IRenderer;
-import dishcloth.engine.util.geom.Point;
-import dishcloth.engine.util.math.Vector2;
+import dishcloth.api.abstractionlayer.rendering.ICamera;
+import dishcloth.api.abstractionlayer.rendering.IRenderer;
+import dishcloth.api.util.geom.Point;
+import dishcloth.api.util.math.Vector2;
 
 /**
  * CameraActor.java
@@ -17,31 +17,23 @@ import dishcloth.engine.util.math.Vector2;
 public class CameraActor extends AActor {
 
 	private Vector2 velocity;
-	private Point realLocation;
-	private float realRotation;
 	private ICamera camera;
 
 	public CameraActor(ICamera camera) {
 		this.velocity = Vector2.zero();
 		this.camera = camera;
-
-		this.realLocation = transform.getLocation();
-		this.realRotation = transform.getRotation();
 	}
 
 	@Override
 	public void update() {
 		super.update();
-
-		transform.setLocation( realLocation );
-		transform.setRotation( realRotation );
 	}
 
 	@Override
 	public void fixedUpdate() {
 		super.fixedUpdate();
 
-		this.transform.translate( velocity.x, velocity.y );
+		this.transform.translate( velocity.getX(), velocity.getY() );
 
 		camera.setPosition( this.transform.getGlobalPosition( false ) );
 	}
@@ -52,25 +44,19 @@ public class CameraActor extends AActor {
 	}
 
 	public void setVelocity(Vector2 velocity) {
-		this.velocity = velocity;
+		setVelocity( velocity.getX(), velocity.getY() );
 	}
 
 	public void setVelocityX(float xVel) {
-		this.velocity.x = xVel;
+		this.velocity.setX( xVel );
 	}
 
 	public void setVelocityY(float yVel) {
-		this.velocity.y = yVel;
+		this.velocity.setY( yVel );
 	}
 
 	@Override
 	public void render(IRenderer renderer) {
 		super.render( renderer );
-
-		realLocation = transform.getLocation();
-		realRotation = transform.getRotation();
-
-		transform.setLocation( getRenderPosition() );
-		transform.setRotation( getRenderAngle() );
 	}
 }

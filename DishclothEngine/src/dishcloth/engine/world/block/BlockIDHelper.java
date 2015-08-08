@@ -1,5 +1,7 @@
 package dishcloth.engine.world.block;
 
+import dishcloth.api.abstractionlayer.world.block.IBlockID;
+
 /**
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * BlockIDHelper.java
@@ -14,15 +16,15 @@ package dishcloth.engine.world.block;
 public class BlockIDHelper {
 	private BlockIDHelper() {}
 
-	public static BlockID getBlockID(short id) {
+	public static IBlockID getBlockID(short id) {
 		return BlockIDHandler.getBlockID( id );
 	}
 
-	public static BlockID getBlockID(String combinedID) {
+	public static IBlockID getBlockID(String combinedID) {
 		return getBlockID( combinedID.split( ":" )[0], combinedID.split( ":" )[1] );
 	}
 
-	public static BlockID getBlockID(String mod, String idString) {
+	public static IBlockID getBlockID(String mod, String idString) {
 		return BlockIDHandler.getBlockID( mod, idString );
 	}
 }

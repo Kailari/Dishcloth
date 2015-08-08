@@ -13,7 +13,7 @@ uniform mat4 mat_view;			// Camera location
 void main()
 {
 	// Apply projection and transformations
-	gl_Position = mat_project * mat_view * vec4(vert_position, 0.0, 1.0);
+	gl_Position = mat_project * inverse(mat_view) * vec4(vert_position, 0.0, 1.0);
 
 	tCoord = vert_uv;
 	tint = vert_color;

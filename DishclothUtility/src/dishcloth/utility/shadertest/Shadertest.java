@@ -1,26 +1,25 @@
 package dishcloth.utility.shadertest;
 
+import dishcloth.api.abstractionlayer.content.IContentManager;
+import dishcloth.api.abstractionlayer.events.EventHandler;
+import dishcloth.api.abstractionlayer.rendering.IRenderer;
+import dishcloth.engine.rendering.vao.shapes.Polygon;
+import dishcloth.engine.rendering.vao.shapes.SimpleQuad;
+import dishcloth.engine.rendering.vao.shapes.SimpleRegularNGon;
+import dishcloth.api.exception.ShaderUniformException;
+import dishcloth.engine.rendering.vao.vertex.ColorTextureVertex;
+import dishcloth.api.util.memory.RectangleCache;
 import dishcloth.engine.AGame;
-import dishcloth.engine.events.EventHandler;
-import dishcloth.engine.exception.ShaderUniformException;
 import dishcloth.engine.input.InputHandler;
 import dishcloth.engine.input.KeyCode;
-import dishcloth.engine.rendering.IRenderer;
 import dishcloth.engine.rendering.shaders.ShaderProgram;
 import dishcloth.engine.rendering.textures.Texture;
-import dishcloth.engine.rendering.vbo.ColorTextureVertex;
-import dishcloth.engine.rendering.vbo.Vertex;
-import dishcloth.engine.rendering.vbo.VertexArrayObject;
-import dishcloth.engine.rendering.vbo.shapes.Polygon;
-import dishcloth.engine.rendering.vbo.shapes.SimpleQuad;
-import dishcloth.engine.rendering.vbo.shapes.SimpleRegularNGon;
-import dishcloth.engine.util.Color;
-import dishcloth.engine.util.geom.Rectangle;
-import dishcloth.engine.util.logger.Debug;
+import dishcloth.engine.rendering.vao.VertexArrayObject;
+import dishcloth.api.util.Color;
+import dishcloth.engine.util.debug.Debug;
 import dishcloth.engine.world.block.BlockRegistry;
 import dishcloth.engine.world.block.BlockTextureAtlas;
 import dishcloth.game.world.blocks.DishclothBlocks;
-import org.lwjgl.glfw.GLFW;
 
 /**
  * Shadertest.java
@@ -33,13 +32,13 @@ import org.lwjgl.glfw.GLFW;
 
 public class Shadertest extends AGame {
 	private static final String[] shaderFiles = new String[]{
-			"/engine/shaders/test", "/engine/shaders/test",
-			"/engine/shaders/default", "/engine/shaders/default",
-			"/engine/shaders/terrain", "/engine/shaders/terrain",
+			"/engine/shaders/test.shader",
+			"/engine/shaders/default.shader",
+			"/engine/shaders/terrain.shader",
 	};
 	
 	private static final String[] textureFiles = new String[]{
-			"/engine/textures/debug/uv_checker.png",
+			"/engine/textures/logger/uv_checker.png",
 	};
 	
 	private ShaderProgram[] shaders;
@@ -65,37 +64,37 @@ public class Shadertest extends AGame {
 						new ColorTextureVertex( +w / 2f, -h / 2f, Color.WHITE.toInteger(), 32f, 32f ),     // right top
 						new ColorTextureVertex( +w / 2f, +h / 2f, Color.WHITE.toInteger(), 32f, 0f ),     // Right bottom
 						new ColorTextureVertex( -w / 2f, +h / 2f, Color.WHITE.toInteger(), 0f, 0f )} ) ), // Left top
-				new VertexArrayObject( new SimpleQuad( new Rectangle( -w / 2f, -h / 2f, w, h ) ) )
+				new VertexArrayObject( new SimpleQuad( RectangleCache.getRectangle( -w / 2f, -h / 2f, w, h ) ) )
 		};
 	}
 	
 	@Override
-	public void loadContent() {
-		createShaders();
-		
+	public void loadContent(IContentManager contentManager) {
+
 		BlockRegistry.registerBlock( DishclothBlocks.DIRT, "dishcloth", "dirt" );
 		BlockRegistry.registerBlock( DishclothBlocks.GRASS, "dishcloth", "grass" );
 		BlockRegistry.registerBlock( DishclothBlocks.CLAY, "dishcloth", "clay" );
 		BlockRegistry.registerBlock( DishclothBlocks.STONE, "dishcloth", "stone" );
 		BlockRegistry.registerBlock( DishclothBlocks.BRICKS, "dishcloth", "bricks" );
-		
-		loadTextures();
+
+		createShaders( contentManager );
+		loadTextures( contentManager );
 	}
 	
-	private void loadTextures() {
+	private void loadTextures(IContentManager contentManager) {
 		textures = new Texture[textureFiles.length];
 		for (int i = 0; i < textureFiles.length; i++) {
-			textures[i] = new Texture( textureFiles[i] );
+			textures[i] = contentManager.loadContent( textureFiles[i] );
 		}
 	}
 	
-	private void createShaders() {
+	private void createShaders(IContentManager contentManager) {
 		shaders = new ShaderProgram[(int) Math.floor( shaderFiles.length / 2f )];
 		
 		int j = 0;
 		for (int i = 0; i < shaderFiles.length; i += 2, j++) {
 			Debug.log( "Creating shader #" + j, this );
-			shaders[j] = new ShaderProgram( shaderFiles[i], shaderFiles[i + 1] );
+			shaders[j] = contentManager.loadContent( shaderFiles[i] );
 		}
 	}
 	
@@ -158,7 +157,7 @@ public class Shadertest extends AGame {
 		
 		try {
 			shaders[activeShader].setUniformMat4( "mat_project", getViewportCamera().getProjectionMatrix() );
-			shaders[activeShader].setUniformMat4( "mat_view", getViewportCamera().getViewMatrix() );
+			shaders[activeShader].setUniformMat4( "mat_view", getViewportCamera().getCameraTransformMatrix() );
 		} catch (ShaderUniformException e) {
 			Debug.logException( e, this );
 		}

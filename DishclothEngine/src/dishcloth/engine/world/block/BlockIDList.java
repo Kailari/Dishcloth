@@ -1,5 +1,7 @@
 package dishcloth.engine.world.block;
 
+import dishcloth.api.abstractionlayer.world.block.IBlockID;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -17,7 +19,7 @@ import java.util.List;
 
 final class BlockIDList {
 
-	private List<BlockID> container;
+	private List<IBlockID> container;
 	// <String, String, Integer> --> <Mod, IDString, Index in internal list>
 	private HashMap<String, HashMap<String, Integer>> idStrings;
 	// <Short, Integer> --> <ID, Index in internal list>
@@ -39,17 +41,17 @@ final class BlockIDList {
 		idStrings.clear();
 	}
 
-	protected BlockID get(short id) {
+	protected IBlockID get(short id) {
 		return (IDs.containsKey( id ) ? container.get( IDs.get( id ) ) : null);
 	}
 
-	protected BlockID get(String mod, String id) {
+	protected IBlockID get(String mod, String id) {
 		return (idStrings.containsKey( mod ) && idStrings.get( mod ).containsKey( id )
 				? container.get( idStrings.get( mod ).get( id ) )
 				: null);
 	}
 
-	protected boolean add(BlockID blockID) {
+	protected boolean add(IBlockID blockID) {
 		if (!idStrings.containsKey( blockID.getMod() )) {
 			idStrings.put( blockID.getMod(), new HashMap<>() );
 		} else {
@@ -68,7 +70,7 @@ final class BlockIDList {
 		return false;
 	}
 
-	protected List<BlockID> asList() {
+	protected List<IBlockID> asList() {
 		return new ArrayList<>( this.container );
 	}
 }

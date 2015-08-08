@@ -1,7 +1,7 @@
 package dishcloth.engine.rendering.text.bitmapfont;
 
-import dishcloth.engine.util.geom.Rectangle;
-import dishcloth.engine.util.logger.Debug;
+import dishcloth.api.util.geom.Rectangle;
+import dishcloth.api.util.memory.RectangleCache;
 
 /**
  * CharacterInfo.java
@@ -28,7 +28,7 @@ public class CharacterInfo {
 		this.xAdvance = xAdvance;
 		this.page = page;
 
-		this.spriteBatchSourceRectangle = new Rectangle( this.x, this.y, this.width, this.height );
+		this.spriteBatchSourceRectangle = RectangleCache.getRectangle( this.x, this.y, this.width, this.height );
 	}
 	
 	public static CharacterInfo parseFromString(String characterInfoString) {

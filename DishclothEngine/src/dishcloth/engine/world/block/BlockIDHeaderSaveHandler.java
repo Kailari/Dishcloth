@@ -1,5 +1,6 @@
 package dishcloth.engine.world.block;
 
+import dishcloth.api.abstractionlayer.world.block.IBlockID;
 import dishcloth.engine.save.IDataPath;
 
 import java.util.List;
@@ -35,12 +36,12 @@ public class BlockIDHeaderSaveHandler {
 		BlockIDHandler.setBlockIDCounter( largest );
 	}
 
-	private static void writeBlockID(BlockID id, IDataPath path) {
-		BlockID.saveHandler.writeToDataPath( path, id );
+	private static void writeBlockID(IBlockID id, IDataPath path) {
+		BlockID.saveHandler.writeToDataPath( path, (BlockID) id );
 	}
 
 	void saveBlockIDHeader(IDataPath path) {
-		List<BlockID> blocks = BlockIDHandler.getBlockIDs();
+		List<IBlockID> blocks = BlockIDHandler.getBlockIDs();
 		path.writeInt( blocks.size() );
 
 		blocks.forEach( blockID -> writeBlockID( blockID, path ) );

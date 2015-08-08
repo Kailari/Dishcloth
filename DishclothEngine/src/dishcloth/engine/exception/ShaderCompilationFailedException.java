@@ -1,5 +1,7 @@
 package dishcloth.engine.exception;
 
+import dishcloth.api.exception.ShaderException;
+
 /**
  * <b>ShaderCompilationFailedException</b>
  * <p>

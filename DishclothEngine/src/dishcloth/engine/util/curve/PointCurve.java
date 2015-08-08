@@ -1,6 +1,7 @@
 package dishcloth.engine.util.curve;
 
-import dishcloth.engine.util.geom.Point;
+import dishcloth.api.util.geom.Point;
+import dishcloth.api.util.memory.PointCache;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +24,7 @@ public class PointCurve extends ACurve {
 	public List<Point> getPoints() {
 		List<Point> result = new ArrayList<>();
 		for (int i = 0; i < getListSize(); i++) {
-			result.add( new Point( getPoint( i ) ) );
+			result.add( PointCache.getPoint( getPoint( i ) ) );
 		}
 		return result;
 	}
@@ -34,8 +35,8 @@ public class PointCurve extends ACurve {
 
 		if (index == POINTS_SIZE_ZERO) return 0F;
 
-		if (index == getListSize() - 1) return getPoint( getListSize() - 1 ).y;
+		if (index == getListSize() - 1) return getPoint( getListSize() - 1 ).getY();
 
-		return getPoint( index ).y;
+		return getPoint( index ).getY();
 	}
 }

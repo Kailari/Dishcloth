@@ -1,7 +1,7 @@
 package dishcloth.engine.util.curve;
 
 
-import dishcloth.engine.util.geom.Point;
+import dishcloth.api.util.geom.Point;
 
 import java.util.List;
 
@@ -26,17 +26,17 @@ public class CubicCurve extends ACurve {
 //		if (index == X_LESS_THAN_SMALLEST) throw new IllegalArgumentException("f < smallest x");
 //		if (index == X_GREATER_THAN_GREATEST) throw new IllegalArgumentException("f > greatest x");
 		
-		if (index == getListSize() - 1) return getPoint( getListSize() - 1 ).y;
+		if (index == getListSize() - 1) return getPoint( getListSize() - 1 ).getY();
 		
-		float n = getNormalizedBetween( f, getPoint( index ).x, getPoint( index + 1 ).x );
+		float n = getNormalizedBetween( f, getPoint( index ).getX(), getPoint( index + 1 ).getX() );
 		
-		float v1 = getPoint( index ).y; // the point a
-		float v2 = getPoint( index + 1 ).y; // the point b
+		float v1 = getPoint( index ).getY(); // the point a
+		float v2 = getPoint( index + 1 ).getY(); // the point b
 		
-		float v0 = getPoint( index ).y; // the point before a
-		float v3 = getPoint( index + 1 ).y; // the point after b
-		if (index > 0) v0 = getPoint( index - 1 ).y;
-		if (index < getListSize() - 2) v3 = getPoint( index + 2 ).y;
+		float v0 = getPoint( index ).getY(); // the point before a
+		float v3 = getPoint( index + 1 ).getY(); // the point after b
+		if (index > 0) v0 = getPoint( index - 1 ).getY();
+		if (index < getListSize() - 2) v3 = getPoint( index + 2 ).getY();
 		
 		float p = (v3 - v2) - (v0 - v1);
 		float q = (v0 - v1) - p;

@@ -1,7 +1,7 @@
 package dishcloth.engine.world.generation.generator;
 
-import dishcloth.engine.util.logger.ANSIColor;
-import dishcloth.engine.util.logger.Debug;
+import dishcloth.api.util.ANSIColor;
+import dishcloth.engine.util.debug.Debug;
 import dishcloth.engine.world.level.TerrainChunk;
 import dishcloth.engine.world.generation.step.ITerrainGenerationStep;
 

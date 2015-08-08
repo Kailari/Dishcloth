@@ -6,16 +6,22 @@ import static org.lwjgl.opengl.GL11.*;
 // For NULL constant
 import static org.lwjgl.system.MemoryUtil.*;
 
+import dishcloth.api.abstractionlayer.IGame;
+import dishcloth.api.events.APIEventRegistry;
+import dishcloth.api.events.GameEvents;
+import dishcloth.api.util.logger.APIDebug;
+import dishcloth.api.world.block.APIBlockRegistry;
 import dishcloth.engine.content.ContentManager;
 import dishcloth.engine.content.ContentPipeline;
 import dishcloth.engine.events.EventRegistry;
 import dishcloth.engine.exception.GameInitializationException;
 import dishcloth.engine.input.InputHandler;
-import dishcloth.engine.rendering.ICamera;
-import dishcloth.engine.rendering.IRenderer;
+import dishcloth.engine.modules.ModuleManager;
+import dishcloth.api.abstractionlayer.rendering.ICamera;
+import dishcloth.api.abstractionlayer.rendering.IRenderer;
 import dishcloth.engine.rendering.OrthographicCamera;
 import dishcloth.engine.rendering.Renderer;
-import dishcloth.engine.util.logger.Debug;
+import dishcloth.engine.util.debug.Debug;
 import dishcloth.engine.util.time.Time;
 import dishcloth.engine.world.block.BlockRegistry;
 import dishcloth.engine.world.block.BlockTextureAtlas;
@@ -45,6 +51,7 @@ public abstract class AGame extends ADishclothObject implements IGame {
 	private ICamera viewportCamera;
 	private Timing timing;
 	private ContentManager contentManager;
+	private ModuleManager moduleManager;
 
 	protected AGame() {
 		super( true );
@@ -54,21 +61,29 @@ public abstract class AGame extends ADishclothObject implements IGame {
 		// TODO: Figure out some place where to store static class event listener registrations
 		EventRegistry.registerStaticEventListener( InputHandler.class );
 		EventRegistry.registerStaticEventListener( BlockTextureAtlas.class );
-		EventRegistry.registerStaticEventListener( BlockRegistry.class );
 		EventRegistry.registerStaticEventListener( TerrainRenderer.class );
 		EventRegistry.registerStaticEventListener( ContentPipeline.class );
 	}
 
+	@Override
 	public long getWindowID() {
-		return windowID;
+		return this.windowID;
 	}
 
+	@Override
 	public ICamera getViewportCamera() {
-		return viewportCamera;
+		return this.viewportCamera;
 	}
 
 	@Override
 	public final void run() {
+
+		// Before anything else, initialize API
+		Debug.log( "Initializing API...", this);
+		APIDebug.initialize( Debug.getInstance() );
+		APIDebug.log( "APIDebug says: Hello World!", this);
+		APIEventRegistry.initialize( EventRegistry.getInstance() );
+		APIBlockRegistry.initialize( BlockRegistry.getInstance() );
 
 		Debug.log( "", this );
 		Debug.log( "||XX||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||XX||", this );
@@ -89,7 +104,7 @@ public abstract class AGame extends ADishclothObject implements IGame {
 		doLoadContent();
 
 		Debug.log( "Triggering post-initialize events", this );
-		EventRegistry.fireEvent( new AGameEvents.GamePostInitializationEvent( this ) );
+		EventRegistry.fireEvent( new GameEvents.GamePostInitializationEvent( this ) );
 
 		timing = new Timing();
 
@@ -101,7 +116,7 @@ public abstract class AGame extends ADishclothObject implements IGame {
 		Debug.logNote( "Entering main loop...", this );
 		int nFrames = 0;
 		float fpsRecordStart = (float) glfwGetTime();
-		while (glfwWindowShouldClose( windowID ) != GL_TRUE
+		while (glfwWindowShouldClose( this.windowID ) != GL_TRUE
 				&& !windowShouldExit) {
 
 			timing.tick++;
@@ -125,7 +140,7 @@ public abstract class AGame extends ADishclothObject implements IGame {
 				// Show fps in title
 				String msToRender = fpsFormatter.format( 1000f / (float) nFrames );
 				int nsToRender = Math.round( 1_000_000_000f / (float) nFrames );
-				glfwSetWindowTitle( windowID,
+				glfwSetWindowTitle( this.windowID,
 				                    "Dishcloth - FPS: " + nFrames
 						                    + ", Average time per frame: " + msToRender + " ms"
 						                    + " (" + nsToRender + " ns)" );
@@ -156,12 +171,13 @@ public abstract class AGame extends ADishclothObject implements IGame {
 			initHardware();
 
 			Debug.log( "Triggering pre-initialize events", this );
-			EventRegistry.fireEvent( new AGameEvents.GamePreInitializationEvent( this ) );
+			EventRegistry.fireEvent( new GameEvents.GamePreInitializationEvent( this ) );
 
 			// Call initialize
 			initialize();
 
-			// TODO: Use reflection and URIClassloader -magic to find and initialize all mods
+			ModuleManager.registerModulePath( "./modules/" );
+			ModuleManager.doModuleInitialization();
 
 			// Register default ContentPipeline extensions
 			// (Mods' extensions are handled via event that is fired inside this method)
@@ -183,7 +199,7 @@ public abstract class AGame extends ADishclothObject implements IGame {
 		initWindow();
 
 		// Create renderer
-		renderer = new Renderer();
+		this.renderer = new Renderer();
 
 		// Create camera
 		float halfW = screenWidth / 2f;
@@ -234,8 +250,10 @@ public abstract class AGame extends ADishclothObject implements IGame {
 		// Call loadContent()
 		loadContent( this.contentManager );
 
+		ModuleManager.loadModuleContent( this.contentManager );
+
 		Debug.log( "Triggering content-initialization events", this );
-		EventRegistry.fireEvent( new AGameEvents.GameContentLoadingEvent( this, this.contentManager ) );
+		EventRegistry.fireEvent( new GameEvents.GameContentLoadingEvent( this, this.contentManager ) );
 	}
 
 	@Override
@@ -249,6 +267,7 @@ public abstract class AGame extends ADishclothObject implements IGame {
 
 		// Call update
 		update( timing.delta );
+		ModuleManager.tickModuleUpdate();
 	}
 
 	@Override
@@ -266,6 +285,7 @@ public abstract class AGame extends ADishclothObject implements IGame {
 			}
 
 			fixedUpdate();
+			moduleManager.tickModuleFixedUpdate();
 		}
 	}
 
@@ -273,8 +293,9 @@ public abstract class AGame extends ADishclothObject implements IGame {
 	public final void doRender() {
 		glClear( GL_COLOR_BUFFER_BIT );
 
-		// Call render()
-		render( renderer );
+		// Call renderBlock()
+		render( this.renderer );
+		moduleManager.doModuleRender( this.renderer );
 
 		// Swap buffers
 		glfwSwapBuffers( windowID );
@@ -282,7 +303,7 @@ public abstract class AGame extends ADishclothObject implements IGame {
 
 	@Override
 	public final void doUnloadContent() {
-		EventRegistry.fireEvent( new AGameEvents.GameContentDisposingEvent( this, contentManager ) );
+		EventRegistry.fireEvent( new GameEvents.GameContentDisposingEvent( this, contentManager ) );
 		// Unload all non-contentManager-content
 		unloadContent();
 
@@ -293,13 +314,13 @@ public abstract class AGame extends ADishclothObject implements IGame {
 	@Override
 	public final void doShutdown() {
 
-		EventRegistry.fireEvent( new AGameEvents.GameShutdownEvent( this ) );
+		EventRegistry.fireEvent( new GameEvents.GameShutdownEvent( this ) );
 
 		// Call shutdown()
 		shutdown();
 
 		// Destroy window
-		glfwDestroyWindow( windowID );
+		glfwDestroyWindow( this.windowID );
 
 		// Terminate glfw
 		glfwTerminate();

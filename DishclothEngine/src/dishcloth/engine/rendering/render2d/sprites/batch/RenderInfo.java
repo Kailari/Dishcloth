@@ -1,7 +1,7 @@
 package dishcloth.engine.rendering.render2d.sprites.batch;
 
-import dishcloth.engine.rendering.ICamera;
-import dishcloth.engine.rendering.IRenderer;
+import dishcloth.api.abstractionlayer.rendering.ICamera;
+import dishcloth.api.abstractionlayer.rendering.IRenderer;
 import dishcloth.engine.rendering.shaders.ShaderProgram;
 
 /**

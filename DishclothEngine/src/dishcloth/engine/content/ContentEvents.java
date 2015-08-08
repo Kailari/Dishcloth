@@ -1,6 +1,6 @@
 package dishcloth.engine.content;
 
-import dishcloth.engine.events.IEvent;
+import dishcloth.api.abstractionlayer.events.IEvent;
 
 /**
  * <b>ContentEvents</b>

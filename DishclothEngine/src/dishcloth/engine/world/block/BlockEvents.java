@@ -1,6 +1,8 @@
 package dishcloth.engine.world.block;
 
-import dishcloth.engine.events.IEvent;
+import dishcloth.api.abstractionlayer.events.IEvent;
+import dishcloth.api.abstractionlayer.world.block.IBlockID;
+import dishcloth.api.world.block.ABlock;
 
 /**
  * BlockEvents.java
@@ -20,10 +22,10 @@ public class BlockEvents {
 	 * been registered and it has been assigned block- and frameIDs
 	 */
 	public static class OnBlockRegistrationEvent implements IEvent {
-		private final BlockID registeredBlockID;
+		private final IBlockID registeredBlockID;
 		private final ABlock registeredBlock;
 
-		public OnBlockRegistrationEvent(BlockID registeredBlockID, ABlock registeredBlock) {
+		public OnBlockRegistrationEvent(IBlockID registeredBlockID, ABlock registeredBlock) {
 			this.registeredBlockID = registeredBlockID;
 			this.registeredBlock = registeredBlock;
 		}
@@ -31,7 +33,7 @@ public class BlockEvents {
 		/**
 		 * @return ID of the block that just got registered.
 		 */
-		public BlockID getRegisteredBlockID() {
+		public IBlockID getRegisteredBlockID() {
 			return registeredBlockID;
 		}
 

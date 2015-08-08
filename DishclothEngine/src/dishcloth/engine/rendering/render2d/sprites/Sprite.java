@@ -1,11 +1,13 @@
 package dishcloth.engine.rendering.render2d.sprites;
 
 
+import dishcloth.api.util.memory.PointCache;
+import dishcloth.api.util.memory.RectangleCache;
 import dishcloth.engine.rendering.render2d.sprites.batch.SpriteBatch;
 import dishcloth.engine.rendering.textures.Texture;
-import dishcloth.engine.util.Color;
-import dishcloth.engine.util.geom.Point;
-import dishcloth.engine.util.geom.Rectangle;
+import dishcloth.api.util.Color;
+import dishcloth.api.util.geom.Point;
+import dishcloth.api.util.geom.Rectangle;
 
 /**
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -19,6 +21,9 @@ import dishcloth.engine.util.geom.Rectangle;
  */
 
 public class Sprite {
+
+	private static Rectangle sourceRectangle = RectangleCache.getRectangle( 0, 0, 0, 0 );
+	private static Rectangle destinationRectangle = RectangleCache.getRectangle( 0, 0, 0, 0 );
 
 	private Texture texture;
 
@@ -37,11 +42,11 @@ public class Sprite {
 		this.frameW = (float) texture.getWidth() / this.nColumns;
 		this.frameH = (float) texture.getHeight() / this.nRows;
 
-		this.origin = new Point( defaultOriginX, defaultOriginY );
+		this.origin = PointCache.getPoint( defaultOriginX, defaultOriginY );
 	}
 
 	public Sprite(Texture texture, int nColumns, int nRows, int frame, Point origin) {
-		this( texture, nColumns, nRows, frame, origin.x, origin.y );
+		this( texture, nColumns, nRows, frame, origin.getX(), origin.getY() );
 	}
 
 	public Sprite(Texture texture, int nColumns, int nRows, int frame, Anchor anchor) {
@@ -78,8 +83,15 @@ public class Sprite {
 		int row = (int) Math.floor( (float) frame / (float) nColumns );
 		int column = frame % nColumns;
 
-		Rectangle sourceRectangle = new Rectangle( frameW * column, frameH * row, frameW, frameH );
-		Rectangle destinationRectangle = new Rectangle( position.x, position.y, frameW, frameH );
+		sourceRectangle.setX( frameW * column );
+		sourceRectangle.setY( frameH * row );
+		sourceRectangle.setW( frameW );
+		sourceRectangle.setH( frameH );
+
+		destinationRectangle.setX( position.getX() );
+		destinationRectangle.setY( position.getY() );
+		destinationRectangle.setW( frameW );
+		destinationRectangle.setH( frameH );
 
 		spriteBatch.queue( texture, destinationRectangle, sourceRectangle, angle, tint, customOrigin );
 	}

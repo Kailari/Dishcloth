@@ -1,6 +1,6 @@
 package dishcloth.engine.util;
 
-import dishcloth.engine.util.math.DishMath;
+import dishcloth.api.util.math.DishMath;
 
 import java.util.Random;
 

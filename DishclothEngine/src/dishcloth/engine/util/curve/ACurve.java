@@ -1,6 +1,7 @@
 package dishcloth.engine.util.curve;
 
-import dishcloth.engine.util.geom.Point;
+import dishcloth.api.util.geom.Point;
+import dishcloth.api.util.memory.PointCache;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,7 +40,7 @@ public abstract class ACurve {
 	
 	protected final Point getPoint(int index) {
 		// return points.get( index );
-		return new Point( points.get( index ) );
+		return PointCache.getPoint( points.get( index ) );
 	}
 	
 	public void debug() {
@@ -58,7 +59,7 @@ public abstract class ACurve {
 	 * @see #getPositionIndex(float)
 	 */
 	protected int getPositionIndex(Point point) {
-		return getPositionIndex( point.x );
+		return getPositionIndex( point.getX() );
 	}
 	
 	/**
@@ -86,18 +87,18 @@ public abstract class ACurve {
 	 */
 	protected int getPositionIndex(float f) {
 		if (points.size() == 0) return POINTS_SIZE_ZERO;
-		if (f > points.get( points.size() - 1 ).x) return X_GREATER_THAN_GREATEST;
+		if (f > points.get( points.size() - 1 ).getX()) return X_GREATER_THAN_GREATEST;
 		
 		int index = 0;
 		
-		if (f < points.get( 0 ).x) index = X_LESS_THAN_SMALLEST;
+		if (f < points.get( 0 ).getX()) index = X_LESS_THAN_SMALLEST;
 		
 		for (int i = 0; i < points.size(); i++) {
-			if (f == points.get( i ).x) {
+			if (f == points.get( i ).getX()) {
 				index = i;
 				break;
 			}
-			if (f < points.get( i ).x) {
+			if (f < points.get( i ).getX()) {
 				index = i - 1;
 				break;
 			}
@@ -108,28 +109,28 @@ public abstract class ACurve {
 	
 	public float getXMin() {
 		if (points.size() == 0) return 0F;
-		return points.get( 0 ).x;
+		return points.get( 0 ).getX();
 	}
 	
 	public float getXMax() {
 		if (points.size() == 0) return 0F;
-		return points.get( points.size() - 1 ).x;
+		return points.get( points.size() - 1 ).getX();
 	}
 	
 	public float getYMin() {
 		if (points.size() == 0) return 0F;
-		float smallest = points.get( 0 ).y;
+		float smallest = points.get( 0 ).getY();
 		for (Point point : points) {
-			if (point.y < smallest) smallest = point.y;
+			if (point.getY() < smallest) smallest = point.getY();
 		}
 		return smallest;
 	}
 	
 	public float getYMax() {
 		if (points.size() == 0) return 0F;
-		float greatest = points.get( 0 ).y;
+		float greatest = points.get( 0 ).getY();
 		for (Point point : points) {
-			if (point.y > greatest) greatest = point.y;
+			if (point.getY() > greatest) greatest = point.getY();
 		}
 		return greatest;
 	}
@@ -139,7 +140,7 @@ public abstract class ACurve {
 	}
 	
 	public final boolean removePoint(float x, float y) {
-		return removePoint( new Point( x, y ) );
+		return removePoint( PointCache.getPoint( x, y ) );
 	}
 	
 	public final boolean removePoint(Point point) {
@@ -147,7 +148,7 @@ public abstract class ACurve {
 	}
 	
 	public final void addPoint(float x, float y) {
-		addPoint( new Point( x, y ) );
+		addPoint( PointCache.getPoint( x, y ) );
 	}
 	
 	public final void addPoint(Point point) {
@@ -158,7 +159,7 @@ public abstract class ACurve {
 			points.add( point );
 			return;
 		}
-		if (point.x < points.get( 0 ).x) {
+		if (point.getX() < points.get( 0 ).getX()) {
 			/*
 			 * if point.x is less than smallest value of the list, add it to
 			 * first index
@@ -167,7 +168,7 @@ public abstract class ACurve {
 			return;
 		}
 		
-		if (point.x > points.get( points.size() - 1 ).x) {
+		if (point.getX() > points.get( points.size() - 1 ).getX()) {
 			/*
 			 * if point is greater than greatest value of the list, add it to
 			 * last index
@@ -176,7 +177,7 @@ public abstract class ACurve {
 			return;
 		}
 		for (int i = 0; i < points.size(); i++) {
-			if (point.x < points.get( i ).x) {
+			if (point.getX() < points.get( i ).getX()) {
 				points.add( i, point );
 				return;
 			}
@@ -218,8 +219,8 @@ public abstract class ACurve {
 		if (points.size() == 0) return 0F;
 		
 		// calculate the difference between the first point (index = 0) and the last point (index = size-1)
-		float total = points.get( points.size() - 1 ).x - points.get( 0 ).x;
-		return total * f01 + points.get( 0 ).x;
+		float total = points.get( points.size() - 1 ).getX() - points.get( 0 ).getX();
+		return total * f01 + points.get( 0 ).getX();
 	}
 	
 	/**
@@ -244,11 +245,11 @@ public abstract class ACurve {
 		if (points.size() == 0) return 0F;
 		
 		// f == 0 --> return the x-value of the first point
-		if (f == 0) return points.get( 0 ).x;
+		if (f == 0) return points.get( 0 ).getX();
 		
 		// calculate the difference between the first point (index = 0) and the last point (index = size-1)
-		float total = points.get( points.size() - 1 ).x - points.get( 0 ).x;
-		float delta = f - points.get( 0 ).x;
+		float total = points.get( points.size() - 1 ).getX() - points.get( 0 ).getX();
+		float delta = f - points.get( 0 ).getX();
 		
 		return delta / total;
 	}

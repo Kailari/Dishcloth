@@ -1,6 +1,9 @@
 package dishcloth.game.world.blocks;
 
-import dishcloth.engine.world.block.ABlock;
+import dishcloth.api.world.block.ABlock;
+import dishcloth.engine.world.block.BlockHelper;
+import dishcloth.engine.world.block.BlockRegistry;
+import dishcloth.game.DishclothGame;
 
 /**
  * DishclothBlocks.java
@@ -17,4 +20,12 @@ public class DishclothBlocks {
 	public static final ABlock CLAY = new BlockClay();
 	public static final ABlock STONE = new BlockStone();
 	public static final ABlock BRICKS = new BlockBricks();
+
+	public static void registerBlocks() {
+		BlockRegistry.registerBlock( DIRT, DishclothGame.DEFAULT_MOD_ID, "dirt" );
+		BlockRegistry.registerBlock( GRASS, DishclothGame.DEFAULT_MOD_ID, "grass" );
+		BlockRegistry.registerBlock( CLAY, DishclothGame.DEFAULT_MOD_ID, "clay" );
+		BlockRegistry.registerBlock( STONE, DishclothGame.DEFAULT_MOD_ID, "stone" );
+		BlockRegistry.registerBlock( BRICKS, DishclothGame.DEFAULT_MOD_ID, "bricks" );
+	}
 }

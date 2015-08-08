@@ -1,6 +1,6 @@
 package dishcloth.engine.world.objects;
 
-import dishcloth.engine.events.IEvent;
+import dishcloth.api.abstractionlayer.events.IEvent;
 
 /**
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *

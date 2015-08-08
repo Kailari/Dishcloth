@@ -1,8 +1,8 @@
 package dishcloth.engine.rendering;
 
-import dishcloth.engine.rendering.shaders.ShaderProgram;
-import dishcloth.engine.rendering.textures.Texture;
-import dishcloth.engine.rendering.vbo.VertexArrayObject;
+import dishcloth.api.abstractionlayer.rendering.IRenderer;
+import dishcloth.api.abstractionlayer.rendering.shaders.IShaderProgram;
+import dishcloth.api.abstractionlayer.rendering.textures.ITexture;
 
 import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
 import static org.lwjgl.opengl.GL11.glBindTexture;
@@ -19,7 +19,7 @@ public class Renderer implements IRenderer {
 	}
 
 	@Override
-	public void bindShader(ShaderProgram program) {
+	public void bindShader(IShaderProgram program) {
 		bindShader( program.getGLShaderID() );
 	}
 
@@ -37,7 +37,7 @@ public class Renderer implements IRenderer {
 	}
 
 	@Override
-	public void bindTexture(Texture texture) {
+	public void bindTexture(ITexture texture) {
 		bindTexture( texture.getGLTexID() );
 	}
 
@@ -52,18 +52,5 @@ public class Renderer implements IRenderer {
 	@Override
 	public int getBoundTextureID() {
 		return boundTextureID;
-	}
-
-	@Override
-	public void renderVBOTextured(Texture texture, VertexArrayObject vbo) {
-		// Bind only if necessary
-		bindTexture( texture );
-
-		vbo.render();
-	}
-
-	@Override
-	public void renderVBO(VertexArrayObject vbo) {
-		vbo.render();
 	}
 }

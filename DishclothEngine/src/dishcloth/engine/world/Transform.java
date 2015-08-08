@@ -1,9 +1,9 @@
 package dishcloth.engine.world;
 
-import dishcloth.engine.util.geom.Point;
-import dishcloth.engine.util.logger.Debug;
-import dishcloth.engine.util.math.DishMath;
-import dishcloth.engine.util.math.Vector2;
+import dishcloth.api.util.geom.Point;
+import dishcloth.api.util.memory.PointCache;
+import dishcloth.engine.util.debug.Debug;
+import dishcloth.api.util.math.DishMath;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +23,7 @@ public class Transform {
 	}
 
 	public Transform(float x, float y, float rotation) {
-		this( new Point( x, y ), rotation );
+		this( PointCache.getPoint( x, y ), rotation );
 	}
 
 	public Transform(Point location, float rotation) {
@@ -74,13 +74,6 @@ public class Transform {
 	// TODO: add parameter (change child coordinates)
 	public void addChild(Transform child) {
 		// TODO: detect incest. incest != wincest
-		// Won't work! Pass-by-value-oddity prevents it (AFAIK)
-		// child.parent = this;
-
-		// ...instead, we must call setter. Somehow, this ensures that we have reference to the right Transform
-		// and allows us to change the instance passed to us as a parameter. Calling just "parameter.variable = value"
-		// changes instance locally, and everything would still be the same outside of this method. By calling setter,
-		// however, we change THE instance and not just local instance.
 		child.setParent( this );
 		children.add( child );
 	}
@@ -143,7 +136,7 @@ public class Transform {
 
 	public Point getGlobalPosition(boolean printDebug) {
 		if (parent == null) {
-			return new Point( location );
+			return PointCache.getPoint( location );
 		}
 
 		/*
@@ -162,32 +155,24 @@ public class Transform {
 		// I decided to keep par (=parent) and result separate for easier debugging
 		// If we remove debugging, we can combine these 3 lines:
 		// Point result = parent.getGlobalPosition( false );
-		Point par = parent.getGlobalPosition( false );
-		Point result = new Point();
-		result.add( par );
-
+		Point result = parent.getGlobalPosition( false );
 
 		float r = location.distance( 0f, 0f );
-		float a = (float) (Math.acos( location.x / r ) + Math.toRadians( parent.getGlobalRotation() ));
+		float a = (float) (Math.acos( location.getX() / r ) + Math.toRadians( parent.getGlobalRotation() ));
 
 		// new (relative) location
 		float xc = (float) (r * Math.cos( a ));
-		float yc = (float) (r * Math.sin( a )) * DishMath.sign( location.y );
-		Point relative = new Point( xc, yc );
-
-
-		result.add( relative );
-
+		float yc = (float) (r * Math.sin( a )) * DishMath.sign( location.getY() );
+		result.add( xc, yc );
 
 		if (printDebug) {
 			Debug.logNote( "Debug info for transform:", "Transform" );
-			Debug.logNote( "Parent: " + par, "Transform" );
+			Debug.logNote( "Parent: " + parent.getLocation(), "Transform" );
 			Debug.logNote( "Radius: " + r, "Transform" );
 			Debug.logNote( "Total angle: " + a, "Transform" );
-			Debug.logNote( "Relative location: " + relative, "Transform" );
+			Debug.logNote( "Relative location: " + xc + ", " + yc, "Transform" );
 			Debug.logNote( "Result: " + result, "Transform" );
 		}
-
 
 		return result;
 	}
@@ -205,11 +190,10 @@ public class Transform {
 
 	/**
 	 * Sets local location. Local location is relative to parent's location and rotation.
-	 *
-	 * @param location new location
 	 */
-	public void setLocation(Point location) {
-		this.location = location;
+	public void setLocation(float x, float y) {
+		this.location.setX( x );
+		this.location.setY( y );
 	}
 
 	/**

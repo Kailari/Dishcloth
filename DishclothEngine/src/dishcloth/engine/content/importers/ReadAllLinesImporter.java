@@ -2,7 +2,7 @@ package dishcloth.engine.content.importers;
 
 import dishcloth.engine.content.AContentImporter;
 import dishcloth.engine.io.FileIOHelper;
-import dishcloth.engine.util.logger.Debug;
+import dishcloth.engine.util.debug.Debug;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;

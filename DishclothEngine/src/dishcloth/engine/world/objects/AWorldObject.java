@@ -1,8 +1,8 @@
 package dishcloth.engine.world.objects;
 
 import dishcloth.engine.rendering.IRenderable;
-import dishcloth.engine.rendering.IRenderer;
-import dishcloth.engine.util.geom.Point;
+import dishcloth.api.abstractionlayer.rendering.IRenderer;
+import dishcloth.api.util.geom.Point;
 import dishcloth.engine.util.time.Time;
 import dishcloth.engine.world.IUpdatable;
 import dishcloth.engine.world.RenderTransform;

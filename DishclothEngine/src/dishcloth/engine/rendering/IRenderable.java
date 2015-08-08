@@ -1,6 +1,6 @@
 package dishcloth.engine.rendering;
 
-import dishcloth.engine.rendering.IRenderer;
+import dishcloth.api.abstractionlayer.rendering.IRenderer;
 
 /**
  * ********************************************************************************************************************
